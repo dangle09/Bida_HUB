@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\NET108\\DemoCodeFirst\\DemoCodeFirst.csproj": {}
+    "D:\\HOC TAP\\DỰ ÁN\\Bida_HUB\\LAB\\DemoCodeFirst\\DemoCodeFirst.csproj": {}
   },
   "projects": {
-    "D:\\NET108\\DemoCodeFirst\\DemoCodeFirst.csproj": {
+    "D:\\HOC TAP\\DỰ ÁN\\Bida_HUB\\LAB\\DemoCodeFirst\\DemoCodeFirst.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\NET108\\DemoCodeFirst\\DemoCodeFirst.csproj",
+        "projectUniqueName": "D:\\HOC TAP\\DỰ ÁN\\Bida_HUB\\LAB\\DemoCodeFirst\\DemoCodeFirst.csproj",
         "projectName": "DemoCodeFirst",
-        "projectPath": "D:\\NET108\\DemoCodeFirst\\DemoCodeFirst.csproj",
-        "packagesPath": "C:\\Users\\tntsa\\.nuget\\packages\\",
-        "outputPath": "D:\\NET108\\DemoCodeFirst\\obj\\",
+        "projectPath": "D:\\HOC TAP\\DỰ ÁN\\Bida_HUB\\LAB\\DemoCodeFirst\\DemoCodeFirst.csproj",
+        "packagesPath": "C:\\Users\\namnh\\.nuget\\packages\\",
+        "outputPath": "D:\\HOC TAP\\DỰ ÁN\\Bida_HUB\\LAB\\DemoCodeFirst\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\tntsa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\namnh\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -31,7 +31,6 @@
         },
         "frameworks": {
           "net10.0": {
-            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -46,11 +45,10 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net10.0": {
-          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Microsoft.EntityFrameworkCore.Design": {
@@ -93,7 +91,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300-preview.0.26177.108/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.200/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
