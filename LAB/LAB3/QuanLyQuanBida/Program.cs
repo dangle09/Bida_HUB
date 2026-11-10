@@ -1,4 +1,10 @@
+using QuanLyQuanBida.DAL;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Lấy chuỗi kết nối từ appsettings.json và nạp vào DBUtil
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+DBUtil.SetConnectionString(connectionString!);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
