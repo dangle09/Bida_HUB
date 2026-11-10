@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -9,7 +9,7 @@ namespace QuanLyQuanBida.DAL
     {
         ///GHI NHỚ
         // 1. Chuỗi kết nối trực tiếp đến Database QuanLyQuanBida trên SQL Server
-        private static readonly string connString = 
+        private static string connString = 
             "Data Source=.;Initial Catalog=QuanLyQuanBida;Integrated Security=True;TrustServerCertificate=True;";
 
         // Hàm cho phép Program.cs nạp chuỗi kết nối từ appsettings.json vào
