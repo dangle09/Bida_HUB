@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace QuanLyQuanBida.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateEnglishWithAi : Migration
+    public partial class InitialCreateWithAiSessionsMessagesStates : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,58 +31,54 @@ namespace QuanLyQuanBida.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AiAgentLogs",
+                name: "AiMessages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AgentName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ActionTaken = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    IsSuccess = table.Column<bool>(type: "bit", nullable: false),
-                    ExecutionTimeMs = table.Column<int>(type: "int", nullable: false),
-                    LogDetails = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    AiSessionId = table.Column<int>(type: "int", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AiAgentLogs", x => x.Id);
+                    table.PrimaryKey("PK_AiMessages", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AiConversations",
+                name: "AiSessions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: true),
-                    SessionId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    UserPrompt = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    AiResponse = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    ModelName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    CustomerId = table.Column<int>(type: "int", nullable: true),
+                    SessionKey = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    LastActiveAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AiConversations", x => x.Id);
+                    table.PrimaryKey("PK_AiSessions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AiPredictions",
+                name: "AiStates",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PredictionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TargetEntity = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TargetId = table.Column<int>(type: "int", nullable: true),
-                    ConfidenceScore = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    PredictionDetails = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    AiSessionId = table.Column<int>(type: "int", nullable: true),
+                    StateKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    StateValue = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AiPredictions", x => x.Id);
+                    table.PrimaryKey("PK_AiStates", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -769,13 +765,13 @@ namespace QuanLyQuanBida.Migrations
                 name: "ActivityLogs");
 
             migrationBuilder.DropTable(
-                name: "AiAgentLogs");
+                name: "AiMessages");
 
             migrationBuilder.DropTable(
-                name: "AiConversations");
+                name: "AiSessions");
 
             migrationBuilder.DropTable(
-                name: "AiPredictions");
+                name: "AiStates");
 
             migrationBuilder.DropTable(
                 name: "BilliardTables");

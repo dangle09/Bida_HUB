@@ -11,7 +11,7 @@ GO
 BEGIN TRANSACTION;
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [ActivityLogs] (
@@ -29,59 +29,55 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
-    CREATE TABLE [AiAgentLogs] (
+    CREATE TABLE [AiMessages] (
         [Id] int NOT NULL IDENTITY,
-        [AgentName] nvarchar(50) NOT NULL,
-        [ActionTaken] nvarchar(100) NOT NULL,
-        [IsSuccess] bit NOT NULL,
-        [ExecutionTimeMs] int NOT NULL,
-        [LogDetails] nvarchar(2000) NULL,
+        [AiSessionId] int NOT NULL,
+        [Role] nvarchar(20) NOT NULL,
+        [Content] nvarchar(4000) NOT NULL,
         [CreatedAt] datetime2 NOT NULL DEFAULT (GETDATE()),
-        CONSTRAINT [PK_AiAgentLogs] PRIMARY KEY ([Id])
+        CONSTRAINT [PK_AiMessages] PRIMARY KEY ([Id])
     );
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
-    CREATE TABLE [AiConversations] (
+    CREATE TABLE [AiSessions] (
         [Id] int NOT NULL IDENTITY,
-        [CustomerId] int NULL,
         [UserId] int NULL,
-        [SessionId] nvarchar(50) NOT NULL,
-        [UserPrompt] nvarchar(2000) NOT NULL,
-        [AiResponse] nvarchar(4000) NOT NULL,
-        [ModelName] nvarchar(50) NOT NULL,
-        [CreatedAt] datetime2 NOT NULL DEFAULT (GETDATE()),
-        CONSTRAINT [PK_AiConversations] PRIMARY KEY ([Id])
+        [CustomerId] int NULL,
+        [SessionKey] nvarchar(50) NOT NULL,
+        [Title] nvarchar(100) NOT NULL,
+        [StartedAt] datetime2 NOT NULL DEFAULT (GETDATE()),
+        [LastActiveAt] datetime2 NOT NULL DEFAULT (GETDATE()),
+        [IsActive] bit NOT NULL,
+        CONSTRAINT [PK_AiSessions] PRIMARY KEY ([Id])
     );
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
-    CREATE TABLE [AiPredictions] (
+    CREATE TABLE [AiStates] (
         [Id] int NOT NULL IDENTITY,
-        [PredictionType] nvarchar(50) NOT NULL,
-        [TargetEntity] nvarchar(50) NOT NULL,
-        [TargetId] int NULL,
-        [ConfidenceScore] decimal(5,2) NOT NULL,
-        [PredictionDetails] nvarchar(2000) NOT NULL,
-        [CreatedAt] datetime2 NOT NULL DEFAULT (GETDATE()),
-        CONSTRAINT [PK_AiPredictions] PRIMARY KEY ([Id])
+        [AiSessionId] int NULL,
+        [StateKey] nvarchar(100) NOT NULL,
+        [StateValue] nvarchar(4000) NOT NULL,
+        [UpdatedAt] datetime2 NOT NULL DEFAULT (GETDATE()),
+        CONSTRAINT [PK_AiStates] PRIMARY KEY ([Id])
     );
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [BilliardTables] (
@@ -97,7 +93,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Categories] (
@@ -110,7 +106,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [CustomerCues] (
@@ -127,7 +123,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Customers] (
@@ -145,7 +141,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [ExpenseTypes] (
@@ -158,7 +154,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [GoodsReceiptDetails] (
@@ -173,7 +169,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [GoodsReceipts] (
@@ -189,7 +185,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Inventories] (
@@ -203,7 +199,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [InventoryAudits] (
@@ -218,7 +214,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [InvoiceDetails] (
@@ -234,7 +230,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [InvoicePayments] (
@@ -249,7 +245,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Invoices] (
@@ -272,7 +268,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [LockerRentals] (
@@ -290,7 +286,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Lockers] (
@@ -305,7 +301,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Matches] (
@@ -326,7 +322,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [MembershipTiers] (
@@ -341,7 +337,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [PaymentMethods] (
@@ -354,7 +350,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [PaymentVouchers] (
@@ -372,7 +368,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Payrolls] (
@@ -392,7 +388,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Permissions] (
@@ -406,7 +402,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [PointTransactions] (
@@ -422,7 +418,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Promotions] (
@@ -439,7 +435,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Reservations] (
@@ -456,7 +452,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [RolePermissions] (
@@ -469,7 +465,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Roles] (
@@ -482,7 +478,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [ServiceItems] (
@@ -500,7 +496,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Shifts] (
@@ -515,7 +511,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Suppliers] (
@@ -529,7 +525,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [TableAreas] (
@@ -542,7 +538,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [TableEquipments] (
@@ -557,7 +553,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [TableMaintenances] (
@@ -574,7 +570,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [TableTransfers] (
@@ -590,7 +586,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [TableTypes] (
@@ -603,7 +599,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Timekeepings] (
@@ -621,7 +617,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [TimeSlotPrices] (
@@ -636,7 +632,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [TournamentParticipants] (
@@ -652,7 +648,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Tournaments] (
@@ -669,7 +665,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [UserRoles] (
@@ -683,7 +679,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [Users] (
@@ -702,7 +698,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     CREATE TABLE [WorkSchedules] (
@@ -717,11 +713,11 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20261111150823_InitialCreateEnglishWithAi'
+    WHERE [MigrationId] = N'20261111155220_InitialCreateWithAiSessionsMessagesStates'
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20261111150823_InitialCreateEnglishWithAi', N'10.0.0');
+    VALUES (N'20261111155220_InitialCreateWithAiSessionsMessagesStates', N'10.0.0');
 END;
 
 COMMIT;

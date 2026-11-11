@@ -163,12 +163,12 @@ namespace QuanLyQuanBida.Data
             };
             context.RolePermissions.AddRange(rolePermissions);
 
-            // 15. Users
+            // 15. Users (Mật khẩu được băm SHA256 chuẩn bảo mật)
             var users = new User[]
             {
-                new() { Username = "admin", PasswordHash = "giangcc111", FullName = "Đào Ngọc Giang (Admin)", Email = "giangadmin@bms.com", PhoneNumber = "0988001122", IsActive = true, CreatedAt = DateTime.Now },
-                new() { Username = "thungan_mai", PasswordHash = "dangcc111", FullName = "Trần Thị Mai", Email = "maitt@bms.com", PhoneNumber = "0912334455", IsActive = true, CreatedAt = DateTime.Now },
-                new() { Username = "phucvu_tuan", PasswordHash = "khoacc111", FullName = "Lê Tuấn Vũ", Email = "vult@bms.com", PhoneNumber = "0977889900", IsActive = true, CreatedAt = DateTime.Now }
+                new() { Username = "admin", PasswordHash = HashPassword("giangcc111"), FullName = "Đào Ngọc Giang (Admin)", Email = "giangadmin@bms.com", PhoneNumber = "0988001122", IsActive = true, CreatedAt = DateTime.Now },
+                new() { Username = "thungan_mai", PasswordHash = HashPassword("dangcc111"), FullName = "Trần Thị Mai", Email = "maitt@bms.com", PhoneNumber = "0912334455", IsActive = true, CreatedAt = DateTime.Now },
+                new() { Username = "phucvu_tuan", PasswordHash = HashPassword("khoacc111"), FullName = "Lê Tuấn Vũ", Email = "vult@bms.com", PhoneNumber = "0977889900", IsActive = true, CreatedAt = DateTime.Now }
             };
             context.Users.AddRange(users);
 
@@ -399,84 +399,99 @@ namespace QuanLyQuanBida.Data
             context.InvoicePayments.AddRange(invoicePayments);
 
             // ==========================================
-            // GIAI ĐOẠN 5: 3 BẢNG AI-NATIVE BẮT BUỘC
+            // GIAI ĐOẠN 5: 3 BẢNG AI-NATIVE BẮT BUỘC (AiSessions, AiMessages, AiStates)
             // ==========================================
 
-            // 42. AiConversations
-            var aiConversations = new AiConversation[]
+            // 42. AiSessions
+            var aiSessions = new AiSession[]
             {
                 new()
                 {
+                    UserId = users[1].Id,
                     CustomerId = customers[0].Id,
-                    UserId = null,
-                    SessionId = "SESSION_20261110_01",
-                    UserPrompt = "Tối nay CLB còn bàn lỗ nào trống lúc 19h30 không bot?",
-                    AiResponse = "Dạ chào anh Giang! Tối nay lúc 19h30 CLB còn trống Bàn 02 (Lỗ). Anh có muốn em đặt bàn giữ trước giúp anh không ạ?",
-                    ModelName = "gemini-1.5-flash",
-                    CreatedAt = DateTime.Now
+                    SessionKey = "SESS_20261110_01",
+                    Title = "Tư vấn bàn & dịch vụ cho khách Đào Ngọc Giang",
+                    StartedAt = DateTime.Now.AddHours(-2),
+                    LastActiveAt = DateTime.Now.AddHours(-1),
+                    IsActive = true
                 },
                 new()
                 {
-                    CustomerId = customers[2].Id,
-                    UserId = null,
-                    SessionId = "SESSION_20261110_02",
-                    UserPrompt = "Giá giờ chơi bàn 3 băng VIP bao nhiêu vậy shop?",
-                    AiResponse = "Dạ bàn 3 Băng phòng VIP có giá 80.000đ/giờ. Phòng có điều hòa riêng và nỉ Simonis chuẩn thi đấu ạ!",
-                    ModelName = "gemini-1.5-flash",
-                    CreatedAt = DateTime.Now
+                    UserId = users[0].Id,
+                    CustomerId = null,
+                    SessionKey = "SESS_20261110_02",
+                    Title = "Tra cứu doanh thu ca sáng & công suất bàn",
+                    StartedAt = DateTime.Now.AddHours(-4),
+                    LastActiveAt = DateTime.Now.AddHours(-3),
+                    IsActive = false
                 }
             };
-            context.AiConversations.AddRange(aiConversations);
+            context.AiSessions.AddRange(aiSessions);
+            context.SaveChanges();
 
-            // 43. AiPredictions
-            var aiPredictions = new AiPrediction[]
+            // 43. AiMessages
+            var aiMessages = new AiMessage[]
             {
                 new()
                 {
-                    PredictionType = "PEAK_HOUR_FORECAST",
-                    TargetEntity = "BilliardTables",
-                    TargetId = billiardTables[0].Id,
-                    ConfidenceScore = 95.50m,
-                    PredictionDetails = "Dự báo khung giờ 19:00 - 22:30 Thứ 7 công suất bàn sẽ đạt 100%. Gợi ý bố trí thêm 2 nhân viên phục vụ.",
-                    CreatedAt = DateTime.Now
+                    AiSessionId = aiSessions[0].Id,
+                    Role = "user",
+                    Content = "Tối nay CLB còn bàn lỗ nào trống lúc 19h30 không bot?",
+                    CreatedAt = DateTime.Now.AddHours(-2)
                 },
                 new()
                 {
-                    PredictionType = "MAINTENANCE_DUE",
-                    TargetEntity = "BilliardTables",
-                    TargetId = billiardTables[0].Id,
-                    ConfidenceScore = 88.00m,
-                    PredictionDetails = "Bàn 01 đã hoạt động hơn 320 giờ chơi. Dự báo độ nảy băng giảm 7%, đề xuất kiểm tra và căng nỉ mặt bàn trong tuần tới.",
-                    CreatedAt = DateTime.Now
+                    AiSessionId = aiSessions[0].Id,
+                    Role = "assistant",
+                    Content = "Dạ chào anh Giang! Tối nay lúc 19h30 CLB còn trống Bàn 02 (Lỗ). Em đã gợi ý giữ bàn trước giúp anh trên hệ thống rồi ạ!",
+                    CreatedAt = DateTime.Now.AddHours(-2).AddSeconds(5)
+                },
+                new()
+                {
+                    AiSessionId = aiSessions[1].Id,
+                    Role = "user",
+                    Content = "Doanh thu ca sáng hôm nay đạt bao nhiêu?",
+                    CreatedAt = DateTime.Now.AddHours(-4)
+                },
+                new()
+                {
+                    AiSessionId = aiSessions[1].Id,
+                    Role = "assistant",
+                    Content = "Dạ báo cáo anh Giang: Doanh thu ca sáng tạm tính là 3.850.000đ, công suất sử dụng bàn đạt 75%.",
+                    CreatedAt = DateTime.Now.AddHours(-4).AddSeconds(6)
                 }
             };
-            context.AiPredictions.AddRange(aiPredictions);
+            context.AiMessages.AddRange(aiMessages);
 
-            // 44. AiAgentLogs
-            var aiAgentLogs = new AiAgentLog[]
+            // 44. AiStates (AI Context Memory & Recommendation State)
+            var aiStates = new AiState[]
             {
                 new()
                 {
-                    AgentName = "InventoryWatcherAgent",
-                    ActionTaken = "ALERT_LOW_STOCK",
-                    IsSuccess = true,
-                    ExecutionTimeMs = 125,
-                    LogDetails = "Cảnh báo tồn kho Bia Tiger Bạc sắp đạt ngưỡng reorder_level (còn 40 lon). Đã tự động tạo gợi ý phiếu nhập kho.",
-                    CreatedAt = DateTime.Now
+                    AiSessionId = aiSessions[0].Id,
+                    StateKey = "RECOMMENDED_COMBO",
+                    StateValue = "{\"PreferredTable\": \"BAN_VIP_01\", \"SuggestedDrink\": \"SP_REDBULL\", \"DiscountApplied\": \"OPENING_20\"}",
+                    UpdatedAt = DateTime.Now
                 },
                 new()
                 {
-                    AgentName = "SmartBookingAgent",
-                    ActionTaken = "AUTO_SUGGEST_TABLE",
-                    IsSuccess = true,
-                    ExecutionTimeMs = 90,
-                    LogDetails = "Tự động phân bổ khách Đào Ngọc Giang vào Bàn VIP 01 theo hồ sơ thói quen hội viên Kim Cương.",
-                    CreatedAt = DateTime.Now
+                    AiSessionId = aiSessions[0].Id,
+                    StateKey = "PEAK_HOUR_WARNING",
+                    StateValue = "{\"ForecastFull\": true, \"PeakStart\": \"19:00\", \"PeakEnd\": \"22:30\", \"RecommendExtraStaff\": 2}",
+                    UpdatedAt = DateTime.Now
                 }
             };
-            context.AiAgentLogs.AddRange(aiAgentLogs);
+            context.AiStates.AddRange(aiStates);
 
             context.SaveChanges();
+        }
+
+        // HÀM BĂM MẬT KHẨU SHA256 (Khắc phục góp ý thầy chấm về mật khẩu thô)
+        private static string HashPassword(string password)
+        {
+            using var sha256 = System.Security.Cryptography.SHA256.Create();
+            var bytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            return Convert.ToHexString(bytes).ToLower();
         }
     }
 }

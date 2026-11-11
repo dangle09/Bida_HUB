@@ -12,8 +12,8 @@ using QuanLyQuanBida.Data;
 namespace QuanLyQuanBida.Migrations
 {
     [DbContext(typeof(QuanLyQuanBidaContext))]
-    [Migration("20261111150823_InitialCreateEnglishWithAi")]
-    partial class InitialCreateEnglishWithAi
+    [Migration("20261111155220_InitialCreateWithAiSessionsMessagesStates")]
+    partial class InitialCreateWithAiSessionsMessagesStates
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,7 @@ namespace QuanLyQuanBida.Migrations
                     b.ToTable("ActivityLogs", (string)null);
                 });
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.AiAgentLog", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.AiMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -83,95 +83,84 @@ namespace QuanLyQuanBida.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ActionTaken")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("ActionTaken");
-
-                    b.Property<string>("AgentName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("AgentName");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreatedAt")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("ExecutionTimeMs")
+                    b.Property<int>("AiSessionId")
                         .HasColumnType("int")
-                        .HasColumnName("ExecutionTimeMs");
+                        .HasColumnName("AiSessionId");
 
-                    b.Property<bool>("IsSuccess")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsSuccess");
-
-                    b.Property<string>("LogDetails")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)")
-                        .HasColumnName("LogDetails");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AiAgentLogs", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.AiConversation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AiResponse")
+                    b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)")
-                        .HasColumnName("AiResponse");
+                        .HasColumnName("Content");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("CreatedAt")
                         .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Role");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AiMessages", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.AiSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int")
                         .HasColumnName("CustomerId");
 
-                    b.Property<string>("ModelName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ModelName");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsActive");
 
-                    b.Property<string>("SessionId")
+                    b.Property<DateTime>("LastActiveAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastActiveAt")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("SessionKey")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasColumnName("SessionId");
+                        .HasColumnName("SessionKey");
+
+                    b.Property<DateTime>("StartedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("StartedAt")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Title");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("UserId");
 
-                    b.Property<string>("UserPrompt")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)")
-                        .HasColumnName("UserPrompt");
-
                     b.HasKey("Id");
 
-                    b.ToTable("AiConversations", (string)null);
+                    b.ToTable("AiSessions", (string)null);
                 });
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.AiPrediction", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.AiState", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -180,41 +169,31 @@ namespace QuanLyQuanBida.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ConfidenceScore")
-                        .HasColumnType("decimal(5,2)")
-                        .HasColumnName("ConfidenceScore");
+                    b.Property<int?>("AiSessionId")
+                        .HasColumnType("int")
+                        .HasColumnName("AiSessionId");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<string>("StateKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("StateKey");
+
+                    b.Property<string>("StateValue")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)")
+                        .HasColumnName("StateValue");
+
+                    b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("CreatedAt")
+                        .HasColumnName("UpdatedAt")
                         .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("PredictionDetails")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)")
-                        .HasColumnName("PredictionDetails");
-
-                    b.Property<string>("PredictionType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("PredictionType");
-
-                    b.Property<string>("TargetEntity")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("TargetEntity");
-
-                    b.Property<int?>("TargetId")
-                        .HasColumnType("int")
-                        .HasColumnName("TargetId");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AiPredictions", (string)null);
+                    b.ToTable("AiStates", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.BilliardTable", b =>

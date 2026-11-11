@@ -59,10 +59,10 @@ namespace QuanLyQuanBida.Data
         public DbSet<TableTransfer> TableTransfers { get; set; }
         public DbSet<InvoicePayment> InvoicePayments { get; set; }
 
-        // 5. Phân hệ AI-Native (3 Bảng bắt buộc môn NET108)
-        public DbSet<AiConversation> AiConversations { get; set; }
-        public DbSet<AiPrediction> AiPredictions { get; set; }
-        public DbSet<AiAgentLog> AiAgentLogs { get; set; }
+        // 5. Phân hệ AI-Native (3 Bảng bắt buộc môn NET108 theo nhận xét của thầy)
+        public DbSet<AiSession> AiSessions { get; set; }
+        public DbSet<AiMessage> AiMessages { get; set; }
+        public DbSet<AiState> AiStates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
