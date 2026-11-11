@@ -56,7 +56,7 @@ namespace QuanLyQuanBida.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Tự động quét và áp dụng toàn bộ 41 file Configuration trong Data/Configurations/
+            // Tự động quét và áp dụng toàn bộ 41 file Configuration
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(QuanLyQuanBidaContext).Assembly);
         }
     }
