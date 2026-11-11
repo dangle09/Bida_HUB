@@ -11,31 +11,40 @@ namespace QuanLyQuanBida.Models
         [Column("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("nguoi_dung_id")]
         public int NguoiDungId { get; set; }
 
+        [Required]
         [Column("thang_luong")]
         public int ThangLuong { get; set; }
 
+        [Required]
         [Column("nam_luong")]
         public int NamLuong { get; set; }
 
-        [Column("tong_gio_lam")]
+        [Required]
+        [Column("tong_gio_lam", TypeName = "decimal(6,2)")]
         public decimal TongGioLam { get; set; }
 
-        [Column("luong_co_ban")]
+        [Required]
+        [Column("luong_co_ban", TypeName = "decimal(18,2)")]
         public decimal LuongCoBan { get; set; }
 
-        [Column("phu_cap")]
+        [Required]
+        [Column("phu_cap", TypeName = "decimal(18,2)")]
         public decimal PhuCap { get; set; }
 
-        [Column("tien_thuong")]
+        [Required]
+        [Column("tien_thuong", TypeName = "decimal(18,2)")]
         public decimal TienThuong { get; set; }
 
-        [Column("tien_phat")]
+        [Required]
+        [Column("tien_phat", TypeName = "decimal(18,2)")]
         public decimal TienPhat { get; set; }
 
-        [Column("thuc_linh")]
+        [Required]
+        [Column("thuc_linh", TypeName = "decimal(18,2)")]
         public decimal ThucLinh { get; set; }
 
         // HÀM KHỞI TẠO

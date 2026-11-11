@@ -11,18 +11,24 @@ namespace QuanLyQuanBida.Models
         [Column("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("giai_dau_id")]
         public int GiaiDauId { get; set; }
 
+        [Required]
         [Column("ban_bida_id")]
         public int BanBidaId { get; set; }
 
+        [Required]
+        [StringLength(50)]
         [Column("ten_vong_dau")]
         public string TenVongDau { get; set; } = string.Empty;
 
+        [Required]
         [Column("co_thu_1_id")]
         public int CoThu1Id { get; set; }
 
+        [Required]
         [Column("co_thu_2_id")]
         public int CoThu2Id { get; set; }
 
@@ -35,9 +41,12 @@ namespace QuanLyQuanBida.Models
         [Column("nguoi_thang_id")]
         public int? NguoiThangId { get; set; }
 
+        [Required]
         [Column("thoi_gian_dau")]
         public DateTime ThoiGianDau { get; set; }
 
+        [Required]
+        [StringLength(20)]
         [Column("trang_thai")]
         public string TrangThai { get; set; } = string.Empty;
 

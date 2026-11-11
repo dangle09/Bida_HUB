@@ -11,24 +11,32 @@ namespace QuanLyQuanBida.Models
         [Column("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("tu_do_id")]
         public int TuDoId { get; set; }
 
+        [Required]
         [Column("khach_hang_id")]
         public int KhachHangId { get; set; }
 
+        [Required]
         [Column("ngay_bat_dau")]
         public DateTime NgayBatDau { get; set; }
 
+        [Required]
         [Column("ngay_het_han")]
         public DateTime NgayHetHan { get; set; }
 
-        [Column("tien_thue_thang")]
+        [Required]
+        [Column("tien_thue_thang", TypeName = "decimal(18,2)")]
         public decimal TienThueThang { get; set; }
 
-        [Column("tien_coc")]
+        [Required]
+        [Column("tien_coc", TypeName = "decimal(18,2)")]
         public decimal TienCoc { get; set; }
 
+        [Required]
+        [StringLength(20)]
         [Column("trang_thai")]
         public string TrangThai { get; set; } = string.Empty;
 

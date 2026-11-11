@@ -11,15 +11,18 @@ namespace QuanLyQuanBida.Models
         [Column("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("giai_dau_id")]
         public int GiaiDauId { get; set; }
 
+        [Required]
         [Column("khach_hang_id")]
         public int KhachHangId { get; set; }
 
         [Column("so_hat_giong")]
         public int? SoHatGiong { get; set; }
 
+        [Required]
         [Column("ngay_dang_ky")]
         public DateTime NgayDangKy { get; set; }
 

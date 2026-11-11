@@ -11,9 +11,13 @@ namespace QuanLyQuanBida.Models
         [Column("id")]
         public int Id { get; set; }
 
+        [Required]
+        [StringLength(20)]
         [Column("ma_code")]
         public string MaCode { get; set; } = string.Empty;
 
+        [Required]
+        [StringLength(100)]
         [Column("ten")]
         public string Ten { get; set; } = string.Empty;
 

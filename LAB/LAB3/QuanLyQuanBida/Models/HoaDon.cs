@@ -11,39 +11,51 @@ namespace QuanLyQuanBida.Models
         [Column("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("ban_bida_id")]
         public int BanBidaId { get; set; }
 
+        [Required]
         [Column("nguoi_dung_id")]
         public int NguoiDungId { get; set; }
 
+        [Required]
         [Column("khach_hang_id")]
         public int KhachHangId { get; set; }
 
         [Column("khuyen_mai_id")]
         public int? KhuyenMaiId { get; set; }
 
+        [Required]
+        [StringLength(20)]
         [Column("ma_hoa_don")]
         public string MaHoaDon { get; set; } = string.Empty;
 
+        [Required]
         [Column("gio_bat_dau")]
         public DateTime GioBatDau { get; set; }
 
         [Column("gio_ket_thuc")]
         public DateTime? GioKetThuc { get; set; }
 
-        [Column("table_price")]
+        [Required]
+        [Column("table_price", TypeName = "decimal(18,2)")]
         public decimal TablePrice { get; set; }
 
-        [Column("service_price")]
+        [Required]
+        [Column("service_price", TypeName = "decimal(18,2)")]
         public decimal ServicePrice { get; set; }
 
-        [Column("tien_giam_gia")]
+        [Required]
+        [Column("tien_giam_gia", TypeName = "decimal(18,2)")]
         public decimal TienGiamGia { get; set; }
 
-        [Column("tong_thanh_toan")]
+        [Required]
+        [Column("tong_thanh_toan", TypeName = "decimal(18,2)")]
         public decimal TongThanhToan { get; set; }
 
+        [Required]
+        [StringLength(20)]
         [Column("trang_thai")]
         public string TrangThai { get; set; } = string.Empty;
 

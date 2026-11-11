@@ -11,10 +11,13 @@ namespace QuanLyQuanBida.Models
         [Column("id")]
         public int Id { get; set; }
 
+        [Required]
+        [StringLength(50)]
         [Column("ten")]
         public string Ten { get; set; } = string.Empty;
 
-        [Column("gia_co_ban")]
+        [Required]
+        [Column("gia_co_ban", TypeName = "decimal(18,2)")]
         public decimal GiaCoBan { get; set; }
 
         // HÀM KHỞI TẠO

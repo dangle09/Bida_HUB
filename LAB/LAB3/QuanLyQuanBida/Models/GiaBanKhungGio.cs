@@ -11,16 +11,20 @@ namespace QuanLyQuanBida.Models
         [Column("id")]
         public int Id { get; set; }
 
+        [Required]
         [Column("loai_ban_id")]
         public int LoaiBanId { get; set; }
 
+        [Required]
         [Column("gio_bat_dau_kg")]
         public TimeSpan GioBatDauKg { get; set; }
 
+        [Required]
         [Column("gio_ket_thuc_kg")]
         public TimeSpan GioKetThucKg { get; set; }
 
-        [Column("gia_khung_gio")]
+        [Required]
+        [Column("gia_khung_gio", TypeName = "decimal(18,2)")]
         public decimal GiaKhungGio { get; set; }
 
         // HÀM KHỞI TẠO

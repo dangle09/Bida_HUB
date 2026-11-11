@@ -13,6 +13,22 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+// Tự động khởi tạo và nạp dữ liệu mẫu nếu Database chưa có
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<QuanLyQuanBidaContext>();
+        DbInitializer.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Lỗi xảy ra trong quá trình khởi tạo dữ liệu mẫu.");
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
