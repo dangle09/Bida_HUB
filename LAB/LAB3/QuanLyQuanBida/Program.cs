@@ -1,10 +1,12 @@
-using QuanLyQuanBida.DAL;
+using Microsoft.EntityFrameworkCore;
+using QuanLyQuanBida.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Lấy chuỗi kết nối từ appsettings.json và nạp vào DBUtil
+// Cấu hình chuỗi kết nối và DbContext cho Entity Framework Core
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-DBUtil.SetConnectionString(connectionString!);
+builder.Services.AddDbContext<QuanLyQuanBidaContext>(options =>
+    options.UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -30,6 +32,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();
