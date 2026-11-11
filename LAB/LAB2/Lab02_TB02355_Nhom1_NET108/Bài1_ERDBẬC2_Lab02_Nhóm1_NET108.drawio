@@ -5705,6 +5705,24 @@
         <mxCell id="TMFbn99egXvSI_5Ys5g8-5259" edge="1" parent="1" source="TMFbn99egXvSI_5Ys5g8-4664" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;" target="TMFbn99egXvSI_5Ys5g8-4620" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+              <mxCell id="tbl_AiSessions" value="&lt;b&gt;AiSessions&lt;/b&gt;&lt;hr/&gt;+ id: int (PK)&lt;br/&gt;+ user_id: int (FK)&lt;br/&gt;+ session_type: nvarchar(50)&lt;br/&gt;+ title: nvarchar(255)&lt;br/&gt;+ created_at: datetime2&lt;br/&gt;+ last_active_at: datetime2&lt;br/&gt;+ is_active: bit" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#f8fafc;strokeColor=#3b82f6;strokeWidth=2;fontColor=#1e293b;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry x="1780" y="2020" width="336" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_AiMessages" value="&lt;b&gt;AiMessages&lt;/b&gt;&lt;hr/&gt;+ id: int (PK)&lt;br/&gt;+ session_id: int (FK)&lt;br/&gt;+ role: nvarchar(20)&lt;br/&gt;+ content: nvarchar(max)&lt;br/&gt;+ created_at: datetime2&lt;br/&gt;+ tokens_used: int" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#f8fafc;strokeColor=#3b82f6;strokeWidth=2;fontColor=#1e293b;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry x="1380" y="2020" width="336" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_AiStates" value="&lt;b&gt;AiStates&lt;/b&gt;&lt;hr/&gt;+ id: int (PK)&lt;br/&gt;+ session_id: int (FK)&lt;br/&gt;+ context_key: nvarchar(100)&lt;br/&gt;+ state_json: nvarchar(max)&lt;br/&gt;+ updated_at: datetime2" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#f8fafc;strokeColor=#3b82f6;strokeWidth=2;fontColor=#1e293b;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry x="2180" y="2020" width="336" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Users_AiSessions_bac2" edge="1" parent="1" source="TMFbn99egXvSI_5Ys5g8-3504" target="tbl_AiSessions" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#3b82f6;strokeWidth=1.8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_AiSessions_AiMessages_bac2" edge="1" parent="1" source="tbl_AiSessions" target="tbl_AiMessages" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#3b82f6;strokeWidth=1.8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_AiSessions_AiStates_bac2" edge="1" parent="1" source="tbl_AiSessions" target="tbl_AiStates" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#3b82f6;strokeWidth=1.8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -5713,6 +5731,24 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+              <mxCell id="tbl_AiSessions" value="&lt;b&gt;AiSessions&lt;/b&gt;&lt;hr/&gt;+ id: int (PK)&lt;br/&gt;+ user_id: int (FK)&lt;br/&gt;+ session_type: nvarchar(50)&lt;br/&gt;+ title: nvarchar(255)&lt;br/&gt;+ created_at: datetime2&lt;br/&gt;+ last_active_at: datetime2&lt;br/&gt;+ is_active: bit" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#f8fafc;strokeColor=#3b82f6;strokeWidth=2;fontColor=#1e293b;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry x="1780" y="2020" width="336" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_AiMessages" value="&lt;b&gt;AiMessages&lt;/b&gt;&lt;hr/&gt;+ id: int (PK)&lt;br/&gt;+ session_id: int (FK)&lt;br/&gt;+ role: nvarchar(20)&lt;br/&gt;+ content: nvarchar(max)&lt;br/&gt;+ created_at: datetime2&lt;br/&gt;+ tokens_used: int" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#f8fafc;strokeColor=#3b82f6;strokeWidth=2;fontColor=#1e293b;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry x="1380" y="2020" width="336" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_AiStates" value="&lt;b&gt;AiStates&lt;/b&gt;&lt;hr/&gt;+ id: int (PK)&lt;br/&gt;+ session_id: int (FK)&lt;br/&gt;+ context_key: nvarchar(100)&lt;br/&gt;+ state_json: nvarchar(max)&lt;br/&gt;+ updated_at: datetime2" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#f8fafc;strokeColor=#3b82f6;strokeWidth=2;fontColor=#1e293b;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1">
+          <mxGeometry x="2180" y="2020" width="336" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Users_AiSessions_bac2" edge="1" parent="1" source="TMFbn99egXvSI_5Ys5g8-3504" target="tbl_AiSessions" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#3b82f6;strokeWidth=1.8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_AiSessions_AiMessages_bac2" edge="1" parent="1" source="tbl_AiSessions" target="tbl_AiMessages" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#3b82f6;strokeWidth=1.8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_AiSessions_AiStates_bac2" edge="1" parent="1" source="tbl_AiSessions" target="tbl_AiStates" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#3b82f6;strokeWidth=1.8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>

@@ -1,0 +1,85 @@
+@model QuanLyQuanBida.Models.Category
+
+@{
+    ViewData["Title"] = "Xác nhận Xóa Danh mục";
+    int itemCount = ViewBag.ItemCount != null ? (int)ViewBag.ItemCount : 0;
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0 border-top border-danger border-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 fw-bold text-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Xác nhận Xóa Danh mục
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (itemCount > 0)
+                    {
+                        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                            <i class="bi bi-shield-x fs-2 me-3"></i>
+                            <div>
+                                <h6 class="alert-heading fw-bold mb-1">Ràng buộc dữ liệu!</h6>
+                                <span>Danh mục này hiện đang có <strong>@itemCount sản phẩm/dịch vụ</strong> liên kết. Hệ thống sẽ <strong>từ chối xóa</strong> để đảm bảo toàn vẹn dữ liệu. Vui lòng chuyển hoặc xóa các sản phẩm trước!</span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Bạn có chắc chắn muốn xóa danh mục đồ uống / dịch vụ này không? Thao tác này không thể hoàn tác.</p>
+                    }
+
+                    <div class="bg-light p-3 rounded mb-4">
+                        <div class="row mb-2">
+                            <div class="col-sm-4 text-muted">ID Hệ thống:</div>
+                            <div class="col-sm-8 fw-semibold">#@Model.Id</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4 text-muted">Mã danh mục:</div>
+                            <div class="col-sm-8 font-monospace fw-bold">@Model.Code</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4 text-muted">Tên danh mục:</div>
+                            <div class="col-sm-8 fw-bold text-primary">@Model.Name</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 text-muted">Sản phẩm liên kết:</div>
+                            <div class="col-sm-8">
+                                @if (itemCount > 0)
+                                {
+                                    <span class="badge bg-danger">@itemCount sản phẩm</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">0 sản phẩm (An toàn để xóa)</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-flex justify-content-between pt-2 border-top">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Hủy bỏ & Quay lại
+                            </a>
+                            @if (itemCount == 0)
+                            {
+                                <button type="submit" class="btn btn-danger px-4">
+                                    <i class="bi bi-trash-fill me-1"></i>Xác nhận Xóa
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-danger px-4" disabled title="Không thể xóa khi còn sản phẩm">
+                                    <i class="bi bi-trash-fill me-1"></i>Không thể xóa
+                                </button>
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

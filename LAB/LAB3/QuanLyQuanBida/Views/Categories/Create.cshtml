@@ -1,0 +1,57 @@
+@model QuanLyQuanBida.Models.Category
+
+@{
+    ViewData["Title"] = "Thêm Danh mục Mới";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="card-title mb-0 fw-bold">
+                        <i class="bi bi-plus-circle me-2"></i>Thêm Danh mục Mới
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Code" class="form-label fw-semibold">
+                                Mã danh mục <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Code" class="form-control form-control-lg font-monospace text-uppercase" 
+                                   placeholder="Ví dụ: COFFEE, BEER, SNACK..." autocomplete="off" autofocus />
+                            <div class="form-text">Mã danh mục là duy nhất, viết hoa không dấu và không chứa khoảng trắng.</div>
+                            <span asp-validation-for="Code" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                Tên danh mục <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control form-control-lg" 
+                                   placeholder="Ví dụ: Cà phê & Nước uống pha chế..." />
+                            <div class="form-text">Tên hiển thị của danh mục trên thực đơn gọi món.</div>
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-2 border-top">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check2-circle me-1"></i>Lưu danh mục
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

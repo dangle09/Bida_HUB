@@ -1,0 +1,144 @@
+@model IEnumerable<QuanLyQuanBida.Models.Category>
+
+@{
+    ViewData["Title"] = "Danh mục Đồ uống & Dịch vụ";
+    var itemCounts = ViewBag.ItemCounts as Dictionary<int, int> ?? new Dictionary<int, int>();
+    var search = ViewData["Search"] as string;
+}
+
+<div class="container-fluid py-3">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="bi bi-tags-fill me-2"></i>Quản lý Danh mục Đồ uống & Dịch vụ
+            </h2>
+            <p class="text-muted mb-0">Bài 2 - NET108: Quản lý xem, thêm, sửa, xóa (CRUD) cho danh mục</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm">
+                <i class="bi bi-plus-circle me-1"></i>Thêm Danh mục Mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Thanh tìm kiếm & Thống kê -->
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-6 col-lg-5">
+            <form asp-action="Index" method="get" class="d-flex gap-2">
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <input type="text" name="search" value="@search" class="form-control border-start-0" 
+                           placeholder="Tìm kiếm theo mã hoặc tên danh mục..." />
+                    <button type="submit" class="btn btn-primary px-3">Tìm</button>
+                    @if (!string.IsNullOrEmpty(search))
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary" title="Xóa tìm kiếm">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    }
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6 col-lg-7 text-md-end mt-2 mt-md-0">
+            <span class="badge bg-light text-dark border p-2 fs-6">
+                <i class="bi bi-collection me-1 text-primary"></i>Tổng số danh mục: <strong>@Model.Count()</strong>
+            </span>
+        </div>
+    </div>
+
+    <!-- Bảng dữ liệu danh mục -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr class="text-uppercase fs-7 text-muted">
+                            <th style="width: 70px;" class="text-center">#</th>
+                            <th style="width: 180px;">Mã danh mục</th>
+                            <th>Tên danh mục</th>
+                            <th style="width: 180px;" class="text-center">Số lượng món</th>
+                            <th style="width: 240px;" class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                        @if (!string.IsNullOrEmpty(search))
+                                        {
+                                            <span>Không tìm thấy danh mục nào khớp với từ khóa "<strong>@search</strong>".</span>
+                                            <div class="mt-2">
+                                                <a asp-action="Index" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span>Hiện chưa có danh mục nào trong hệ thống.</span>
+                                            <div class="mt-2">
+                                                <a asp-action="Create" class="btn btn-sm btn-primary">Tạo danh mục đầu tiên</a>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            int index = 1;
+                            foreach (var item in Model)
+                            {
+                                int count = itemCounts.ContainsKey(item.Id) ? itemCounts[item.Id] : 0;
+                                <tr>
+                                    <td class="text-center fw-semibold text-muted">@(index++)</td>
+                                    <td>
+                                        <span class="badge bg-dark-subtle text-dark border font-monospace px-2 py-1 fs-6">
+                                            @item.Code
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-bold text-dark hover-primary">
+                                            @item.Name
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (count > 0)
+                                        {
+                                            <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1">
+                                                <i class="bi bi-cup-straw me-1"></i>@count sản phẩm
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary-subtle text-secondary border px-2 py-1">
+                                                Chưa có món
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" title="Xem chi tiết">
+                                                <i class="bi bi-eye"></i> Xem
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Chỉnh sửa">
+                                                <i class="bi bi-pencil-square"></i> Sửa
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Xóa danh mục">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -322,6 +322,42 @@
         <mxCell id="oPBrGSod8OOkPSn5E5Mv-218" edge="1" parent="1" source="oPBrGSod8OOkPSn5E5Mv-216" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=none;endArrow=ERmany;endFill=0;strokeColor=#334155;strokeWidth=1.8;" target="oPBrGSod8OOkPSn5E5Mv-140">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+              <mxCell id="AiSessions_Bac1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;fontColor=#0F172A;fontStyle=1;fontSize=14.5;" value="AiSessions" vertex="1">
+          <mxGeometry height="54" width="220" x="2180" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_Users_AiSessions" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#1E40AF;fontStyle=1;fontSize=13;" value="tạo" vertex="1">
+          <mxGeometry height="44" width="96" x="2242" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Users_to_rel" edge="1" parent="1" source="oPBrGSod8OOkPSn5E5Mv-116" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=none;strokeColor=#334155;strokeWidth=1.8;" target="rel_Users_AiSessions">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_rel_to_AiSessions" edge="1" parent="1" source="rel_Users_AiSessions" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=none;endArrow=ERmany;endFill=0;strokeColor=#334155;strokeWidth=1.8;" target="AiSessions_Bac1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AiMessages_Bac1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;fontColor=#0F172A;fontStyle=1;fontSize=14.5;" value="AiMessages" vertex="1">
+          <mxGeometry height="52" width="200" x="1750" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_AiSessions_AiMessages" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#1E40AF;fontStyle=1;fontSize=13;" value="chứa" vertex="1">
+          <mxGeometry height="44" width="96" x="2020" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_AiSessions_to_relMsg" edge="1" parent="1" source="AiSessions_Bac1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=none;strokeColor=#334155;strokeWidth=1.8;" target="rel_AiSessions_AiMessages">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_relMsg_to_AiMessages" edge="1" parent="1" source="rel_AiSessions_AiMessages" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=none;endArrow=ERmany;endFill=0;strokeColor=#334155;strokeWidth=1.8;" target="AiMessages_Bac1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AiStates_Bac1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;fontColor=#0F172A;fontStyle=1;fontSize=14.5;" value="AiStates" vertex="1">
+          <mxGeometry height="52" width="200" x="2190" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_AiSessions_AiStates" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#1E40AF;fontStyle=1;fontSize=13;" value="lưu" vertex="1">
+          <mxGeometry height="44" width="96" x="2242" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_AiSessions_to_relState" edge="1" parent="1" source="AiSessions_Bac1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=none;strokeColor=#334155;strokeWidth=1.8;" target="rel_AiSessions_AiStates">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_relState_to_AiStates" edge="1" parent="1" source="rel_AiSessions_AiStates" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=none;endArrow=ERmany;endFill=0;strokeColor=#334155;strokeWidth=1.8;" target="AiStates_Bac1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
