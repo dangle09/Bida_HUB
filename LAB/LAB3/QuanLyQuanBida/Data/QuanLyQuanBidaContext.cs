@@ -10,53 +10,65 @@ namespace QuanLyQuanBida.Data
         {
         }
 
-        public DbSet<VaiTro> VaiTros { get; set; }
-        public DbSet<QuyenHan> QuyenHans { get; set; }
-        public DbSet<CaLam> CaLams { get; set; }
-        public DbSet<KhuVucBan> KhuVucBans { get; set; }
-        public DbSet<LoaiBan> LoaiBans { get; set; }
-        public DbSet<HangThanhVien> HangThanhViens { get; set; }
-        public DbSet<DanhMucMon> DanhMucMons { get; set; }
-        public DbSet<NhaCungCap> NhaCungCaps { get; set; }
-        public DbSet<KhuyenMai> KhuyenMais { get; set; }
-        public DbSet<PhuongThucThanhToan> PhuongThucThanhToans { get; set; }
-        public DbSet<TuDo> TuDos { get; set; }
-        public DbSet<GiaiDau> GiaiDaus { get; set; }
-        public DbSet<LoaiChiPhi> LoaiChiPhis { get; set; }
-        public DbSet<QuyenVaiTro> QuyenVaiTros { get; set; }
-        public DbSet<NguoiDung> NguoiDungs { get; set; }
-        public DbSet<GiaBanKhungGio> GiaBanKhungGios { get; set; }
-        public DbSet<BanBida> BanBidas { get; set; }
-        public DbSet<KhachHang> KhachHangs { get; set; }
-        public DbSet<MonDichVu> MonDichVus { get; set; }
-        public DbSet<VaiTroNguoiDung> VaiTroNguoiDungs { get; set; }
-        public DbSet<NhatKyHoatDong> NhatKyHoatDongs { get; set; }
-        public DbSet<LichLamViec> LichLamViecs { get; set; }
-        public DbSet<ChamCong> ChamCongs { get; set; }
-        public DbSet<BangLuong> BangLuongs { get; set; }
-        public DbSet<PhieuKiemKho> PhieuKiemKhos { get; set; }
-        public DbSet<DatBan> DatBans { get; set; }
-        public DbSet<ThietBiBan> ThietBiBans { get; set; }
-        public DbSet<BaoTriBan> BaoTriBans { get; set; }
-        public DbSet<GiaoDichDiem> GiaoDichDiems { get; set; }
-        public DbSet<ThueTuDo> ThueTuDos { get; set; }
-        public DbSet<GayKhachGui> GayKhachGuis { get; set; }
-        public DbSet<CoThuThamGia> CoThuThamGias { get; set; }
-        public DbSet<TranDau> TranDaus { get; set; }
-        public DbSet<PhieuChi> PhieuChis { get; set; }
-        public DbSet<TonKho> TonKhos { get; set; }
-        public DbSet<PhieuNhapKho> PhieuNhapKhos { get; set; }
-        public DbSet<HoaDon> HoaDons { get; set; }
-        public DbSet<ChiTietNhapKho> ChiTietNhapKhos { get; set; }
-        public DbSet<ChiTietHoaDon> ChiTietHoaDons { get; set; }
-        public DbSet<ChuyenBan> ChuyenBans { get; set; }
-        public DbSet<ThanhToanHoaDon> ThanhToanHoaDons { get; set; }
+        // 1. Phân hệ Cơ bản & Danh mục (Catalog & Lookups)
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Shift> Shifts { get; set; }
+        public DbSet<TableArea> TableAreas { get; set; }
+        public DbSet<TableType> TableTypes { get; set; }
+        public DbSet<MembershipTier> MembershipTiers { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<Locker> Lockers { get; set; }
+        public DbSet<Tournament> Tournaments { get; set; }
+        public DbSet<ExpenseType> ExpenseTypes { get; set; }
+
+        // 2. Phân hệ Phụ thuộc cấp 1 (Primary Entities)
+        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<TimeSlotPrice> TimeSlotPrices { get; set; }
+        public DbSet<BilliardTable> BilliardTables { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<ServiceItem> ServiceItems { get; set; }
+
+        // 3. Phân hệ Nghiệp vụ & Vận hành (Operations & Business)
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
+        public DbSet<WorkSchedule> WorkSchedules { get; set; }
+        public DbSet<Timekeeping> Timekeepings { get; set; }
+        public DbSet<Payroll> Payrolls { get; set; }
+        public DbSet<InventoryAudit> InventoryAudits { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<TableEquipment> TableEquipments { get; set; }
+        public DbSet<TableMaintenance> TableMaintenances { get; set; }
+        public DbSet<PointTransaction> PointTransactions { get; set; }
+        public DbSet<LockerRental> LockerRentals { get; set; }
+        public DbSet<CustomerCue> CustomerCues { get; set; }
+        public DbSet<TournamentParticipant> TournamentParticipants { get; set; }
+        public DbSet<Match> Matches { get; set; }
+        public DbSet<PaymentVoucher> PaymentVouchers { get; set; }
+        public DbSet<Inventory> Inventories { get; set; }
+        public DbSet<GoodsReceipt> GoodsReceipts { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+
+        // 4. Phân hệ Chi tiết & Giao dịch (Transaction Details)
+        public DbSet<GoodsReceiptDetail> GoodsReceiptDetails { get; set; }
+        public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
+        public DbSet<TableTransfer> TableTransfers { get; set; }
+        public DbSet<InvoicePayment> InvoicePayments { get; set; }
+
+        // 5. Phân hệ AI-Native (3 Bảng bắt buộc môn NET108)
+        public DbSet<AiConversation> AiConversations { get; set; }
+        public DbSet<AiPrediction> AiPredictions { get; set; }
+        public DbSet<AiAgentLog> AiAgentLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Tự động quét và áp dụng toàn bộ 41 file Configuration
+            // Tự động quét và nạp toàn bộ 44 file cấu hình trong Data/Configurations/
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(QuanLyQuanBidaContext).Assembly);
         }
     }

@@ -8,384 +8,473 @@ namespace QuanLyQuanBida.Data
     {
         public static void Initialize(QuanLyQuanBidaContext context)
         {
-            // Đảm bảo Database đã được tạo
             context.Database.EnsureCreated();
 
-            // Kiểm tra nếu đã có dữ liệu thì không nạp lại (tránh trùng lặp)
-            if (context.VaiTros.Any())
+            // Kiểm tra nếu đã có dữ liệu thì không nạp lại
+            if (context.Roles.Any())
             {
                 return;
             }
 
-            // GIAI ĐOẠN 1: CÁC BẢNG DANH MỤC ĐỘC LẬP
-            // 1. Vai trò
-            var vaiTros = new VaiTro[]
-            {
-                new() { Ten = "Admin", MoTa = "Quản trị viên toàn quyền hệ thống" },
-                new() { Ten = "QuanLy", MoTa = "Quản lý điều hành cơ sở CLB Bida" },
-                new() { Ten = "ThuNgan", MoTa = "Nhân viên thu ngân bán hàng POS" },
-                new() { Ten = "PhucVu", MoTa = "Nhân viên phục vụ xếp bi, chạy bàn" }
-            };
-            context.VaiTros.AddRange(vaiTros);
+            // ==========================================
+            // GIAI ĐOẠN 1: BẢNG DANH MỤC ĐỘC LẬP (LOOKUP TABLES)
+            // ==========================================
 
-            // 2. Quyền hạn
-            var quyenHans = new QuyenHan[]
+            // 1. Roles
+            var roles = new Role[]
             {
-                new() { MaCode = "XEM_BAO_CAO", Ten = "Xem báo cáo thống kê doanh thu", PhanHe = "BAO_CAO" },
-                new() { MaCode = "BAN_HANG_POS", Ten = "Mở bàn, order món và thanh toán", PhanHe = "BAN_HANG" },
-                new() { MaCode = "HUY_HOA_DON", Ten = "Hủy hóa đơn đã xuất bill", PhanHe = "BAN_HANG" },
-                new() { MaCode = "NHAP_KHO", Ten = "Lập và phê duyệt phiếu nhập hàng", PhanHe = "KHO_HANG" },
-                new() { MaCode = "QUAN_LY_NHAN_SU", Ten = "Xếp ca và tính lương nhân viên", PhanHe = "NHAN_SU" }
+                new() { Name = "Admin", Description = "Quản trị viên toàn quyền hệ thống" },
+                new() { Name = "Manager", Description = "Quản lý điều hành cơ sở CLB Bida" },
+                new() { Name = "Cashier", Description = "Nhân viên thu ngân bán hàng POS" },
+                new() { Name = "Waiter", Description = "Nhân viên phục vụ xếp bi, chạy bàn" }
             };
-            context.QuyenHans.AddRange(quyenHans);
+            context.Roles.AddRange(roles);
 
-            // 3. Ca làm
-            var caLams = new CaLam[]
+            // 2. Permissions
+            var permissions = new Permission[]
             {
-                new() { Ten = "Ca Sáng", GioBatDau = new TimeSpan(8, 0, 0), GioKetThuc = new TimeSpan(16, 0, 0), LuongTheoGio = 25000 },
-                new() { Ten = "Ca Chiều Tối", GioBatDau = new TimeSpan(16, 0, 0), GioKetThuc = new TimeSpan(23, 59, 59), LuongTheoGio = 28000 },
-                new() { Ten = "Ca Đêm", GioBatDau = new TimeSpan(0, 0, 0), GioKetThuc = new TimeSpan(8, 0, 0), LuongTheoGio = 32000 }
+                new() { Code = "VIEW_REPORTS", Name = "Xem báo cáo thống kê doanh thu", Module = "REPORTS" },
+                new() { Code = "POS_SALES", Name = "Mở bàn, order món và thanh toán", Module = "POS" },
+                new() { Code = "CANCEL_INVOICE", Name = "Hủy hóa đơn đã xuất bill", Module = "POS" },
+                new() { Code = "STOCK_IMPORT", Name = "Lập và phê duyệt phiếu nhập hàng", Module = "INVENTORY" },
+                new() { Code = "HR_MANAGEMENT", Name = "Xếp ca và tính lương nhân viên", Module = "HR" }
             };
-            context.CaLams.AddRange(caLams);
+            context.Permissions.AddRange(permissions);
 
-            // 4. Khu vực bàn
-            var khuVucBans = new KhuVucBan[]
+            // 3. Shifts
+            var shifts = new Shift[]
             {
-                new() { MaCode = "TANG_1", Ten = "Tầng 1 - Khu Bàn Lỗ Tiêu Chuẩn" },
-                new() { MaCode = "TANG_2", Ten = "Tầng 2 - Khu Bida Phăng Carom" },
-                new() { MaCode = "VIP_ROOM", Ten = "Phòng VIP 3 Băng Máy Lạnh Cao Cấp" }
+                new() { Name = "Ca Sáng", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(16, 0, 0), HourlyRate = 25000 },
+                new() { Name = "Ca Chiều Tối", StartTime = new TimeSpan(16, 0, 0), EndTime = new TimeSpan(23, 59, 59), HourlyRate = 28000 },
+                new() { Name = "Ca Đêm", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(8, 0, 0), HourlyRate = 32000 }
             };
-            context.KhuVucBans.AddRange(khuVucBans);
+            context.Shifts.AddRange(shifts);
 
-            // 5. Loại bàn
-            var loaiBans = new LoaiBan[]
+            // 4. TableAreas
+            var tableAreas = new TableArea[]
             {
-                new() { Ten = "Bida Lỗ (Pool 9 Feet)", GiaCoBan = 60000 },
-                new() { Ten = "Bida Phăng (Carom Libre)", GiaCoBan = 50000 },
-                new() { Ten = "Bida 3 Băng (3-Cushion Hàn Quốc)", GiaCoBan = 80000 },
-                new() { Ten = "Snooker Quốc Tế", GiaCoBan = 100000 }
+                new() { Code = "FLOOR_1", Name = "Tầng 1 - Khu Bàn Lỗ Tiêu Chuẩn" },
+                new() { Code = "FLOOR_2", Name = "Tầng 2 - Khu Bida Phăng Carom" },
+                new() { Code = "VIP_ROOM", Name = "Phòng VIP 3 Băng Máy Lạnh Cao Cấp" }
             };
-            context.LoaiBans.AddRange(loaiBans);
+            context.TableAreas.AddRange(tableAreas);
 
-            // 6. Hạng thành viên
-            var hangThanhViens = new HangThanhVien[]
+            // 5. TableTypes
+            var tableTypes = new TableType[]
             {
-                new() { Ten = "Hội viên Đồng", DiemToiThieu = 0, TiLeGiamGia = 0, MoTa = "Hạng tiêu chuẩn khi mới đăng ký" },
-                new() { Ten = "Hội viên Bạc", DiemToiThieu = 100, TiLeGiamGia = 5, MoTa = "Tích lũy từ 100 điểm, giảm 5% giờ chơi" },
-                new() { Ten = "Hội viên Vàng", DiemToiThieu = 500, TiLeGiamGia = 10, MoTa = "Tích lũy từ 500 điểm, giảm 10% giờ chơi" },
-                new() { Ten = "Hội viên Kim Cương", DiemToiThieu = 1000, TiLeGiamGia = 15, MoTa = "VIP đặc quyền, giảm 15% tổng hóa đơn" }
+                new() { Name = "Bida Lỗ (Pool 9 Feet)", BasePrice = 60000 },
+                new() { Name = "Bida Phăng (Carom Libre)", BasePrice = 50000 },
+                new() { Name = "Bida 3 Băng (3-Cushion)", BasePrice = 80000 },
+                new() { Name = "Snooker Quốc Tế", BasePrice = 100000 }
             };
-            context.HangThanhViens.AddRange(hangThanhViens);
+            context.TableTypes.AddRange(tableTypes);
 
-            // 7. Danh mục món
-            var danhMucMons = new DanhMucMon[]
+            // 6. MembershipTiers
+            var membershipTiers = new MembershipTier[]
             {
-                new() { MaCode = "NUOC_NGOT", Ten = "Nước Giải Khát & Đóng Lon" },
-                new() { MaCode = "BIA", Ten = "Bia Các Loại" },
-                new() { MaCode = "AN_VAT", Ten = "Đồ Ăn Nhanh & Mì Ăn Liền" },
-                new() { MaCode = "THUOC_LA", Ten = "Thuốc Lá & Khăn Lạnh" }
+                new() { Name = "Hội viên Đồng", MinPoints = 0, DiscountRate = 0, Description = "Hạng tiêu chuẩn khi mới đăng ký" },
+                new() { Name = "Hội viên Bạc", MinPoints = 100, DiscountRate = 5, Description = "Tích lũy từ 100 điểm, giảm 5% giờ chơi" },
+                new() { Name = "Hội viên Vàng", MinPoints = 500, DiscountRate = 10, Description = "Tích lũy từ 500 điểm, giảm 10% giờ chơi" },
+                new() { Name = "Hội viên Kim Cương", MinPoints = 1000, DiscountRate = 15, Description = "VIP đặc quyền, giảm 15% tổng bill" }
             };
-            context.DanhMucMons.AddRange(danhMucMons);
+            context.MembershipTiers.AddRange(membershipTiers);
 
-            // 8. Nhà cung cấp
-            var nhaCungCaps = new NhaCungCap[]
+            // 7. Categories
+            var categories = new Category[]
             {
-                new() { Ten = "Công ty TNHH Nước Giải Khát Suntory PepsiCo", SoDienThoai = "02838234567", DiaChi = "Quận 1, TP. Hồ Chí Minh" },
-                new() { Ten = "Đại lý Phân Phối Bia Nước Ngọt Minh Châu", SoDienThoai = "0903112233", DiaChi = "Đống Đa, Hà Nội" },
-                new() { Ten = "Xưởng Phụ Kiện & Thiết Bị Bida Thịnh Kent", SoDienThoai = "0988776655", DiaChi = "Bình Thạnh, TP. Hồ Chí Minh" }
+                new() { Code = "SOFT_DRINK", Name = "Nước Giải Khát & Đóng Lon" },
+                new() { Code = "BEER", Name = "Bia Các Loại" },
+                new() { Code = "SNACK", Name = "Đồ Ăn Nhanh & Mì Ăn Liền" },
+                new() { Code = "SMOKE_TOWEL", Name = "Thuốc Lá & Khăn Lạnh" }
             };
-            context.NhaCungCaps.AddRange(nhaCungCaps);
+            context.Categories.AddRange(categories);
 
-            // 9. Khuyến mãi
-            var khuyenMais = new KhuyenMai[]
+            // 8. Suppliers
+            var suppliers = new Supplier[]
             {
-                new() { MaCode = "KHAI_TRUONG", Ten = "Khuyến mãi Khai trương Giảm 20% Giờ chơi", PhanTramGiam = 20, SoTienGiam = 0, NgayBatDau = new DateTime(2026, 11, 1), NgayHetHan = new DateTime(2026, 11, 30) },
-                new() { MaCode = "HAPPY_HOUR", Ten = "Giờ Vàng Giảm Giá Buổi Sáng", PhanTramGiam = 10, SoTienGiam = 0, NgayBatDau = new DateTime(2026, 11, 1), NgayHetHan = new DateTime(2026, 12, 31) },
-                new() { MaCode = "VOUCHER_50K", Ten = "Giảm 50K cho hóa đơn trên 300K", PhanTramGiam = 0, SoTienGiam = 50000, NgayBatDau = new DateTime(2026, 11, 1), NgayHetHan = new DateTime(2026, 11, 15) }
+                new() { Name = "Công ty TNHH Nước Giải Khát Suntory PepsiCo", PhoneNumber = "02838234567", Address = "Quận 1, TP. Hồ Chí Minh" },
+                new() { Name = "Đại lý Phân Phối Bia Nước Ngọt Minh Châu", PhoneNumber = "0903112233", Address = "Đống Đa, Hà Nội" },
+                new() { Name = "Xưởng Phụ Kiện & Thiết Bị Bida Thịnh Kent", PhoneNumber = "0988776655", Address = "Bình Thạnh, TP. Hồ Chí Minh" }
             };
-            context.KhuyenMais.AddRange(khuyenMais);
+            context.Suppliers.AddRange(suppliers);
 
-            // 10. Phương thức thanh toán
-            var phuongThucs = new PhuongThucThanhToan[]
+            // 9. Promotions
+            var promotions = new Promotion[]
             {
-                new() { Ten = "Tiền mặt (Cash)", DangHoatDong = true },
-                new() { Ten = "Chuyển khoản VietQR", DangHoatDong = true },
-                new() { Ten = "Quẹt thẻ ngân hàng POS", DangHoatDong = true }
+                new() { Code = "OPENING_20", Name = "Khuyến mãi Khai trương Giảm 20% Giờ chơi", DiscountPercent = 20, DiscountAmount = 0, StartDate = new DateTime(2026, 11, 1), EndDate = new DateTime(2026, 11, 30) },
+                new() { Code = "HAPPY_HOUR", Name = "Giờ Vàng Giảm Giá Buổi Sáng", DiscountPercent = 10, DiscountAmount = 0, StartDate = new DateTime(2026, 11, 1), EndDate = new DateTime(2026, 12, 31) },
+                new() { Code = "VOUCHER_50K", Name = "Giảm 50K cho hóa đơn trên 300K", DiscountPercent = 0, DiscountAmount = 50000, StartDate = new DateTime(2026, 11, 1), EndDate = new DateTime(2026, 11, 15) }
             };
-            context.PhuongThucThanhToans.AddRange(phuongThucs);
+            context.Promotions.AddRange(promotions);
 
-            // 11. Tủ đồ
-            var tuDos = new TuDo[]
+            // 10. PaymentMethods
+            var paymentMethods = new PaymentMethod[]
             {
-                new() { SoTu = "TU_01", KhuVuc = "Khu Tủ Tầng 1", TrangThai = "Đang thuê", TienThueThang = 150000 },
-                new() { SoTu = "TU_02", KhuVuc = "Khu Tủ Tầng 1", TrangThai = "Trống", TienThueThang = 150000 },
-                new() { SoTu = "TU_VIP_01", KhuVuc = "Phòng VIP Tầng 2", TrangThai = "Đang thuê", TienThueThang = 200000 }
+                new() { Name = "Tiền mặt (Cash)", IsActive = true },
+                new() { Name = "Chuyển khoản VietQR", IsActive = true },
+                new() { Name = "Quẹt thẻ POS", IsActive = true }
             };
-            context.TuDos.AddRange(tuDos);
+            context.PaymentMethods.AddRange(paymentMethods);
 
-            // 12. Giải đấu
-            var giaiDaus = new GiaiDau[]
+            // 11. Lockers
+            var lockers = new Locker[]
             {
-                new() { TenGiai = "Giải Bida Lỗ Open CLB Mùa Đông 2026", NgayBatDau = new DateTime(2026, 12, 1), NgayKetThuc = new DateTime(2026, 12, 5), LePhiThamGia = 200000, TongGiaiThuong = 10000000, TrangThai = "Đang mở đăng ký" },
-                new() { TenGiai = "Giải Bida Phăng Giao Lưu Nội Bộ", NgayBatDau = new DateTime(2026, 11, 20), NgayKetThuc = new DateTime(2026, 11, 21), LePhiThamGia = 100000, TongGiaiThuong = 3000000, TrangThai = "Sắp diễn ra" }
+                new() { LockerNumber = "TU_01", Area = "Khu Tủ Tầng 1", Status = "Đang thuê", MonthlyRent = 150000 },
+                new() { LockerNumber = "TU_02", Area = "Khu Tủ Tầng 1", Status = "Trống", MonthlyRent = 150000 },
+                new() { LockerNumber = "TU_VIP_01", Area = "Phòng VIP Tầng 2", Status = "Đang thuê", MonthlyRent = 200000 }
             };
-            context.GiaiDaus.AddRange(giaiDaus);
+            context.Lockers.AddRange(lockers);
 
-            // 13. Loại chi phí
-            var loaiChiPhis = new LoaiChiPhi[]
+            // 12. Tournaments
+            var tournaments = new Tournament[]
             {
-                new() { Ten = "Tiền điện sinh hoạt và Máy lạnh", MoTa = "Hóa đơn điện lực hàng tháng" },
-                new() { Ten = "Tiền nước sinh hoạt", MoTa = "Hóa đơn nước máy" },
-                new() { Ten = "Chi phí bảo trì, thay nỉ bàn bida", MoTa = "Căng nỉ mới định kỳ" }
+                new() { TournamentName = "Giải Bida Lỗ Open CLB Mùa Đông 2026", StartDate = new DateTime(2026, 12, 1), EndDate = new DateTime(2026, 12, 5), EntryFee = 200000, TotalPrize = 10000000, Status = "Đang mở đăng ký" },
+                new() { TournamentName = "Giải Bida Phăng Giao Lưu Nội Bộ", StartDate = new DateTime(2026, 11, 20), EndDate = new DateTime(2026, 11, 21), EntryFee = 100000, TotalPrize = 3000000, Status = "Sắp diễn ra" }
             };
-            context.LoaiChiPhis.AddRange(loaiChiPhis);
+            context.Tournaments.AddRange(tournaments);
+
+            // 13. ExpenseTypes
+            var expenseTypes = new ExpenseType[]
+            {
+                new() { Name = "Tiền điện sinh hoạt và Máy lạnh", Description = "Hóa đơn điện lực hàng tháng" },
+                new() { Name = "Tiền nước sinh hoạt", Description = "Hóa đơn nước máy" },
+                new() { Name = "Chi phí bảo trì, căng nỉ bàn bida", Description = "Căng nỉ mới định kỳ" }
+            };
+            context.ExpenseTypes.AddRange(expenseTypes);
 
             context.SaveChanges();
 
+            // ==========================================
             // GIAI ĐOẠN 2: BẢNG PHỤ THUỘC CẤP 1
-            // 14. Quyền - Vai trò
-            var quyenVaiTros = new QuyenVaiTro[]
-            {
-                new() { VaiTroId = vaiTros[0].Id, QuyenHanId = quyenHans[0].Id },
-                new() { VaiTroId = vaiTros[0].Id, QuyenHanId = quyenHans[1].Id },
-                new() { VaiTroId = vaiTros[0].Id, QuyenHanId = quyenHans[2].Id },
-                new() { VaiTroId = vaiTros[0].Id, QuyenHanId = quyenHans[3].Id },
-                new() { VaiTroId = vaiTros[0].Id, QuyenHanId = quyenHans[4].Id },
-                new() { VaiTroId = vaiTros[1].Id, QuyenHanId = quyenHans[0].Id },
-                new() { VaiTroId = vaiTros[1].Id, QuyenHanId = quyenHans[1].Id },
-                new() { VaiTroId = vaiTros[1].Id, QuyenHanId = quyenHans[3].Id },
-                new() { VaiTroId = vaiTros[2].Id, QuyenHanId = quyenHans[1].Id }
-            };
-            context.QuyenVaiTros.AddRange(quyenVaiTros);
+            // ==========================================
 
-            // 15. Người dùng
-            var nguoiDungs = new NguoiDung[]
+            // 14. RolePermissions
+            var rolePermissions = new RolePermission[]
             {
-                new() { TenDangNhap = "admin", MatKhauHash = "giangcc111", HoTen = "Đào Ngọc Giang (Admin)", Email = "giangadmin@bms.com", SoDienThoai = "0988001122", DangHoatDong = true, NgayTao = DateTime.Now },
-                new() { TenDangNhap = "thungan_mai", MatKhauHash = "dangcc111", HoTen = "Trần Thị Mai", Email = "maitt@bms.com", SoDienThoai = "0912334455", DangHoatDong = true, NgayTao = DateTime.Now },
-                new() { TenDangNhap = "phucvu_tuan", MatKhauHash = "khoacc111", HoTen = "Lê Tuấn Vũ", Email = "vult@bms.com", SoDienThoai = "0977889900", DangHoatDong = true, NgayTao = DateTime.Now }
+                new() { RoleId = roles[0].Id, PermissionId = permissions[0].Id },
+                new() { RoleId = roles[0].Id, PermissionId = permissions[1].Id },
+                new() { RoleId = roles[0].Id, PermissionId = permissions[2].Id },
+                new() { RoleId = roles[0].Id, PermissionId = permissions[3].Id },
+                new() { RoleId = roles[0].Id, PermissionId = permissions[4].Id },
+                new() { RoleId = roles[1].Id, PermissionId = permissions[0].Id },
+                new() { RoleId = roles[1].Id, PermissionId = permissions[1].Id },
+                new() { RoleId = roles[1].Id, PermissionId = permissions[3].Id },
+                new() { RoleId = roles[2].Id, PermissionId = permissions[1].Id }
             };
-            context.NguoiDungs.AddRange(nguoiDungs);
+            context.RolePermissions.AddRange(rolePermissions);
 
-            // 16. Giá bàn khung giờ
-            var giaBanKhungGios = new GiaBanKhungGio[]
+            // 15. Users
+            var users = new User[]
             {
-                new() { LoaiBanId = loaiBans[0].Id, GioBatDauKg = new TimeSpan(8, 0, 0), GioKetThucKg = new TimeSpan(14, 0, 0), GiaKhungGio = 45000 },
-                new() { LoaiBanId = loaiBans[0].Id, GioBatDauKg = new TimeSpan(18, 0, 0), GioKetThucKg = new TimeSpan(23, 0, 0), GiaKhungGio = 60000 },
-                new() { LoaiBanId = loaiBans[2].Id, GioBatDauKg = new TimeSpan(8, 0, 0), GioKetThucKg = new TimeSpan(14, 0, 0), GiaKhungGio = 65000 }
+                new() { Username = "admin", PasswordHash = "giangcc111", FullName = "Đào Ngọc Giang (Admin)", Email = "giangadmin@bms.com", PhoneNumber = "0988001122", IsActive = true, CreatedAt = DateTime.Now },
+                new() { Username = "thungan_mai", PasswordHash = "dangcc111", FullName = "Trần Thị Mai", Email = "maitt@bms.com", PhoneNumber = "0912334455", IsActive = true, CreatedAt = DateTime.Now },
+                new() { Username = "phucvu_tuan", PasswordHash = "khoacc111", FullName = "Lê Tuấn Vũ", Email = "vult@bms.com", PhoneNumber = "0977889900", IsActive = true, CreatedAt = DateTime.Now }
             };
-            context.GiaBanKhungGios.AddRange(giaBanKhungGios);
+            context.Users.AddRange(users);
 
-            // 17. Bàn bida
-            var banBidas = new BanBida[]
+            // 16. TimeSlotPrices
+            var timeSlotPrices = new TimeSlotPrice[]
             {
-                new() { KhuVucBanId = khuVucBans[0].Id, LoaiBanId = loaiBans[0].Id, MaCode = "BAN_01", Ten = "Bàn 01 (Lỗ)", TrangThai = "Đang chơi" },
-                new() { KhuVucBanId = khuVucBans[0].Id, LoaiBanId = loaiBans[0].Id, MaCode = "BAN_02", Ten = "Bàn 02 (Lỗ)", TrangThai = "Trống" },
-                new() { KhuVucBanId = khuVucBans[0].Id, LoaiBanId = loaiBans[0].Id, MaCode = "BAN_03", Ten = "Bàn 03 (Lỗ)", TrangThai = "Đã đặt trước" },
-                new() { KhuVucBanId = khuVucBans[1].Id, LoaiBanId = loaiBans[1].Id, MaCode = "BAN_04", Ten = "Bàn 04 (Phăng)", TrangThai = "Trống" },
-                new() { KhuVucBanId = khuVucBans[2].Id, LoaiBanId = loaiBans[2].Id, MaCode = "BAN_VIP_01", Ten = "Bàn VIP 01 (3 Băng)", TrangThai = "Đang chơi" }
+                new() { TableTypeId = tableTypes[0].Id, SlotStartTime = new TimeSpan(8, 0, 0), SlotEndTime = new TimeSpan(14, 0, 0), SlotPrice = 45000 },
+                new() { TableTypeId = tableTypes[0].Id, SlotStartTime = new TimeSpan(18, 0, 0), SlotEndTime = new TimeSpan(23, 0, 0), SlotPrice = 60000 },
+                new() { TableTypeId = tableTypes[2].Id, SlotStartTime = new TimeSpan(8, 0, 0), SlotEndTime = new TimeSpan(14, 0, 0), SlotPrice = 65000 }
             };
-            context.BanBidas.AddRange(banBidas);
+            context.TimeSlotPrices.AddRange(timeSlotPrices);
 
-            // 18. Khách hàng
-            var khachHangs = new KhachHang[]
+            // 17. BilliardTables
+            var billiardTables = new BilliardTable[]
             {
-                new() { HangThanhVienId = hangThanhViens[2].Id, MaCode = "KH_001", HoTen = "Đào Ngọc Giang", SoDienThoai = "0988112233", DiemTichLuy = 550, AccountBalance = 500000, NgayTao = DateTime.Now },
-                new() { HangThanhVienId = hangThanhViens[1].Id, MaCode = "KH_002", HoTen = "Nguyễn Hoàng Nam", SoDienThoai = "0912345678", DiemTichLuy = 180, AccountBalance = 200000, NgayTao = DateTime.Now },
-                new() { HangThanhVienId = hangThanhViens[3].Id, MaCode = "KH_003", HoTen = "Trần Quốc Bảo", SoDienThoai = "0909998877", DiemTichLuy = 1250, AccountBalance = 1500000, NgayTao = DateTime.Now }
+                new() { TableAreaId = tableAreas[0].Id, TableTypeId = tableTypes[0].Id, Code = "BAN_01", Name = "Bàn 01 (Lỗ)", Status = "Đang chơi" },
+                new() { TableAreaId = tableAreas[0].Id, TableTypeId = tableTypes[0].Id, Code = "BAN_02", Name = "Bàn 02 (Lỗ)", Status = "Trống" },
+                new() { TableAreaId = tableAreas[0].Id, TableTypeId = tableTypes[0].Id, Code = "BAN_03", Name = "Bàn 03 (Lỗ)", Status = "Đã đặt trước" },
+                new() { TableAreaId = tableAreas[1].Id, TableTypeId = tableTypes[1].Id, Code = "BAN_04", Name = "Bàn 04 (Phăng)", Status = "Trống" },
+                new() { TableAreaId = tableAreas[2].Id, TableTypeId = tableTypes[2].Id, Code = "BAN_VIP_01", Name = "Bàn VIP 01 (3 Băng)", Status = "Đang chơi" }
             };
-            context.KhachHangs.AddRange(khachHangs);
+            context.BilliardTables.AddRange(billiardTables);
 
-            // 19. Món dịch vụ
-            var monDichVus = new MonDichVu[]
+            // 18. Customers
+            var customers = new Customer[]
             {
-                new() { DanhMucId = danhMucMons[0].Id, MaCode = "SP_REDBULL", Ten = "Nước tăng lực RedBull Thái", DonViTinh = "Lon", DonGia = 20000, DangHoatDong = true },
-                new() { DanhMucId = danhMucMons[0].Id, MaCode = "SP_C2", Ten = "Trà xanh C2 hương chanh", DonViTinh = "Chai", DonGia = 15000, DangHoatDong = true },
-                new() { DanhMucId = danhMucMons[0].Id, MaCode = "SP_SUOI", Ten = "Nước khoáng Aquafina 500ml", DonViTinh = "Chai", DonGia = 10000, DangHoatDong = true },
-                new() { DanhMucId = danhMucMons[1].Id, MaCode = "SP_TIGER", Ten = "Bia Tiger Bạc 330ml", DonViTinh = "Lon", DonGia = 25000, DangHoatDong = true },
-                new() { DanhMucId = danhMucMons[2].Id, MaCode = "SP_MI_TRUNG", Ten = "Mì tôm 2 trứng xúc xích", DonViTinh = "Tô", DonGia = 35000, DangHoatDong = true },
-                new() { DanhMucId = danhMucMons[3].Id, MaCode = "SP_555", Ten = "Thuốc lá State Express 555", DonViTinh = "Gói", DonGia = 40000, DangHoatDong = true }
+                new() { MembershipTierId = membershipTiers[2].Id, Code = "KH_001", FullName = "Đào Ngọc Giang", PhoneNumber = "0988112233", AccumulatedPoints = 550, AccountBalance = 500000, CreatedAt = DateTime.Now },
+                new() { MembershipTierId = membershipTiers[1].Id, Code = "KH_002", FullName = "Nguyễn Hoàng Nam", PhoneNumber = "0912345678", AccumulatedPoints = 180, AccountBalance = 200000, CreatedAt = DateTime.Now },
+                new() { MembershipTierId = membershipTiers[3].Id, Code = "KH_003", FullName = "Trần Quốc Bảo", PhoneNumber = "0909998877", AccumulatedPoints = 1250, AccountBalance = 1500000, CreatedAt = DateTime.Now }
             };
-            context.MonDichVus.AddRange(monDichVus);
+            context.Customers.AddRange(customers);
+
+            // 19. ServiceItems
+            var serviceItems = new ServiceItem[]
+            {
+                new() { CategoryId = categories[0].Id, Code = "SP_REDBULL", Name = "Nước tăng lực RedBull Thái", Unit = "Lon", UnitPrice = 20000, IsActive = true },
+                new() { CategoryId = categories[0].Id, Code = "SP_C2", Name = "Trà xanh C2 hương chanh", Unit = "Chai", UnitPrice = 15000, IsActive = true },
+                new() { CategoryId = categories[0].Id, Code = "SP_SUOI", Name = "Nước khoáng Aquafina 500ml", Unit = "Chai", UnitPrice = 10000, IsActive = true },
+                new() { CategoryId = categories[1].Id, Code = "SP_TIGER", Name = "Bia Tiger Bạc 330ml", Unit = "Lon", UnitPrice = 25000, IsActive = true },
+                new() { CategoryId = categories[2].Id, Code = "SP_MI_TRUNG", Name = "Mì tôm 2 trứng xúc xích", Unit = "Tô", UnitPrice = 35000, IsActive = true },
+                new() { CategoryId = categories[3].Id, Code = "SP_555", Name = "Thuốc lá State Express 555", Unit = "Gói", UnitPrice = 40000, IsActive = true }
+            };
+            context.ServiceItems.AddRange(serviceItems);
 
             context.SaveChanges();
 
+            // ==========================================
             // GIAI ĐOẠN 3: BẢNG PHỤ THUỘC CẤP 2
-            // 20. Vai trò - Người dùng
-            var vaiTroNguoiDungs = new VaiTroNguoiDung[]
-            {
-                new() { NguoiDungId = nguoiDungs[0].Id, VaiTroId = vaiTros[0].Id, NgayTao = DateTime.Now },
-                new() { NguoiDungId = nguoiDungs[1].Id, VaiTroId = vaiTros[2].Id, NgayTao = DateTime.Now },
-                new() { NguoiDungId = nguoiDungs[2].Id, VaiTroId = vaiTros[3].Id, NgayTao = DateTime.Now }
-            };
-            context.VaiTroNguoiDungs.AddRange(vaiTroNguoiDungs);
+            // ==========================================
 
-            // 21. Nhật ký hoạt động
-            var nhatKyHoatDongs = new NhatKyHoatDong[]
+            // 20. UserRoles
+            var userRoles = new UserRole[]
             {
-                new() { NguoiDungId = nguoiDungs[0].Id, HanhDong = "DANG_NHAP", BangDuLieu = "nguoi_dung", BanGhiId = nguoiDungs[0].Id, MoTa = "Quản trị viên đăng nhập vào hệ thống", DiaChiIp = "192.168.1.10", ThoiGian = DateTime.Now },
-                new() { NguoiDungId = nguoiDungs[1].Id, HanhDong = "MO_BAN", BangDuLieu = "hoa_don", BanGhiId = 1, MoTa = "Mở Bàn 01 tính giờ cho khách Đào Ngọc Giang", DiaChiIp = "192.168.1.15", ThoiGian = DateTime.Now }
+                new() { UserId = users[0].Id, RoleId = roles[0].Id, CreatedAt = DateTime.Now },
+                new() { UserId = users[1].Id, RoleId = roles[2].Id, CreatedAt = DateTime.Now },
+                new() { UserId = users[2].Id, RoleId = roles[3].Id, CreatedAt = DateTime.Now }
             };
-            context.NhatKyHoatDongs.AddRange(nhatKyHoatDongs);
+            context.UserRoles.AddRange(userRoles);
 
-            // 22. Lịch làm việc
-            var lichLamViecs = new LichLamViec[]
+            // 21. ActivityLogs
+            var activityLogs = new ActivityLog[]
             {
-                new() { NguoiDungId = nguoiDungs[1].Id, CaLamId = caLams[0].Id, NgayLamViec = new DateTime(2026, 11, 10), GhiChu = "Trực thu ngân quầy chính" },
-                new() { NguoiDungId = nguoiDungs[2].Id, CaLamId = caLams[0].Id, NgayLamViec = new DateTime(2026, 11, 10), GhiChu = "Phục vụ tầng 1" }
+                new() { UserId = users[0].Id, Action = "LOGIN", TableName = "Users", RecordId = users[0].Id, Description = "Quản trị viên đăng nhập vào hệ thống", IpAddress = "192.168.1.10", CreatedAt = DateTime.Now },
+                new() { UserId = users[1].Id, Action = "OPEN_TABLE", TableName = "Invoices", RecordId = 1, Description = "Mở Bàn 01 tính giờ cho khách Đào Ngọc Giang", IpAddress = "192.168.1.15", CreatedAt = DateTime.Now }
             };
-            context.LichLamViecs.AddRange(lichLamViecs);
+            context.ActivityLogs.AddRange(activityLogs);
 
-            // 23. Chấm công
-            var chamCongs = new ChamCong[]
+            // 22. WorkSchedules
+            var workSchedules = new WorkSchedule[]
             {
-                new() { NguoiDungId = nguoiDungs[1].Id, NgayLamViec = new DateTime(2026, 11, 10), GioVao = new DateTime(2026, 11, 10, 7, 55, 0), GioRa = new DateTime(2026, 11, 10, 16, 5, 0), SoGioLam = 8.0m, DiTrePhut = 0, VeSomPhut = 0 },
-                new() { NguoiDungId = nguoiDungs[2].Id, NgayLamViec = new DateTime(2026, 11, 10), GioVao = new DateTime(2026, 11, 10, 8, 5, 0), GioRa = new DateTime(2026, 11, 10, 16, 0, 0), SoGioLam = 7.9m, DiTrePhut = 5, VeSomPhut = 0 }
+                new() { UserId = users[1].Id, ShiftId = shifts[0].Id, WorkDate = new DateTime(2026, 11, 10), Notes = "Trực thu ngân quầy chính" },
+                new() { UserId = users[2].Id, ShiftId = shifts[0].Id, WorkDate = new DateTime(2026, 11, 10), Notes = "Phục vụ tầng 1" }
             };
-            context.ChamCongs.AddRange(chamCongs);
+            context.WorkSchedules.AddRange(workSchedules);
 
-            // 24. Bảng lương
-            var bangLuongs = new BangLuong[]
+            // 23. Timekeepings
+            var timekeepings = new Timekeeping[]
             {
-                new() { NguoiDungId = nguoiDungs[1].Id, ThangLuong = 10, NamLuong = 2026, TongGioLam = 208, LuongCoBan = 5824000, PhuCap = 500000, TienThuong = 300000, TienPhat = 0, ThucLinh = 6624000 },
-                new() { NguoiDungId = nguoiDungs[2].Id, ThangLuong = 10, NamLuong = 2026, TongGioLam = 200, LuongCoBan = 5000000, PhuCap = 400000, TienThuong = 200000, TienPhat = 50000, ThucLinh = 5550000 }
+                new() { UserId = users[1].Id, WorkDate = new DateTime(2026, 11, 10), CheckInTime = new DateTime(2026, 11, 10, 7, 55, 0), CheckOutTime = new DateTime(2026, 11, 10, 16, 5, 0), WorkHours = 8.0m, LateMinutes = 0, EarlyLeaveMinutes = 0 },
+                new() { UserId = users[2].Id, WorkDate = new DateTime(2026, 11, 10), CheckInTime = new DateTime(2026, 11, 10, 8, 5, 0), CheckOutTime = new DateTime(2026, 11, 10, 16, 0, 0), WorkHours = 7.9m, LateMinutes = 5, EarlyLeaveMinutes = 0 }
             };
-            context.BangLuongs.AddRange(bangLuongs);
+            context.Timekeepings.AddRange(timekeepings);
 
-            // 25. Phiếu kiểm kho
-            var phieuKiemKhos = new PhieuKiemKho[]
+            // 24. Payrolls
+            var payrolls = new Payroll[]
             {
-                new() { NguoiDungId = nguoiDungs[0].Id, MaCode = "KK_20261101", NgayKiemKe = new DateTime(2026, 11, 1), GhiChu = "Kiểm kê đầu tháng 11 toàn bộ đồ uống F&B" }
+                new() { UserId = users[1].Id, SalaryMonth = 10, SalaryYear = 2026, TotalHours = 208, BaseSalary = 5824000, Allowance = 500000, Bonus = 300000, Penalty = 0, NetSalary = 6624000 },
+                new() { UserId = users[2].Id, SalaryMonth = 10, SalaryYear = 2026, TotalHours = 200, BaseSalary = 5000000, Allowance = 400000, Bonus = 200000, Penalty = 50000, NetSalary = 5550000 }
             };
-            context.PhieuKiemKhos.AddRange(phieuKiemKhos);
+            context.Payrolls.AddRange(payrolls);
 
-            // 26. Đặt bàn
-            var datBans = new DatBan[]
+            // 25. InventoryAudits
+            var inventoryAudits = new InventoryAudit[]
             {
-                new() { KhachHangId = khachHangs[1].Id, BanBidaId = banBidas[2].Id, ThoiGianDen = new DateTime(2026, 11, 10, 19, 30, 0), SoNguoi = 4, TienCoc = 100000, TrangThai = "Đã đặt cọc" }
+                new() { UserId = users[0].Id, Code = "KK_20261101", AuditDate = new DateTime(2026, 11, 1), Notes = "Kiểm kê đầu tháng 11 toàn bộ đồ uống F&B" }
             };
-            context.DatBans.AddRange(datBans);
+            context.InventoryAudits.AddRange(inventoryAudits);
 
-            // 27. Thiết bị bàn
-            var thietBiBans = new ThietBiBan[]
+            // 26. Reservations
+            var reservations = new Reservation[]
             {
-                new() { BanBidaId = banBidas[0].Id, Ten = "Bộ bi bida lỗ Aramith Pro Cup", SoLuong = 1, TrangThai = "Rất tốt" },
-                new() { BanBidaId = banBidas[0].Id, Ten = "Đèn chiếu sáng 3 chao LED", SoLuong = 1, TrangThai = "Hoạt động tốt" },
-                new() { BanBidaId = banBidas[0].Id, Ten = "Tam giác xếp bi gỗ sồi", SoLuong = 1, TrangThai = "Tốt" }
+                new() { CustomerId = customers[1].Id, BilliardTableId = billiardTables[2].Id, ArrivalTime = new DateTime(2026, 11, 10, 19, 30, 0), GuestCount = 4, Deposit = 100000, Status = "Đã đặt cọc" }
             };
-            context.ThietBiBans.AddRange(thietBiBans);
+            context.Reservations.AddRange(reservations);
 
-            // 28. Bảo trì bàn
-            var baoTriBans = new BaoTriBan[]
+            // 27. TableEquipments
+            var tableEquipments = new TableEquipment[]
             {
-                new() { BanBidaId = banBidas[0].Id, LoaiBaoTri = "Thay vải nỉ mặt bàn Simonis 860", ChiPhi = 1800000, NgayBaoTri = new DateTime(2026, 10, 15), NguoiThucHien = "Thợ Hùng Bida", GhiChu = "Nỉ cao cấp thi đấu" }
+                new() { BilliardTableId = billiardTables[0].Id, Name = "Bộ bi bida lỗ Aramith Pro Cup", Quantity = 1, Status = "Rất tốt" },
+                new() { BilliardTableId = billiardTables[0].Id, Name = "Đèn chiếu sáng 3 chao LED", Quantity = 1, Status = "Hoạt động tốt" },
+                new() { BilliardTableId = billiardTables[0].Id, Name = "Tam giác xếp bi gỗ sồi", Quantity = 1, Status = "Tốt" }
             };
-            context.BaoTriBans.AddRange(baoTriBans);
+            context.TableEquipments.AddRange(tableEquipments);
 
-            // 29. Giao dịch điểm
-            var giaoDichDiems = new GiaoDichDiem[]
+            // 28. TableMaintenances
+            var tableMaintenances = new TableMaintenance[]
             {
-                new() { KhachHangId = khachHangs[0].Id, LoaiGiaoDich = "CONG_DIEM", SoDiem = 50, NgayTao = DateTime.Now, GhiChu = "Tích điểm từ hóa đơn HD-0001" },
-                new() { KhachHangId = khachHangs[0].Id, LoaiGiaoDich = "TRU_DIEM", SoDiem = 100, NgayTao = DateTime.Now, GhiChu = "Đổi 1 giờ chơi bida miễn phí" }
+                new() { BilliardTableId = billiardTables[0].Id, MaintenanceType = "Thay vải nỉ mặt bàn Simonis 860", Cost = 1800000, MaintenanceDate = new DateTime(2026, 10, 15), PerformedBy = "Thợ Hùng Bida", Notes = "Nỉ cao cấp thi đấu" }
             };
-            context.GiaoDichDiems.AddRange(giaoDichDiems);
+            context.TableMaintenances.AddRange(tableMaintenances);
 
-            // 30. Thuê tủ đồ
-            var thueTuDos = new ThueTuDo[]
+            // 29. PointTransactions
+            var pointTransactions = new PointTransaction[]
             {
-                new() { TuDoId = tuDos[0].Id, KhachHangId = khachHangs[0].Id, NgayBatDau = new DateTime(2026, 11, 1), NgayHetHan = new DateTime(2026, 12, 1), TienThueThang = 150000, TienCoc = 100000, TrangThai = "Đang thuê" }
+                new() { CustomerId = customers[0].Id, TransactionType = "EARN", Points = 50, CreatedAt = DateTime.Now, Notes = "Tích điểm từ hóa đơn HD-0001" },
+                new() { CustomerId = customers[0].Id, TransactionType = "REDEEM", Points = 100, CreatedAt = DateTime.Now, Notes = "Đổi 1 giờ chơi bida miễn phí" }
             };
-            context.ThueTuDos.AddRange(thueTuDos);
+            context.PointTransactions.AddRange(pointTransactions);
 
-            // 31. Gậy khách gửi
-            var gayKhachGuis = new GayKhachGui[]
+            // 30. LockerRentals
+            var lockerRentals = new LockerRental[]
             {
-                new() { KhachHangId = khachHangs[0].Id, MaCode = "GAY_001", ThuongHieuGay = "Predator P3 Cobalt", LoaiNgonCo = "Ngọn Revo 12.4 Carbon", NgayGui = new DateTime(2026, 11, 1), TrangThai = "Đang lưu kho" }
+                new() { LockerId = lockers[0].Id, CustomerId = customers[0].Id, StartDate = new DateTime(2026, 11, 1), EndDate = new DateTime(2026, 12, 1), MonthlyRent = 150000, Deposit = 100000, Status = "Đang thuê" }
             };
-            context.GayKhachGuis.AddRange(gayKhachGuis);
+            context.LockerRentals.AddRange(lockerRentals);
 
-            // 32. Cơ thủ tham gia giải
-            var coThuThamGias = new CoThuThamGia[]
+            // 31. CustomerCues
+            var customerCues = new CustomerCue[]
             {
-                new() { GiaiDauId = giaiDaus[0].Id, KhachHangId = khachHangs[0].Id, SoHatGiong = 1, NgayDangKy = new DateTime(2026, 11, 5, 10, 0, 0) },
-                new() { GiaiDauId = giaiDaus[0].Id, KhachHangId = khachHangs[1].Id, SoHatGiong = 4, NgayDangKy = new DateTime(2026, 11, 6, 14, 30, 0) },
-                new() { GiaiDauId = giaiDaus[0].Id, KhachHangId = khachHangs[2].Id, SoHatGiong = 2, NgayDangKy = new DateTime(2026, 11, 7, 9, 15, 0) }
+                new() { CustomerId = customers[0].Id, Code = "GAY_001", CueBrand = "Predator P3 Cobalt", ShaftType = "Ngọn Revo 12.4 Carbon", ReceivedDate = new DateTime(2026, 11, 1), Status = "Đang lưu kho" }
             };
-            context.CoThuThamGias.AddRange(coThuThamGias);
+            context.CustomerCues.AddRange(customerCues);
 
-            // 33. Trận đấu
-            var tranDaus = new TranDau[]
+            // 32. TournamentParticipants
+            var tournamentParticipants = new TournamentParticipant[]
             {
-                new() { GiaiDauId = giaiDaus[0].Id, BanBidaId = banBidas[0].Id, TenVongDau = "Vòng Bán Kết 1", CoThu1Id = khachHangs[0].Id, CoThu2Id = khachHangs[1].Id, TiSoCoThu1 = 9, TiSoCoThu2 = 5, ThoiGianDau = new DateTime(2026, 12, 4, 14, 0, 0), TrangThai = "Đã kết thúc" }
+                new() { TournamentId = tournaments[0].Id, CustomerId = customers[0].Id, SeedNumber = 1, RegisteredDate = new DateTime(2026, 11, 5, 10, 0, 0) },
+                new() { TournamentId = tournaments[0].Id, CustomerId = customers[1].Id, SeedNumber = 4, RegisteredDate = new DateTime(2026, 11, 6, 14, 30, 0) },
+                new() { TournamentId = tournaments[0].Id, CustomerId = customers[2].Id, SeedNumber = 2, RegisteredDate = new DateTime(2026, 11, 7, 9, 15, 0) }
             };
-            context.TranDaus.AddRange(tranDaus);
+            context.TournamentParticipants.AddRange(tournamentParticipants);
 
-            // 34. Phiếu chi
-            var phieuChis = new PhieuChi[]
+            // 33. Matches
+            var matches = new Match[]
             {
-                new() { LoaiChiPhiId = loaiChiPhis[0].Id, NguoiDungId = nguoiDungs[0].Id, MaCode = "PC_20261101", SoTien = 4500000, NgayTao = DateTime.Now, MucDichChi = "Thanh toán tiền điện tháng 10 CLB", GhiChu = "Chuyển khoản EVN" }
+                new() { TournamentId = tournaments[0].Id, BilliardTableId = billiardTables[0].Id, RoundName = "Vòng Bán Kết 1", Player1Id = customers[0].Id, Player2Id = customers[1].Id, ScorePlayer1 = 9, ScorePlayer2 = 5, MatchTime = new DateTime(2026, 12, 4, 14, 0, 0), Status = "Đã kết thúc" }
             };
-            context.PhieuChis.AddRange(phieuChis);
+            context.Matches.AddRange(matches);
 
-            // 35. Tồn kho
-            var tonKhos = new TonKho[]
+            // 34. PaymentVouchers
+            var paymentVouchers = new PaymentVoucher[]
             {
-                new() { MonDichVuId = monDichVus[0].Id, SoLuongTon = 120, MucCanhBao = 24 },
-                new() { MonDichVuId = monDichVus[1].Id, SoLuongTon = 95, MucCanhBao = 24 },
-                new() { MonDichVuId = monDichVus[2].Id, SoLuongTon = 200, MucCanhBao = 48 },
-                new() { MonDichVuId = monDichVus[3].Id, SoLuongTon = 150, MucCanhBao = 48 },
-                new() { MonDichVuId = monDichVus[4].Id, SoLuongTon = 50, MucCanhBao = 10 },
-                new() { MonDichVuId = monDichVus[5].Id, SoLuongTon = 40, MucCanhBao = 10 }
+                new() { ExpenseTypeId = expenseTypes[0].Id, UserId = users[0].Id, Code = "PC_20261101", Amount = 4500000, CreatedAt = DateTime.Now, ExpensePurpose = "Thanh toán tiền điện tháng 10 CLB", Notes = "Chuyển khoản EVN" }
             };
-            context.TonKhos.AddRange(tonKhos);
+            context.PaymentVouchers.AddRange(paymentVouchers);
 
-            // 36. Phiếu nhập kho
-            var phieuNhapKhos = new PhieuNhapKho[]
+            // 35. Inventories
+            var inventories = new Inventory[]
             {
-                new() { NhaCungCapId = nhaCungCaps[0].Id, NguoiDungId = nguoiDungs[0].Id, MaCode = "PN_20261102", NgayNhap = new DateTime(2026, 11, 2, 9, 0, 0), TongTienNhap = 3600000 }
+                new() { ServiceItemId = serviceItems[0].Id, StockQuantity = 120, ReorderLevel = 24 },
+                new() { ServiceItemId = serviceItems[1].Id, StockQuantity = 95, ReorderLevel = 24 },
+                new() { ServiceItemId = serviceItems[2].Id, StockQuantity = 200, ReorderLevel = 48 },
+                new() { ServiceItemId = serviceItems[3].Id, StockQuantity = 150, ReorderLevel = 48 },
+                new() { ServiceItemId = serviceItems[4].Id, StockQuantity = 50, ReorderLevel = 10 },
+                new() { ServiceItemId = serviceItems[5].Id, StockQuantity = 40, ReorderLevel = 10 }
             };
-            context.PhieuNhapKhos.AddRange(phieuNhapKhos);
+            context.Inventories.AddRange(inventories);
 
-            // 37. Hóa đơn
-            var hoaDons = new HoaDon[]
+            // 36. GoodsReceipts
+            var goodsReceipts = new GoodsReceipt[]
             {
-                new() { BanBidaId = banBidas[0].Id, NguoiDungId = nguoiDungs[1].Id, KhachHangId = khachHangs[0].Id, KhuyenMaiId = khuyenMais[0].Id, MaHoaDon = "HD_20261110_01", GioBatDau = new DateTime(2026, 11, 10, 13, 0, 0), GioKetThuc = new DateTime(2026, 11, 10, 14, 30, 0), TablePrice = 90000, ServicePrice = 75000, TienGiamGia = 18000, TongThanhToan = 147000, TrangThai = "Đã thanh toán" },
-                new() { BanBidaId = banBidas[4].Id, NguoiDungId = nguoiDungs[1].Id, KhachHangId = khachHangs[2].Id, KhuyenMaiId = null, MaHoaDon = "HD_20261110_02", GioBatDau = new DateTime(2026, 11, 10, 14, 0, 0), GioKetThuc = null, TablePrice = 80000, ServicePrice = 40000, TienGiamGia = 0, TongThanhToan = 120000, TrangThai = "Đang chơi" }
+                new() { SupplierId = suppliers[0].Id, UserId = users[0].Id, Code = "PN_20261102", ImportDate = new DateTime(2026, 11, 2, 9, 0, 0), TotalImportAmount = 3600000 }
             };
-            context.HoaDons.AddRange(hoaDons);
+            context.GoodsReceipts.AddRange(goodsReceipts);
+
+            // 37. Invoices
+            var invoices = new Invoice[]
+            {
+                new() { BilliardTableId = billiardTables[0].Id, UserId = users[1].Id, CustomerId = customers[0].Id, PromotionId = promotions[0].Id, InvoiceCode = "HD_20261110_01", StartTime = new DateTime(2026, 11, 10, 13, 0, 0), EndTime = new DateTime(2026, 11, 10, 14, 30, 0), TableAmount = 90000, ServiceAmount = 75000, DiscountAmount = 18000, TotalPayment = 147000, Status = "Đã thanh toán" },
+                new() { BilliardTableId = billiardTables[4].Id, UserId = users[1].Id, CustomerId = customers[2].Id, PromotionId = null, InvoiceCode = "HD_20261110_02", StartTime = new DateTime(2026, 11, 10, 14, 0, 0), EndTime = null, TableAmount = 80000, ServiceAmount = 40000, DiscountAmount = 0, TotalPayment = 120000, Status = "Đang chơi" }
+            };
+            context.Invoices.AddRange(invoices);
 
             context.SaveChanges();
 
-            // GIAI ĐOẠN 4: BẢNG PHỤ THUỘC CẤP 3
-            // 38. Chi tiết nhập kho
-            var chiTietNhapKhos = new ChiTietNhapKho[]
-            {
-                new() { PhieuNhapId = phieuNhapKhos[0].Id, MonDichVuId = monDichVus[0].Id, SoLuong = 100, GiaNhap = 14000 },
-                new() { PhieuNhapId = phieuNhapKhos[0].Id, MonDichVuId = monDichVus[1].Id, SoLuong = 100, GiaNhap = 9000 }
-            };
-            context.ChiTietNhapKhos.AddRange(chiTietNhapKhos);
+            // ==========================================
+            // GIAI ĐOẠN 4: BẢNG CHI TIẾT & GIAO DỊCH
+            // ==========================================
 
-            // 39. Chi tiết hóa đơn
-            var chiTietHoaDons = new ChiTietHoaDon[]
+            // 38. GoodsReceiptDetails
+            var goodsReceiptDetails = new GoodsReceiptDetail[]
             {
-                new() { HoaDonId = hoaDons[0].Id, MonDichVuId = monDichVus[0].Id, SoLuong = 2, DonGia = 20000, ThanhTien = 40000 },
-                new() { HoaDonId = hoaDons[0].Id, MonDichVuId = monDichVus[4].Id, SoLuong = 1, DonGia = 35000, ThanhTien = 35000 }
+                new() { GoodsReceiptId = goodsReceipts[0].Id, ServiceItemId = serviceItems[0].Id, Quantity = 100, ImportPrice = 14000 },
+                new() { GoodsReceiptId = goodsReceipts[0].Id, ServiceItemId = serviceItems[1].Id, Quantity = 100, ImportPrice = 9000 }
             };
-            context.ChiTietHoaDons.AddRange(chiTietHoaDons);
+            context.GoodsReceiptDetails.AddRange(goodsReceiptDetails);
 
-            // 40. Chuyển bàn
-            var chuyenBans = new ChuyenBan[]
+            // 39. InvoiceDetails
+            var invoiceDetails = new InvoiceDetail[]
             {
-                new() { HoaDonId = hoaDons[0].Id, TuBanId = banBidas[0].Id, DenBanId = banBidas[4].Id, GioChuyenBan = new DateTime(2026, 11, 10, 13, 45, 0), GhiChu = "Khách đổi từ Bàn Lỗ 01 sang Bàn VIP 3 Băng" }
+                new() { InvoiceId = invoices[0].Id, ServiceItemId = serviceItems[0].Id, Quantity = 2, UnitPrice = 20000, TotalAmount = 40000 },
+                new() { InvoiceId = invoices[0].Id, ServiceItemId = serviceItems[4].Id, Quantity = 1, UnitPrice = 35000, TotalAmount = 35000 }
             };
-            context.ChuyenBans.AddRange(chuyenBans);
+            context.InvoiceDetails.AddRange(invoiceDetails);
 
-            // 41. Thanh toán hóa đơn
-            var thanhToanHoaDons = new ThanhToanHoaDon[]
+            // 40. TableTransfers
+            var tableTransfers = new TableTransfer[]
             {
-                new() { HoaDonId = hoaDons[0].Id, PhuongThucId = phuongThucs[1].Id, SoTien = 147000, ThoiGianTt = new DateTime(2026, 11, 10, 14, 30, 0) }
+                new() { InvoiceId = invoices[0].Id, FromTableId = billiardTables[0].Id, ToTableId = billiardTables[4].Id, TransferTime = new DateTime(2026, 11, 10, 13, 45, 0), Notes = "Khách đổi từ Bàn Lỗ 01 sang Bàn VIP 3 Băng" }
             };
-            context.ThanhToanHoaDons.AddRange(thanhToanHoaDons);
+            context.TableTransfers.AddRange(tableTransfers);
+
+            // 41. InvoicePayments
+            var invoicePayments = new InvoicePayment[]
+            {
+                new() { InvoiceId = invoices[0].Id, PaymentMethodId = paymentMethods[1].Id, Amount = 147000, PaymentTime = new DateTime(2026, 11, 10, 14, 30, 0) }
+            };
+            context.InvoicePayments.AddRange(invoicePayments);
+
+            // ==========================================
+            // GIAI ĐOẠN 5: 3 BẢNG AI-NATIVE BẮT BUỘC
+            // ==========================================
+
+            // 42. AiConversations
+            var aiConversations = new AiConversation[]
+            {
+                new()
+                {
+                    CustomerId = customers[0].Id,
+                    UserId = null,
+                    SessionId = "SESSION_20261110_01",
+                    UserPrompt = "Tối nay CLB còn bàn lỗ nào trống lúc 19h30 không bot?",
+                    AiResponse = "Dạ chào anh Giang! Tối nay lúc 19h30 CLB còn trống Bàn 02 (Lỗ). Anh có muốn em đặt bàn giữ trước giúp anh không ạ?",
+                    ModelName = "gemini-1.5-flash",
+                    CreatedAt = DateTime.Now
+                },
+                new()
+                {
+                    CustomerId = customers[2].Id,
+                    UserId = null,
+                    SessionId = "SESSION_20261110_02",
+                    UserPrompt = "Giá giờ chơi bàn 3 băng VIP bao nhiêu vậy shop?",
+                    AiResponse = "Dạ bàn 3 Băng phòng VIP có giá 80.000đ/giờ. Phòng có điều hòa riêng và nỉ Simonis chuẩn thi đấu ạ!",
+                    ModelName = "gemini-1.5-flash",
+                    CreatedAt = DateTime.Now
+                }
+            };
+            context.AiConversations.AddRange(aiConversations);
+
+            // 43. AiPredictions
+            var aiPredictions = new AiPrediction[]
+            {
+                new()
+                {
+                    PredictionType = "PEAK_HOUR_FORECAST",
+                    TargetEntity = "BilliardTables",
+                    TargetId = billiardTables[0].Id,
+                    ConfidenceScore = 95.50m,
+                    PredictionDetails = "Dự báo khung giờ 19:00 - 22:30 Thứ 7 công suất bàn sẽ đạt 100%. Gợi ý bố trí thêm 2 nhân viên phục vụ.",
+                    CreatedAt = DateTime.Now
+                },
+                new()
+                {
+                    PredictionType = "MAINTENANCE_DUE",
+                    TargetEntity = "BilliardTables",
+                    TargetId = billiardTables[0].Id,
+                    ConfidenceScore = 88.00m,
+                    PredictionDetails = "Bàn 01 đã hoạt động hơn 320 giờ chơi. Dự báo độ nảy băng giảm 7%, đề xuất kiểm tra và căng nỉ mặt bàn trong tuần tới.",
+                    CreatedAt = DateTime.Now
+                }
+            };
+            context.AiPredictions.AddRange(aiPredictions);
+
+            // 44. AiAgentLogs
+            var aiAgentLogs = new AiAgentLog[]
+            {
+                new()
+                {
+                    AgentName = "InventoryWatcherAgent",
+                    ActionTaken = "ALERT_LOW_STOCK",
+                    IsSuccess = true,
+                    ExecutionTimeMs = 125,
+                    LogDetails = "Cảnh báo tồn kho Bia Tiger Bạc sắp đạt ngưỡng reorder_level (còn 40 lon). Đã tự động tạo gợi ý phiếu nhập kho.",
+                    CreatedAt = DateTime.Now
+                },
+                new()
+                {
+                    AgentName = "SmartBookingAgent",
+                    ActionTaken = "AUTO_SUGGEST_TABLE",
+                    IsSuccess = true,
+                    ExecutionTimeMs = 90,
+                    LogDetails = "Tự động phân bổ khách Đào Ngọc Giang vào Bàn VIP 01 theo hồ sơ thói quen hội viên Kim Cương.",
+                    CreatedAt = DateTime.Now
+                }
+            };
+            context.AiAgentLogs.AddRange(aiAgentLogs);
 
             context.SaveChanges();
         }

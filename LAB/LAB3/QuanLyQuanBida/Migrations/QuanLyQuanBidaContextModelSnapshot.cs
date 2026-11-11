@@ -22,1520 +22,1666 @@ namespace QuanLyQuanBida.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.BanBida", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.ActivityLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("KhuVucBanId")
-                        .HasColumnType("int")
-                        .HasColumnName("khu_vuc_ban_id");
-
-                    b.Property<int>("LoaiBanId")
-                        .HasColumnType("int")
-                        .HasColumnName("loai_ban_id");
-
-                    b.Property<string>("MaCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ma_code");
-
-                    b.Property<string>("Ten")
+                    b.Property<string>("Action")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ten");
+                        .HasColumnName("Action");
 
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("trang_thai");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ban_bida", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.BangLuong", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("LuongCoBan")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("luong_co_ban");
-
-                    b.Property<int>("NamLuong")
-                        .HasColumnType("int")
-                        .HasColumnName("nam_luong");
-
-                    b.Property<int>("NguoiDungId")
-                        .HasColumnType("int")
-                        .HasColumnName("nguoi_dung_id");
-
-                    b.Property<decimal>("PhuCap")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("phu_cap");
-
-                    b.Property<int>("ThangLuong")
-                        .HasColumnType("int")
-                        .HasColumnName("thang_luong");
-
-                    b.Property<decimal>("ThucLinh")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("thuc_linh");
-
-                    b.Property<decimal>("TienPhat")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("tien_phat");
-
-                    b.Property<decimal>("TienThuong")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("tien_thuong");
-
-                    b.Property<decimal>("TongGioLam")
-                        .HasColumnType("decimal(6,2)")
-                        .HasColumnName("tong_gio_lam");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("bang_luong", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.BaoTriBan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BanBidaId")
-                        .HasColumnType("int")
-                        .HasColumnName("ban_bida_id");
-
-                    b.Property<decimal>("ChiPhi")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("chi_phi");
-
-                    b.Property<string>("GhiChu")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("ghi_chu");
-
-                    b.Property<string>("LoaiBaoTri")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("loai_bao_tri");
-
-                    b.Property<DateTime>("NgayBaoTri")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_bao_tri");
-
-                    b.Property<string>("NguoiThucHien")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("nguoi_thuc_hien");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("bao_tri_ban", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.CaLam", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<TimeSpan>("GioBatDau")
-                        .HasColumnType("time")
-                        .HasColumnName("gio_bat_dau");
-
-                    b.Property<TimeSpan>("GioKetThuc")
-                        .HasColumnType("time")
-                        .HasColumnName("gio_ket_thuc");
-
-                    b.Property<decimal>("LuongTheoGio")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("luong_theo_gio");
-
-                    b.Property<string>("Ten")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ten");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ca_lam", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.ChamCong", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("DiTrePhut")
-                        .HasColumnType("int")
-                        .HasColumnName("di_tre_phut");
-
-                    b.Property<DateTime?>("GioRa")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("gio_ra");
-
-                    b.Property<DateTime>("GioVao")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("gio_vao");
-
-                    b.Property<DateTime>("NgayLamViec")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_lam_viec");
-
-                    b.Property<int>("NguoiDungId")
-                        .HasColumnType("int")
-                        .HasColumnName("nguoi_dung_id");
-
-                    b.Property<decimal?>("SoGioLam")
-                        .HasColumnType("decimal(5,2)")
-                        .HasColumnName("so_gio_lam");
-
-                    b.Property<int?>("VeSomPhut")
-                        .HasColumnType("int")
-                        .HasColumnName("ve_som_phut");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("cham_cong", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.ChiTietHoaDon", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("DonGia")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("don_gia");
-
-                    b.Property<int>("HoaDonId")
-                        .HasColumnType("int")
-                        .HasColumnName("hoa_don_id");
-
-                    b.Property<int>("MonDichVuId")
-                        .HasColumnType("int")
-                        .HasColumnName("mon_dich_vu_id");
-
-                    b.Property<int>("SoLuong")
-                        .HasColumnType("int")
-                        .HasColumnName("so_luong");
-
-                    b.Property<decimal>("ThanhTien")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("thanh_tien");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("chi_tiet_hoa_don", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.ChiTietNhapKho", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("GiaNhap")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("gia_nhap");
-
-                    b.Property<int>("MonDichVuId")
-                        .HasColumnType("int")
-                        .HasColumnName("mon_dich_vu_id");
-
-                    b.Property<int>("PhieuNhapId")
-                        .HasColumnType("int")
-                        .HasColumnName("phieu_nhap_id");
-
-                    b.Property<int>("SoLuong")
-                        .HasColumnType("int")
-                        .HasColumnName("so_luong");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("chi_tiet_nhap_kho", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.ChuyenBan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DenBanId")
-                        .HasColumnType("int")
-                        .HasColumnName("den_ban_id");
-
-                    b.Property<string>("GhiChu")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("ghi_chu");
-
-                    b.Property<DateTime>("GioChuyenBan")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("gio_chuyen_ban");
-
-                    b.Property<int>("HoaDonId")
-                        .HasColumnType("int")
-                        .HasColumnName("hoa_don_id");
-
-                    b.Property<int>("TuBanId")
-                        .HasColumnType("int")
-                        .HasColumnName("tu_ban_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("chuyen_ban", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.CoThuThamGia", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GiaiDauId")
-                        .HasColumnType("int")
-                        .HasColumnName("giai_dau_id");
-
-                    b.Property<int>("KhachHangId")
-                        .HasColumnType("int")
-                        .HasColumnName("khach_hang_id");
-
-                    b.Property<DateTime>("NgayDangKy")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_dang_ky");
-
-                    b.Property<int?>("SoHatGiong")
-                        .HasColumnType("int")
-                        .HasColumnName("so_hat_giong");
-
-                    b.Property<int?>("ThuHangChungCuoc")
-                        .HasColumnType("int")
-                        .HasColumnName("thu_hang_chung_cuoc");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("co_thu_tham_gia", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.DanhMucMon", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("MaCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ma_code");
-
-                    b.Property<string>("Ten")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("ten");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("danh_muc_mon", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.DatBan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BanBidaId")
-                        .HasColumnType("int")
-                        .HasColumnName("ban_bida_id");
-
-                    b.Property<int>("KhachHangId")
-                        .HasColumnType("int")
-                        .HasColumnName("khach_hang_id");
-
-                    b.Property<int>("SoNguoi")
-                        .HasColumnType("int")
-                        .HasColumnName("so_nguoi");
-
-                    b.Property<DateTime>("ThoiGianDen")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("thoi_gian_den");
-
-                    b.Property<decimal>("TienCoc")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("tien_coc");
-
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("trang_thai");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("dat_ban", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.GayKhachGui", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("KhachHangId")
-                        .HasColumnType("int")
-                        .HasColumnName("khach_hang_id");
-
-                    b.Property<string>("LoaiNgonCo")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("loai_ngon_co");
-
-                    b.Property<string>("MaCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ma_code");
-
-                    b.Property<DateTime>("NgayGui")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_gui");
-
-                    b.Property<string>("ThuongHieuGay")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("thuong_hieu_gay");
-
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("trang_thai");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("gay_khach_gui", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.GiaBanKhungGio", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("GiaKhungGio")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("gia_khung_gio");
-
-                    b.Property<TimeSpan>("GioBatDauKg")
-                        .HasColumnType("time")
-                        .HasColumnName("gio_bat_dau_kg");
-
-                    b.Property<TimeSpan>("GioKetThucKg")
-                        .HasColumnType("time")
-                        .HasColumnName("gio_ket_thuc_kg");
-
-                    b.Property<int>("LoaiBanId")
-                        .HasColumnType("int")
-                        .HasColumnName("loai_ban_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("gia_ban_khung_gio", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.GiaiDau", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("LePhiThamGia")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("le_phi_tham_gia");
-
-                    b.Property<DateTime>("NgayBatDau")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_bat_dau");
-
-                    b.Property<DateTime>("NgayKetThuc")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_ket_thuc");
-
-                    b.Property<string>("TenGiai")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasColumnName("ten_giai");
-
-                    b.Property<decimal>("TongGiaiThuong")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("tong_giai_thuong");
-
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
-                        .HasColumnName("trang_thai");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("giai_dau", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.GiaoDichDiem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("GhiChu")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("ghi_chu");
-
-                    b.Property<int>("KhachHangId")
-                        .HasColumnType("int")
-                        .HasColumnName("khach_hang_id");
-
-                    b.Property<string>("LoaiGiaoDich")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("loai_giao_dich");
-
-                    b.Property<DateTime>("NgayTao")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngay_tao")
+                        .HasColumnName("CreatedAt")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("SoDiem")
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Description");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)")
+                        .HasColumnName("IpAddress");
+
+                    b.Property<int?>("RecordId")
                         .HasColumnType("int")
-                        .HasColumnName("so_diem");
+                        .HasColumnName("RecordId");
+
+                    b.Property<string>("TableName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("TableName");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
 
                     b.HasKey("Id");
 
-                    b.ToTable("giao_dich_diem", (string)null);
+                    b.ToTable("ActivityLogs", (string)null);
                 });
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.HangThanhVien", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.AiAgentLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DiemToiThieu")
-                        .HasColumnType("int")
-                        .HasColumnName("diem_toi_thieu");
+                    b.Property<string>("ActionTaken")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("ActionTaken");
 
-                    b.Property<string>("MoTa")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("mo_ta");
-
-                    b.Property<string>("Ten")
+                    b.Property<string>("AgentName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ten");
+                        .HasColumnName("AgentName");
 
-                    b.Property<decimal>("TiLeGiamGia")
-                        .HasColumnType("decimal(5,2)")
-                        .HasColumnName("ti_le_giam_gia");
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("ExecutionTimeMs")
+                        .HasColumnType("int")
+                        .HasColumnName("ExecutionTimeMs");
+
+                    b.Property<bool>("IsSuccess")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsSuccess");
+
+                    b.Property<string>("LogDetails")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasColumnName("LogDetails");
 
                     b.HasKey("Id");
 
-                    b.ToTable("hang_thanh_vien", (string)null);
+                    b.ToTable("AiAgentLogs", (string)null);
                 });
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.HoaDon", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.AiConversation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BanBidaId")
-                        .HasColumnType("int")
-                        .HasColumnName("ban_bida_id");
-
-                    b.Property<DateTime>("GioBatDau")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("gio_bat_dau");
-
-                    b.Property<DateTime?>("GioKetThuc")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("gio_ket_thuc");
-
-                    b.Property<int>("KhachHangId")
-                        .HasColumnType("int")
-                        .HasColumnName("khach_hang_id");
-
-                    b.Property<int?>("KhuyenMaiId")
-                        .HasColumnType("int")
-                        .HasColumnName("khuyen_mai_id");
-
-                    b.Property<string>("MaHoaDon")
+                    b.Property<string>("AiResponse")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ma_hoa_don");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)")
+                        .HasColumnName("AiResponse");
 
-                    b.Property<int>("NguoiDungId")
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int")
-                        .HasColumnName("nguoi_dung_id");
+                        .HasColumnName("CustomerId");
 
-                    b.Property<decimal>("ServicePrice")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("service_price");
-
-                    b.Property<decimal>("TablePrice")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("table_price");
-
-                    b.Property<decimal>("TienGiamGia")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("tien_giam_gia");
-
-                    b.Property<decimal>("TongThanhToan")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("tong_thanh_toan");
-
-                    b.Property<string>("TrangThai")
+                    b.Property<string>("ModelName")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("trang_thai");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("ModelName");
+
+                    b.Property<string>("SessionId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("SessionId");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
+
+                    b.Property<string>("UserPrompt")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasColumnName("UserPrompt");
 
                     b.HasKey("Id");
 
-                    b.ToTable("hoa_don", (string)null);
+                    b.ToTable("AiConversations", (string)null);
                 });
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.KhachHang", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.AiPrediction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("ConfidenceScore")
+                        .HasColumnType("decimal(5,2)")
+                        .HasColumnName("ConfidenceScore");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("PredictionDetails")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasColumnName("PredictionDetails");
+
+                    b.Property<string>("PredictionType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("PredictionType");
+
+                    b.Property<string>("TargetEntity")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("TargetEntity");
+
+                    b.Property<int?>("TargetId")
+                        .HasColumnType("int")
+                        .HasColumnName("TargetId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AiPredictions", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.BilliardTable", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Name");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Status");
+
+                    b.Property<int>("TableAreaId")
+                        .HasColumnType("int")
+                        .HasColumnName("TableAreaId");
+
+                    b.Property<int>("TableTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("TableTypeId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BilliardTables", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("AccountBalance")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("account_balance");
+                        .HasColumnName("AccountBalance");
 
-                    b.Property<int>("DiemTichLuy")
+                    b.Property<int>("AccumulatedPoints")
                         .HasColumnType("int")
-                        .HasColumnName("diem_tich_luy");
+                        .HasColumnName("AccumulatedPoints");
 
-                    b.Property<int>("HangThanhVienId")
-                        .HasColumnType("int")
-                        .HasColumnName("hang_thanh_vien_id");
-
-                    b.Property<string>("HoTen")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("ho_ten");
-
-                    b.Property<string>("MaCode")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ma_code");
+                        .HasColumnName("Code");
 
-                    b.Property<DateTime>("NgayTao")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngay_tao")
+                        .HasColumnName("CreatedAt")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<string>("SoDienThoai")
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("FullName");
+
+                    b.Property<int>("MembershipTierId")
+                        .HasColumnType("int")
+                        .HasColumnName("MembershipTierId");
+
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)")
-                        .HasColumnName("so_dien_thoai");
+                        .HasColumnName("PhoneNumber");
 
                     b.HasKey("Id");
 
-                    b.ToTable("khach_hang", (string)null);
+                    b.ToTable("Customers", (string)null);
                 });
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.KhuVucBan", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.CustomerCue", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("MaCode")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ma_code");
+                        .HasColumnName("Code");
 
-                    b.Property<string>("Ten")
-                        .IsRequired()
+                    b.Property<string>("CueBrand")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("ten");
+                        .HasColumnName("CueBrand");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int")
+                        .HasColumnName("CustomerId");
+
+                    b.Property<DateTime>("ReceivedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ReceivedDate");
+
+                    b.Property<string>("ShaftType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("ShaftType");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Status");
 
                     b.HasKey("Id");
 
-                    b.ToTable("khu_vuc_ban", (string)null);
+                    b.ToTable("CustomerCues", (string)null);
                 });
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.KhuyenMai", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.ExpenseType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("MaCode")
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Description");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ma_code");
+                        .HasColumnName("Name");
 
-                    b.Property<DateTime>("NgayBatDau")
+                    b.HasKey("Id");
+
+                    b.ToTable("ExpenseTypes", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.GoodsReceipt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Code");
+
+                    b.Property<DateTime>("ImportDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngay_bat_dau");
+                        .HasColumnName("ImportDate");
 
-                    b.Property<DateTime>("NgayHetHan")
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int")
+                        .HasColumnName("SupplierId");
+
+                    b.Property<decimal>("TotalImportAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("TotalImportAmount");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GoodsReceipts", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.GoodsReceiptDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GoodsReceiptId")
+                        .HasColumnType("int")
+                        .HasColumnName("GoodsReceiptId");
+
+                    b.Property<decimal>("ImportPrice")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("ImportPrice");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("Quantity");
+
+                    b.Property<int>("ServiceItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("ServiceItemId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GoodsReceiptDetails", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Inventory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ReorderLevel")
+                        .HasColumnType("int")
+                        .HasColumnName("ReorderLevel");
+
+                    b.Property<int>("ServiceItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("ServiceItemId");
+
+                    b.Property<int>("StockQuantity")
+                        .HasColumnType("int")
+                        .HasColumnName("StockQuantity");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Inventories", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.InventoryAudit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AuditDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngay_het_han");
+                        .HasColumnName("AuditDate");
 
-                    b.Property<decimal?>("PhanTramGiam")
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Notes");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InventoryAudits", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Invoice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BilliardTableId")
+                        .HasColumnType("int")
+                        .HasColumnName("BilliardTableId");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int")
+                        .HasColumnName("CustomerId");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("DiscountAmount");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("EndTime");
+
+                    b.Property<string>("InvoiceCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("InvoiceCode");
+
+                    b.Property<int?>("PromotionId")
+                        .HasColumnType("int")
+                        .HasColumnName("PromotionId");
+
+                    b.Property<decimal>("ServiceAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("ServiceAmount");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("StartTime");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Status");
+
+                    b.Property<decimal>("TableAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("TableAmount");
+
+                    b.Property<decimal>("TotalPayment")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("TotalPayment");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Invoices", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.InvoiceDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int")
+                        .HasColumnName("InvoiceId");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("Quantity");
+
+                    b.Property<int>("ServiceItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("ServiceItemId");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("TotalAmount");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("UnitPrice");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InvoiceDetails", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.InvoicePayment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Amount");
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int")
+                        .HasColumnName("InvoiceId");
+
+                    b.Property<int>("PaymentMethodId")
+                        .HasColumnType("int")
+                        .HasColumnName("PaymentMethodId");
+
+                    b.Property<DateTime>("PaymentTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("PaymentTime");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InvoicePayments", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Locker", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Area")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Area");
+
+                    b.Property<string>("LockerNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("LockerNumber");
+
+                    b.Property<decimal>("MonthlyRent")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("MonthlyRent");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Status");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Lockers", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.LockerRental", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int")
+                        .HasColumnName("CustomerId");
+
+                    b.Property<decimal>("Deposit")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Deposit");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("EndDate");
+
+                    b.Property<int>("LockerId")
+                        .HasColumnType("int")
+                        .HasColumnName("LockerId");
+
+                    b.Property<decimal>("MonthlyRent")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("MonthlyRent");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("StartDate");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Status");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LockerRentals", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Match", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BilliardTableId")
+                        .HasColumnType("int")
+                        .HasColumnName("BilliardTableId");
+
+                    b.Property<DateTime>("MatchTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("MatchTime");
+
+                    b.Property<int>("Player1Id")
+                        .HasColumnType("int")
+                        .HasColumnName("Player1Id");
+
+                    b.Property<int>("Player2Id")
+                        .HasColumnType("int")
+                        .HasColumnName("Player2Id");
+
+                    b.Property<string>("RoundName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("RoundName");
+
+                    b.Property<int?>("ScorePlayer1")
+                        .HasColumnType("int")
+                        .HasColumnName("ScorePlayer1");
+
+                    b.Property<int?>("ScorePlayer2")
+                        .HasColumnType("int")
+                        .HasColumnName("ScorePlayer2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Status");
+
+                    b.Property<int>("TournamentId")
+                        .HasColumnType("int")
+                        .HasColumnName("TournamentId");
+
+                    b.Property<int?>("WinnerId")
+                        .HasColumnType("int")
+                        .HasColumnName("WinnerId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Matches", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.MembershipTier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Description");
+
+                    b.Property<decimal>("DiscountRate")
                         .HasColumnType("decimal(5,2)")
-                        .HasColumnName("phan_tram_giam");
+                        .HasColumnName("DiscountRate");
 
-                    b.Property<decimal?>("SoTienGiam")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("so_tien_giam");
-
-                    b.Property<string>("Ten")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasColumnName("ten");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("khuyen_mai", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.LichLamViec", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("MinPoints")
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("MinPoints");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CaLamId")
-                        .HasColumnType("int")
-                        .HasColumnName("ca_lam_id");
-
-                    b.Property<string>("GhiChu")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("ghi_chu");
-
-                    b.Property<DateTime>("NgayLamViec")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_lam_viec");
-
-                    b.Property<int>("NguoiDungId")
-                        .HasColumnType("int")
-                        .HasColumnName("nguoi_dung_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("lich_lam_viec", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.LoaiBan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("GiaCoBan")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("gia_co_ban");
-
-                    b.Property<string>("Ten")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ten");
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("loai_ban", (string)null);
+                    b.ToTable("MembershipTiers", (string)null);
                 });
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.LoaiChiPhi", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.PaymentMethod", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("MoTa")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("mo_ta");
-
-                    b.Property<string>("Ten")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("ten");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("loai_chi_phi", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.MonDichVu", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("DangHoatDong")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit")
-                        .HasColumnName("dang_hoat_dong");
+                        .HasColumnName("IsActive");
 
-                    b.Property<int>("DanhMucId")
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentMethods", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.PaymentVoucher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("danh_muc_id");
+                        .HasColumnName("Id");
 
-                    b.Property<decimal>("DonGia")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("don_gia");
+                        .HasColumnName("Amount");
 
-                    b.Property<string>("DonViTinh")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("don_vi_tinh");
+                        .HasColumnName("Code");
 
-                    b.Property<string>("HinhAnh")
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("ExpensePurpose")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasColumnName("hinh_anh");
+                        .HasColumnName("ExpensePurpose");
 
-                    b.Property<string>("MaCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ma_code");
+                    b.Property<int>("ExpenseTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("ExpenseTypeId");
 
-                    b.Property<string>("Ten")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("ten");
+                    b.Property<string>("Notes")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Notes");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
 
                     b.HasKey("Id");
 
-                    b.ToTable("mon_dich_vu", (string)null);
+                    b.ToTable("PaymentVouchers", (string)null);
                 });
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.NguoiDung", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.Payroll", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AnhDaiDien")
+                    b.Property<decimal>("Allowance")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Allowance");
+
+                    b.Property<decimal>("BaseSalary")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("BaseSalary");
+
+                    b.Property<decimal>("Bonus")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Bonus");
+
+                    b.Property<decimal>("NetSalary")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("NetSalary");
+
+                    b.Property<decimal>("Penalty")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Penalty");
+
+                    b.Property<int>("SalaryMonth")
+                        .HasColumnType("int")
+                        .HasColumnName("SalaryMonth");
+
+                    b.Property<int>("SalaryYear")
+                        .HasColumnType("int")
+                        .HasColumnName("SalaryYear");
+
+                    b.Property<decimal>("TotalHours")
+                        .HasColumnType("decimal(6,2)")
+                        .HasColumnName("TotalHours");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Payrolls", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Permission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("Module")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Module");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permissions", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.PointTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int")
+                        .HasColumnName("CustomerId");
+
+                    b.Property<string>("Notes")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasColumnName("anh_dai_dien");
+                        .HasColumnName("Notes");
 
-                    b.Property<bool>("DangHoatDong")
+                    b.Property<int>("Points")
+                        .HasColumnType("int")
+                        .HasColumnName("Points");
+
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("TransactionType");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PointTransactions", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Promotion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Code");
+
+                    b.Property<decimal?>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("DiscountAmount");
+
+                    b.Property<decimal?>("DiscountPercent")
+                        .HasColumnType("decimal(5,2)")
+                        .HasColumnName("DiscountPercent");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("EndDate");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Name");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("StartDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Promotions", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Reservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ArrivalTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ArrivalTime");
+
+                    b.Property<int>("BilliardTableId")
+                        .HasColumnType("int")
+                        .HasColumnName("BilliardTableId");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int")
+                        .HasColumnName("CustomerId");
+
+                    b.Property<decimal>("Deposit")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Deposit");
+
+                    b.Property<int>("GuestCount")
+                        .HasColumnType("int")
+                        .HasColumnName("GuestCount");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Status");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reservations", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.RolePermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int")
+                        .HasColumnName("PermissionId");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int")
+                        .HasColumnName("RoleId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RolePermissions", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.ServiceItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int")
+                        .HasColumnName("CategoryId");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("Image")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Image");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit")
-                        .HasColumnName("dang_hoat_dong");
+                        .HasColumnName("IsActive");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Name");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Unit");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("UnitPrice");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ServiceItems", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Shift", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time")
+                        .HasColumnName("EndTime");
+
+                    b.Property<decimal>("HourlyRate")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("HourlyRate");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Name");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time")
+                        .HasColumnName("StartTime");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Shifts", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Supplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("Address");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Name");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasColumnName("PhoneNumber");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Suppliers", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.TableArea", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TableAreas", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.TableEquipment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BilliardTableId")
+                        .HasColumnType("int")
+                        .HasColumnName("BilliardTableId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Name");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("Quantity");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Status");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TableEquipments", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.TableMaintenance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BilliardTableId")
+                        .HasColumnType("int")
+                        .HasColumnName("BilliardTableId");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("Cost");
+
+                    b.Property<DateTime>("MaintenanceDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("MaintenanceDate");
+
+                    b.Property<string>("MaintenanceType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("MaintenanceType");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Notes");
+
+                    b.Property<string>("PerformedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("PerformedBy");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TableMaintenances", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.TableTransfer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FromTableId")
+                        .HasColumnType("int")
+                        .HasColumnName("FromTableId");
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int")
+                        .HasColumnName("InvoiceId");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Notes");
+
+                    b.Property<int>("ToTableId")
+                        .HasColumnType("int")
+                        .HasColumnName("ToTableId");
+
+                    b.Property<DateTime>("TransferTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("TransferTime");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TableTransfers", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.TableType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("BasePrice")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("BasePrice");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TableTypes", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.TimeSlotPrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<TimeSpan>("SlotEndTime")
+                        .HasColumnType("time")
+                        .HasColumnName("SlotEndTime");
+
+                    b.Property<decimal>("SlotPrice")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("SlotPrice");
+
+                    b.Property<TimeSpan>("SlotStartTime")
+                        .HasColumnType("time")
+                        .HasColumnName("SlotStartTime");
+
+                    b.Property<int>("TableTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("TableTypeId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TimeSlotPrices", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Timekeeping", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CheckInTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CheckInTime");
+
+                    b.Property<DateTime?>("CheckOutTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CheckOutTime");
+
+                    b.Property<int?>("EarlyLeaveMinutes")
+                        .HasColumnType("int")
+                        .HasColumnName("EarlyLeaveMinutes");
+
+                    b.Property<int?>("LateMinutes")
+                        .HasColumnType("int")
+                        .HasColumnName("LateMinutes");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
+
+                    b.Property<DateTime>("WorkDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("WorkDate");
+
+                    b.Property<decimal?>("WorkHours")
+                        .HasColumnType("decimal(4,2)")
+                        .HasColumnName("WorkHours");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Timekeepings", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.Tournament", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("EndDate");
+
+                    b.Property<decimal>("EntryFee")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("EntryFee");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("StartDate");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Status");
+
+                    b.Property<decimal>("TotalPrize")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("TotalPrize");
+
+                    b.Property<string>("TournamentName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("TournamentName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tournaments", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.TournamentParticipant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int")
+                        .HasColumnName("CustomerId");
+
+                    b.Property<int?>("FinalRank")
+                        .HasColumnType("int")
+                        .HasColumnName("FinalRank");
+
+                    b.Property<DateTime>("RegisteredDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("RegisteredDate");
+
+                    b.Property<int?>("SeedNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("SeedNumber");
+
+                    b.Property<int>("TournamentId")
+                        .HasColumnType("int")
+                        .HasColumnName("TournamentId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TournamentParticipants", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Avatar")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Avatar");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Email")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("email");
+                        .HasColumnName("Email");
 
-                    b.Property<string>("HoTen")
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("ho_ten");
+                        .HasColumnName("FullName");
 
-                    b.Property<string>("MatKhauHash")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("mat_khau_hash");
-
-                    b.Property<DateTime>("NgayTao")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_tao")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("SoDienThoai")
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)")
-                        .HasColumnName("so_dien_thoai");
-
-                    b.Property<string>("TenDangNhap")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ten_dang_nhap");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("nguoi_dung", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.NhaCungCap", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DiaChi")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasColumnName("dia_chi");
-
-                    b.Property<string>("SoDienThoai")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)")
-                        .HasColumnName("so_dien_thoai");
-
-                    b.Property<string>("Ten")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasColumnName("ten");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("nha_cung_cap", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.NhatKyHoatDong", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("BanGhiId")
-                        .HasColumnType("int")
-                        .HasColumnName("ban_ghi_id");
-
-                    b.Property<string>("BangDuLieu")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("bang_du_lieu");
-
-                    b.Property<string>("DiaChiIp")
-                        .HasMaxLength(45)
-                        .HasColumnType("nvarchar(45)")
-                        .HasColumnName("dia_chi_ip");
-
-                    b.Property<string>("HanhDong")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("hanh_dong");
-
-                    b.Property<string>("MoTa")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("mo_ta");
-
-                    b.Property<int>("NguoiDungId")
-                        .HasColumnType("int")
-                        .HasColumnName("nguoi_dung_id");
-
-                    b.Property<DateTime>("ThoiGian")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("thoi_gian");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("nhat_ky_hoat_dong", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.PhieuChi", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("GhiChu")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("ghi_chu");
-
-                    b.Property<int>("LoaiChiPhiId")
-                        .HasColumnType("int")
-                        .HasColumnName("loai_chi_phi_id");
-
-                    b.Property<string>("MaCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ma_code");
-
-                    b.Property<string>("MucDichChi")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("muc_dich_chi");
-
-                    b.Property<DateTime>("NgayTao")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_tao")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("NguoiDungId")
-                        .HasColumnType("int")
-                        .HasColumnName("nguoi_dung_id");
-
-                    b.Property<decimal>("SoTien")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("so_tien");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("phieu_chi", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.PhieuKiemKho", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("GhiChu")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("ghi_chu");
-
-                    b.Property<string>("MaCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ma_code");
-
-                    b.Property<DateTime>("NgayKiemKe")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_kiem_ke");
-
-                    b.Property<int>("NguoiDungId")
-                        .HasColumnType("int")
-                        .HasColumnName("nguoi_dung_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("phieu_kiem_kho", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.PhieuNhapKho", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("MaCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ma_code");
-
-                    b.Property<DateTime>("NgayNhap")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_nhap");
-
-                    b.Property<int>("NguoiDungId")
-                        .HasColumnType("int")
-                        .HasColumnName("nguoi_dung_id");
-
-                    b.Property<int>("NhaCungCapId")
-                        .HasColumnType("int")
-                        .HasColumnName("nha_cung_cap_id");
-
-                    b.Property<decimal>("TongTienNhap")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("tong_tien_nhap");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("phieu_nhap_kho", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.PhuongThucThanhToan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("DangHoatDong")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit")
-                        .HasColumnName("dang_hoat_dong");
+                        .HasColumnName("IsActive");
 
-                    b.Property<string>("Ten")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ten");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("phuong_thuc_thanh_toan", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.QuyenHan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("MaCode")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ma_code");
-
-                    b.Property<string>("PhanHe")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("phan_he");
-
-                    b.Property<string>("Ten")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("ten");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("quyen_han", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.QuyenVaiTro", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("QuyenHanId")
-                        .HasColumnType("int")
-                        .HasColumnName("quyen_han_id");
-
-                    b.Property<int>("VaiTroId")
-                        .HasColumnType("int")
-                        .HasColumnName("vai_tro_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("quyen_vai_tro", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.ThanhToanHoaDon", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("HoaDonId")
-                        .HasColumnType("int")
-                        .HasColumnName("hoa_don_id");
-
-                    b.Property<int>("PhuongThucId")
-                        .HasColumnType("int")
-                        .HasColumnName("phuong_thuc_id");
-
-                    b.Property<decimal>("SoTien")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("so_tien");
-
-                    b.Property<DateTime>("ThoiGianTt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("thoi_gian_tt");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("thanh_toan_hoa_don", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.ThietBiBan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BanBidaId")
-                        .HasColumnType("int")
-                        .HasColumnName("ban_bida_id");
-
-                    b.Property<int>("SoLuong")
-                        .HasColumnType("int")
-                        .HasColumnName("so_luong");
-
-                    b.Property<string>("Ten")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("ten");
-
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("trang_thai");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("thiet_bi_ban", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.ThueTuDo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("KhachHangId")
-                        .HasColumnType("int")
-                        .HasColumnName("khach_hang_id");
-
-                    b.Property<DateTime>("NgayBatDau")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_bat_dau");
-
-                    b.Property<DateTime>("NgayHetHan")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngay_het_han");
-
-                    b.Property<decimal>("TienCoc")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("tien_coc");
-
-                    b.Property<decimal>("TienThueThang")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("tien_thue_thang");
-
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("trang_thai");
-
-                    b.Property<int>("TuDoId")
-                        .HasColumnType("int")
-                        .HasColumnName("tu_do_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("thue_tu_do", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.TonKho", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("MonDichVuId")
-                        .HasColumnType("int")
-                        .HasColumnName("mon_dich_vu_id");
-
-                    b.Property<int>("MucCanhBao")
-                        .HasColumnType("int")
-                        .HasColumnName("muc_canh_bao");
-
-                    b.Property<int>("SoLuongTon")
-                        .HasColumnType("int")
-                        .HasColumnName("so_luong_ton");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ton_kho", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.TranDau", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BanBidaId")
-                        .HasColumnType("int")
-                        .HasColumnName("ban_bida_id");
-
-                    b.Property<int>("CoThu1Id")
-                        .HasColumnType("int")
-                        .HasColumnName("co_thu_1_id");
-
-                    b.Property<int>("CoThu2Id")
-                        .HasColumnType("int")
-                        .HasColumnName("co_thu_2_id");
-
-                    b.Property<int>("GiaiDauId")
-                        .HasColumnType("int")
-                        .HasColumnName("giai_dau_id");
-
-                    b.Property<int?>("NguoiThangId")
-                        .HasColumnType("int")
-                        .HasColumnName("nguoi_thang_id");
-
-                    b.Property<string>("TenVongDau")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ten_vong_dau");
-
-                    b.Property<DateTime>("ThoiGianDau")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("thoi_gian_dau");
-
-                    b.Property<int?>("TiSoCoThu1")
-                        .HasColumnType("int")
-                        .HasColumnName("ti_so_co_thu_1");
-
-                    b.Property<int?>("TiSoCoThu2")
-                        .HasColumnType("int")
-                        .HasColumnName("ti_so_co_thu_2");
-
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("trang_thai");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tran_dau", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.TuDo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("KhuVuc")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("khu_vuc");
-
-                    b.Property<string>("SoTu")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("so_tu");
-
-                    b.Property<decimal>("TienThueThang")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("tien_thue_thang");
-
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("trang_thai");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tu_do", (string)null);
-                });
-
-            modelBuilder.Entity("QuanLyQuanBida.Models.VaiTro", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("MoTa")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasColumnName("mo_ta");
+                        .HasColumnName("PasswordHash");
 
-                    b.Property<string>("Ten")
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasColumnName("PhoneNumber");
+
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasColumnName("ten");
+                        .HasColumnName("Username");
 
                     b.HasKey("Id");
 
-                    b.ToTable("vai_tro", (string)null);
+                    b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("QuanLyQuanBida.Models.VaiTroNguoiDung", b =>
+            modelBuilder.Entity("QuanLyQuanBida.Models.UserRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("NgayTao")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngay_tao")
+                        .HasColumnName("CreatedAt")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("NguoiDungId")
+                    b.Property<int>("RoleId")
                         .HasColumnType("int")
-                        .HasColumnName("nguoi_dung_id");
+                        .HasColumnName("RoleId");
 
-                    b.Property<int>("VaiTroId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int")
-                        .HasColumnName("vai_tro_id");
+                        .HasColumnName("UserId");
 
                     b.HasKey("Id");
 
-                    b.ToTable("vai_tro_nguoi_dung", (string)null);
+                    b.ToTable("UserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("QuanLyQuanBida.Models.WorkSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Notes");
+
+                    b.Property<int>("ShiftId")
+                        .HasColumnType("int")
+                        .HasColumnName("ShiftId");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
+
+                    b.Property<DateTime>("WorkDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("WorkDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WorkSchedules", (string)null);
                 });
 #pragma warning restore 612, 618
         }
