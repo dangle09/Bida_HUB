@@ -59,7 +59,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ban_bida");
+                    b.ToTable("ban_bida", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.BangLuong", b =>
@@ -109,7 +109,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("bang_luong");
+                    b.ToTable("bang_luong", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.BaoTriBan", b =>
@@ -151,7 +151,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("bao_tri_ban");
+                    b.ToTable("bao_tri_ban", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.CaLam", b =>
@@ -183,7 +183,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ca_lam");
+                    b.ToTable("ca_lam", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.ChamCong", b =>
@@ -225,7 +225,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("cham_cong");
+                    b.ToTable("cham_cong", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.ChiTietHoaDon", b =>
@@ -259,7 +259,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("chi_tiet_hoa_don");
+                    b.ToTable("chi_tiet_hoa_don", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.ChiTietNhapKho", b =>
@@ -289,7 +289,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("chi_tiet_nhap_kho");
+                    b.ToTable("chi_tiet_nhap_kho", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.ChuyenBan", b =>
@@ -324,7 +324,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("chuyen_ban");
+                    b.ToTable("chuyen_ban", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.CoThuThamGia", b =>
@@ -358,7 +358,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("co_thu_tham_gia");
+                    b.ToTable("co_thu_tham_gia", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.DanhMucMon", b =>
@@ -384,7 +384,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("danh_muc_mon");
+                    b.ToTable("danh_muc_mon", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.DatBan", b =>
@@ -424,7 +424,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("dat_ban");
+                    b.ToTable("dat_ban", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.GayKhachGui", b =>
@@ -468,7 +468,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("gay_khach_gui");
+                    b.ToTable("gay_khach_gui", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.GiaBanKhungGio", b =>
@@ -498,7 +498,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("gia_ban_khung_gio");
+                    b.ToTable("gia_ban_khung_gio", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.GiaiDau", b =>
@@ -540,7 +540,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("giai_dau");
+                    b.ToTable("giai_dau", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.GiaoDichDiem", b =>
@@ -568,8 +568,10 @@ namespace QuanLyQuanBida.Migrations
                         .HasColumnName("loai_giao_dich");
 
                     b.Property<DateTime>("NgayTao")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngay_tao");
+                        .HasColumnName("ngay_tao")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<int>("SoDiem")
                         .HasColumnType("int")
@@ -577,7 +579,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("giao_dich_diem");
+                    b.ToTable("giao_dich_diem", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.HangThanhVien", b =>
@@ -610,7 +612,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("hang_thanh_vien");
+                    b.ToTable("hang_thanh_vien", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.HoaDon", b =>
@@ -676,7 +678,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("hoa_don");
+                    b.ToTable("hoa_don", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.KhachHang", b =>
@@ -713,8 +715,10 @@ namespace QuanLyQuanBida.Migrations
                         .HasColumnName("ma_code");
 
                     b.Property<DateTime>("NgayTao")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngay_tao");
+                        .HasColumnName("ngay_tao")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("SoDienThoai")
                         .IsRequired()
@@ -724,7 +728,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("khach_hang");
+                    b.ToTable("khach_hang", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.KhuVucBan", b =>
@@ -750,7 +754,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("khu_vuc_ban");
+                    b.ToTable("khu_vuc_ban", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.KhuyenMai", b =>
@@ -792,7 +796,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("khuyen_mai");
+                    b.ToTable("khuyen_mai", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.LichLamViec", b =>
@@ -823,7 +827,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("lich_lam_viec");
+                    b.ToTable("lich_lam_viec", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.LoaiBan", b =>
@@ -847,7 +851,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("loai_ban");
+                    b.ToTable("loai_ban", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.LoaiChiPhi", b =>
@@ -872,7 +876,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("loai_chi_phi");
+                    b.ToTable("loai_chi_phi", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.MonDichVu", b =>
@@ -921,7 +925,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("mon_dich_vu");
+                    b.ToTable("mon_dich_vu", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.NguoiDung", b =>
@@ -960,8 +964,10 @@ namespace QuanLyQuanBida.Migrations
                         .HasColumnName("mat_khau_hash");
 
                     b.Property<DateTime>("NgayTao")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngay_tao");
+                        .HasColumnName("ngay_tao")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("SoDienThoai")
                         .HasMaxLength(15)
@@ -976,7 +982,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("nguoi_dung");
+                    b.ToTable("nguoi_dung", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.NhaCungCap", b =>
@@ -1007,7 +1013,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("nha_cung_cap");
+                    b.ToTable("nha_cung_cap", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.NhatKyHoatDong", b =>
@@ -1053,7 +1059,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("nhat_ky_hoat_dong");
+                    b.ToTable("nhat_ky_hoat_dong", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.PhieuChi", b =>
@@ -1087,8 +1093,10 @@ namespace QuanLyQuanBida.Migrations
                         .HasColumnName("muc_dich_chi");
 
                     b.Property<DateTime>("NgayTao")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngay_tao");
+                        .HasColumnName("ngay_tao")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<int>("NguoiDungId")
                         .HasColumnType("int")
@@ -1100,7 +1108,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("phieu_chi");
+                    b.ToTable("phieu_chi", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.PhieuKiemKho", b =>
@@ -1133,7 +1141,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("phieu_kiem_kho");
+                    b.ToTable("phieu_kiem_kho", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.PhieuNhapKho", b =>
@@ -1169,7 +1177,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("phieu_nhap_kho");
+                    b.ToTable("phieu_nhap_kho", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.PhuongThucThanhToan", b =>
@@ -1193,7 +1201,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("phuong_thuc_thanh_toan");
+                    b.ToTable("phuong_thuc_thanh_toan", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.QuyenHan", b =>
@@ -1225,7 +1233,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("quyen_han");
+                    b.ToTable("quyen_han", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.QuyenVaiTro", b =>
@@ -1247,7 +1255,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("quyen_vai_tro");
+                    b.ToTable("quyen_vai_tro", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.ThanhToanHoaDon", b =>
@@ -1277,7 +1285,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("thanh_toan_hoa_don");
+                    b.ToTable("thanh_toan_hoa_don", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.ThietBiBan", b =>
@@ -1311,7 +1319,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("thiet_bi_ban");
+                    b.ToTable("thiet_bi_ban", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.ThueTuDo", b =>
@@ -1355,7 +1363,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("thue_tu_do");
+                    b.ToTable("thue_tu_do", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.TonKho", b =>
@@ -1381,7 +1389,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ton_kho");
+                    b.ToTable("ton_kho", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.TranDau", b =>
@@ -1439,7 +1447,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tran_dau");
+                    b.ToTable("tran_dau", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.TuDo", b =>
@@ -1474,7 +1482,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tu_do");
+                    b.ToTable("tu_do", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.VaiTro", b =>
@@ -1499,7 +1507,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("vai_tro");
+                    b.ToTable("vai_tro", (string)null);
                 });
 
             modelBuilder.Entity("QuanLyQuanBida.Models.VaiTroNguoiDung", b =>
@@ -1512,8 +1520,10 @@ namespace QuanLyQuanBida.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("NgayTao")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngay_tao");
+                        .HasColumnName("ngay_tao")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<int>("NguoiDungId")
                         .HasColumnType("int")
@@ -1525,7 +1535,7 @@ namespace QuanLyQuanBida.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("vai_tro_nguoi_dung");
+                    b.ToTable("vai_tro_nguoi_dung", (string)null);
                 });
 #pragma warning restore 612, 618
         }

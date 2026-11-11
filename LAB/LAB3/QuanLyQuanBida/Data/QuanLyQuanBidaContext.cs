@@ -51,5 +51,13 @@ namespace QuanLyQuanBida.Data
         public DbSet<ChiTietHoaDon> ChiTietHoaDons { get; set; }
         public DbSet<ChuyenBan> ChuyenBans { get; set; }
         public DbSet<ThanhToanHoaDon> ThanhToanHoaDons { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Tự động quét và áp dụng toàn bộ 41 file Configuration trong Data/Configurations/
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(QuanLyQuanBidaContext).Assembly);
+        }
     }
 }

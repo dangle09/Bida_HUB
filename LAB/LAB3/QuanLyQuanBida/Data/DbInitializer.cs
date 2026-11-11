@@ -17,10 +17,7 @@ namespace QuanLyQuanBida.Data
                 return;
             }
 
-            // ==========================================
             // GIAI ĐOẠN 1: CÁC BẢNG DANH MỤC ĐỘC LẬP
-            // ==========================================
-
             // 1. Vai trò
             var vaiTros = new VaiTro[]
             {
@@ -145,10 +142,7 @@ namespace QuanLyQuanBida.Data
 
             context.SaveChanges();
 
-            // ==========================================
             // GIAI ĐOẠN 2: BẢNG PHỤ THUỘC CẤP 1
-            // ==========================================
-
             // 14. Quyền - Vai trò
             var quyenVaiTros = new QuyenVaiTro[]
             {
@@ -216,10 +210,7 @@ namespace QuanLyQuanBida.Data
 
             context.SaveChanges();
 
-            // ==========================================
             // GIAI ĐOẠN 3: BẢNG PHỤ THUỘC CẤP 2
-            // ==========================================
-
             // 20. Vai trò - Người dùng
             var vaiTroNguoiDungs = new VaiTroNguoiDung[]
             {
@@ -365,10 +356,7 @@ namespace QuanLyQuanBida.Data
 
             context.SaveChanges();
 
-            // ==========================================
             // GIAI ĐOẠN 4: BẢNG PHỤ THUỘC CẤP 3
-            // ==========================================
-
             // 38. Chi tiết nhập kho
             var chiTietNhapKhos = new ChiTietNhapKho[]
             {
