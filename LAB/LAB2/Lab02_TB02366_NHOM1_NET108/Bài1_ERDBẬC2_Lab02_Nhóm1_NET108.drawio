@@ -6096,10 +6096,21 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="edge_AiSessions_AiStates" edge="1" parent="1" source="ai_sess_4240" target="ai_state_4751" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;startArrow=ERmandOne;endArrow=ERmany;strokeColor=#3b82f6;strokeWidth=1.8;">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1635" y="2009" />
+              <mxPoint x="1635" y="2250" />
+              <mxPoint x="2254" y="2250" />
+              <mxPoint x="2254" y="2205" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="edge_Users_AiSessions" edge="1" parent="1" source="TMFbn99egXvSI_5Ys5g8-3504" target="ai_sess_4240" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.2;entryX=0.5;entryY=1;startArrow=ERmandOne;endArrow=ERmany;strokeColor=#3b82f6;strokeWidth=1.8;">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="edge_Users_AiSessions" edge="1" parent="1" source="TMFbn99egXvSI_5Ys5g8-3504" target="ai_sess_4240" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.85;entryX=0.5;entryY=1;startArrow=ERmandOne;endArrow=ERmany;strokeColor=#3b82f6;strokeWidth=1.8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1418" y="2488.6" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
@@ -6500,10 +6511,21 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="edge_AiSessions_AiStates" edge="1" parent="1" source="ai_sess_4240" target="ai_state_4751" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;startArrow=ERmandOne;endArrow=ERmany;strokeColor=#3b82f6;strokeWidth=1.8;">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1635" y="2009" />
+              <mxPoint x="1635" y="2250" />
+              <mxPoint x="2254" y="2250" />
+              <mxPoint x="2254" y="2205" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="edge_Users_AiSessions" edge="1" parent="1" source="TMFbn99egXvSI_5Ys5g8-3504" target="ai_sess_4240" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.2;entryX=0.5;entryY=1;startArrow=ERmandOne;endArrow=ERmany;strokeColor=#3b82f6;strokeWidth=1.8;">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="edge_Users_AiSessions" edge="1" parent="1" source="TMFbn99egXvSI_5Ys5g8-3504" target="ai_sess_4240" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.85;entryX=0.5;entryY=1;startArrow=ERmandOne;endArrow=ERmany;strokeColor=#3b82f6;strokeWidth=1.8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1418" y="2488.6" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
