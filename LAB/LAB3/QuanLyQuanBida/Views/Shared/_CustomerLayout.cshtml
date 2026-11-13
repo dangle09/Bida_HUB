@@ -63,24 +63,14 @@
                     </li>
                 </ul>
 
-                <!-- Action Buttons: Đặt bàn & Đăng nhập nội bộ -->
+                <!-- Action Buttons: Đặt bàn & Hotline -->
                 <div class="d-flex align-items-center gap-2 flex-nowrap">
                     <a href="#booking" class="btn btn-bolt-neon-sm">
                         <i class="bi bi-calendar-check"></i> Đặt bàn
                     </a>
-                    
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <a asp-controller="Categories" asp-action="Index" class="btn btn-bolt-outline-sm" title="Vào trang Quản lý">
-                            <i class="bi bi-speedometer2"></i> Quản lý
-                        </a>
-                    }
-                    else
-                    {
-                        <a asp-controller="Login" asp-action="Login" class="btn btn-bolt-outline-sm" title="Đăng nhập dành cho nhân viên">
-                            <i class="bi bi-shield-lock"></i> Nội bộ
-                        </a>
-                    }
+                    <a href="tel:0362870986" class="btn btn-bolt-outline-sm d-none d-sm-inline-flex" title="Hotline tư vấn">
+                        <i class="bi bi-telephone-fill"></i> 0362 870 986
+                    </a>
                 </div>
             </div>
         </div>
@@ -105,10 +95,10 @@
                         Câu lạc bộ Bida phong cách hiện đại với dàn bàn thi đấu Aileex tiêu chuẩn quốc tế, bi Aramith Pro Cup, phòng máy lạnh 100% cùng menu ẩm thực phong phú phục vụ 24/7 tại Đồng Nai.
                     </p>
                     <div class="mt-3">
-                        <a href="#" class="social-icon-btn"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="social-icon-btn"><i class="bi bi-tiktok"></i></a>
-                        <a href="#" class="social-icon-btn"><i class="bi bi-youtube"></i></a>
-                        <a href="#" class="social-icon-btn"><i class="bi bi-instagram"></i></a>
+                        <a href="https://www.facebook.com/giangdeptraibodoiqua" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="https://www.tiktok.com/@@nggiangxclapw_7" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="TikTok"><i class="bi bi-tiktok"></i></a>
+                        <a href="https://www.youtube.com/@@gxxtenclqp" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="YouTube"><i class="bi bi-youtube"></i></a>
+                        <a href="https://www.instagram.com/gxxtenclqp/" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="Instagram"><i class="bi bi-instagram"></i></a>
                     </div>
                 </div>
 
@@ -130,9 +120,9 @@
                     <ul class="footer-link-list small">
                         <li><a href="#booking">Đặt bàn trước</a></li>
                         <li><a href="#services">Gậy & Phụ kiện</a></li>
-                        <li><a href="#about">Phòng VIP riêng</a></li>
+                        <li><a href="#pricing">Phòng VIP riêng</a></li>
                         <li><a href="#tournaments">Đăng ký giải</a></li>
-                        <li><a asp-controller="Login" asp-action="Login">Cổng quản lý</a></li>
+                        <li><a href="tel:0362870986">Hotline hỗ trợ</a></li>
                     </ul>
                 </div>
 
@@ -146,7 +136,7 @@
                         </li>
                         <li class="mb-2 d-flex align-items-center gap-2">
                             <i class="bi bi-telephone" style="color: var(--bolt-neon);"></i>
-                            <strong class="text-white">Hotline Đặt Bàn: 0987.654.321</strong>
+                            <strong class="text-white">Hotline Đặt Bàn: 0362 870 986</strong>
                         </li>
                         <li class="mb-2 d-flex align-items-center gap-2">
                             <i class="bi bi-clock" style="color: var(--bolt-neon);"></i>
@@ -172,13 +162,13 @@
     </footer>
 
     <!-- 4. FLOATING HOTLINE (Góc trái dưới) -->
-    <a href="tel:0987654321" class="floating-hotline" title="Gọi Hotline đặt bàn ngay!">
+    <a href="tel:0362870986" class="floating-hotline" title="Gọi Hotline đặt bàn ngay!">
         <div class="hotline-circle">
             <i class="bi bi-telephone"></i>
         </div>
         <div class="hotline-label d-none d-md-block">
             <small style="color: var(--bolt-neon); font-size: 0.7rem;">HOTLINE 24/7</small><br />
-            <span>0987.654.321</span>
+            <span>0362 870 986</span>
         </div>
     </a>
 
@@ -189,111 +179,94 @@
             <i class="bi bi-chat-text" id="chatIcon"></i>
         </button>
 
-        <!-- Khung cửa sổ Chat -->
-        <div class="chat-popup" id="chatPopup">
+        <!-- Khung Chat Box thu nhỏ -->
+        <div class="chat-box" id="chatBox" style="display: none;">
             <div class="chat-header">
                 <div class="d-flex align-items-center gap-2">
-                    <div style="position: relative;">
-                        <img src="~/images/bolt-billiards-logo.png" alt="AI Bolt" style="height: 28px; width: 28px; border-radius: 50%; background: #000; padding: 2px;" />
-                        <span style="position: absolute; bottom: 0; right: 0; width: 7px; height: 7px; background: #10b981; border-radius: 50%;"></span>
-                    </div>
+                    <div class="chat-status-dot"></div>
                     <div>
-                        <div class="text-white fw-bold small">Trợ Lý BOLT AI</div>
-                        <div style="font-size: 0.68rem; color: var(--bolt-neon);">Trực tuyến 24/7 • Đồng Nai</div>
+                        <div class="fw-bold text-white small">Trợ lý BOLT BILLIARDS</div>
+                        <div class="text-muted" style="font-size: 0.7rem;">Sẵn sàng giải đáp 24/7</div>
                     </div>
                 </div>
-                <button type="button" class="btn-close btn-close-white btn-sm" id="chatCloseBtn"></button>
+                <button class="btn-close-chat" id="chatCloseBtn">&times;</button>
             </div>
-
-            <!-- Nội dung tin nhắn -->
+            
             <div class="chat-body" id="chatBody">
-                <div class="chat-msg bot">
-                    👋 Chào bạn! Cảm ơn bạn đã ghé thăm <strong>BOLT BILLIARDS Đồng Nai</strong>. Bạn cần kiểm tra bàn trống, hỏi bảng giá hay đặt bàn trước không ạ?
-                </div>
-                <div class="chat-msg bot">
-                    💡 Câu hỏi nhanh:
-                    <div class="mt-2 d-flex flex-wrap gap-1">
-                        <button class="btn btn-sm btn-dark text-start py-1 px-2 border-secondary quick-ask" data-q="Giá bàn Pool 9-Ball bao nhiêu?">🎱 Giá bàn Pool?</button>
-                        <button class="btn btn-sm btn-dark text-start py-1 px-2 border-secondary quick-ask" data-q="Quán có mở xuyên đêm không?">🕒 Giờ mở cửa?</button>
-                        <button class="btn btn-sm btn-dark text-start py-1 px-2 border-secondary quick-ask" data-q="Tôi muốn đặt bàn tối nay lúc 20h.">📅 Đặt bàn tối nay</button>
-                    </div>
+                <div class="chat-msg chat-msg-bot">
+                    Xin chào cơ thủ! 🎱 Bạn cần tư vấn loại bàn, đặt bàn trước hay xem menu đồ uống món ăn tại Bolt Billiards Đồng Nai ạ?
                 </div>
             </div>
-
-            <!-- Khung nhập tin nhắn -->
+            
             <div class="chat-footer">
-                <input type="text" id="chatInput" class="form-control form-control-sm form-control-bolt" placeholder="Nhập câu hỏi..." />
-                <button class="btn btn-bolt-neon btn-sm px-3" id="chatSendBtn">
-                    <i class="bi bi-send"></i>
-                </button>
+                <form id="chatForm" onsubmit="handleSendChat(event)">
+                    <div class="input-group">
+                        <input type="text" id="chatInput" class="form-control form-control-sm form-control-bolt" placeholder="Nhập câu hỏi của bạn..." />
+                        <button type="submit" class="btn btn-bolt-neon btn-sm">Gửi</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap 5 JS Bundle -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    
+
+    <!-- Custom Chat Widget Script -->
     <script>
-        $(document).ready(function () {
-            $('#chatToggleBtn').click(function () {
-                $('#chatPopup').toggleClass('active');
-                if ($('#chatPopup').hasClass('active')) {
-                    $('#chatIcon').removeClass('bi-chat-text').addClass('bi-x-lg');
-                    $('#chatInput').focus();
-                } else {
-                    $('#chatIcon').removeClass('bi-x-lg').addClass('bi-chat-text');
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
+        const chatCloseBtn = document.getElementById('chatCloseBtn');
+        const chatBox = document.getElementById('chatBox');
+        const chatBody = document.getElementById('chatBody');
+        const chatInput = document.getElementById('chatInput');
+
+        if (chatToggleBtn && chatBox) {
+            chatToggleBtn.addEventListener('click', () => {
+                const isHidden = chatBox.style.display === 'none';
+                chatBox.style.display = isHidden ? 'flex' : 'none';
+                if (isHidden && chatInput) chatInput.focus();
+            });
+        }
+
+        if (chatCloseBtn && chatBox) {
+            chatCloseBtn.addEventListener('click', () => {
+                chatBox.style.display = 'none';
+            });
+        }
+
+        function handleSendChat(e) {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // Tin nhắn của khách
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-msg chat-msg-user';
+            userMsg.textContent = text;
+            chatBody.appendChild(userMsg);
+            chatInput.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Tin nhắn phản hồi tự động
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'chat-msg chat-msg-bot';
+                
+                let reply = "Dạ BOLT BILLIARDS Đồng Nai đã nhận câu hỏi! Nhân viên sẽ hỗ trợ bạn ngay hoặc gọi Hotline <strong>0362 870 986</strong> để giữ bàn tức thì nhé!";
+                const lower = text.toLowerCase();
+                if (lower.includes('giá') || lower.includes('bao nhiêu')) {
+                    reply = "Bảng giá giờ chơi: Bàn Pool 9-Ball: 60k/h, Carom 3C: 80k/h, Phòng VIP Smart TV: 120k/h ạ!";
+                } else if (lower.includes('đặt bàn') || lower.includes('bàn trống')) {
+                    reply = "Hiện quán đang mở 24/7 và còn bàn trống! Bạn có thể điền form Đặt Bàn ngay trên trang để nhận ưu đãi 10% nhé!";
+                } else if (lower.includes('địa chỉ') || lower.includes('ở đâu')) {
+                    reply = "Quán tọa lạc tại: Số 168 Đường Đồng Khởi, Phường Tân Hiệp, TP. Biên Hòa, Tỉnh Đồng Nai ạ!";
                 }
-            });
-
-            $('#chatCloseBtn').click(function () {
-                $('#chatPopup').removeClass('active');
-                $('#chatIcon').removeClass('bi-x-lg').addClass('bi-chat-text');
-            });
-
-            $('.quick-ask').click(function () {
-                const text = $(this).data('q');
-                sendMessage(text);
-            });
-
-            $('#chatSendBtn').click(function () {
-                const text = $('#chatInput').val().trim();
-                if (text) {
-                    sendMessage(text);
-                    $('#chatInput').val('');
-                }
-            });
-
-            $('#chatInput').keypress(function (e) {
-                if (e.which === 13) {
-                    $('#chatSendBtn').click();
-                }
-            });
-
-            function sendMessage(text) {
-                $('#chatBody').append(`<div class="chat-msg user">${text}</div>`);
-                scrollChat();
-
-                setTimeout(function () {
-                    let reply = "Dạ BOLT BILLIARDS Đồng Nai đã nhận câu hỏi! Nhân viên sẽ hỗ trợ bạn ngay hoặc gọi Hotline <strong>0987.654.321</strong> để giữ bàn tức thì nhé!";
-                    const lower = text.toLowerCase();
-                    if (lower.includes("giá") || lower.includes("bao nhiêu") || lower.includes("tiền")) {
-                        reply = "🎱 Bảng giá giờ chơi tại BOLT BILLIARDS:<br>• <strong>Bàn Pool 9-Ball:</strong> 59k/h (ngày) - 69k/h (tối)<br>• <strong>Bàn Carom (Libre/3C):</strong> 65k/h (ngày) - 75k/h (tối)<br>• <strong>Phòng VIP:</strong> 119k/h.<br>Đã bao gồm khăn lạnh và trà đá miễn phí ạ!";
-                    } else if (lower.includes("giờ") || lower.includes("mở cửa") || lower.includes("xuyên đêm") || lower.includes("đêm")) {
-                        reply = "🕒 BOLT BILLIARDS <strong>mở cửa 24/7 xuyên đêm tất cả các ngày</strong> trong tuần tại Đồng Nai ạ!";
-                    } else if (lower.includes("đặt bàn") || lower.includes("bàn tối")) {
-                        reply = "📅 Dạ bạn có thể lướt xuống mục <strong>[Đặt bàn]</strong> trên trang web hoặc để lại SĐT tại đây, nhân viên thu ngân sẽ giữ bàn cho bạn ngay ạ!";
-                    }
-                    $('#chatBody').append(`<div class="chat-msg bot">${reply}</div>`);
-                    scrollChat();
-                }, 500);
-            }
-
-            function scrollChat() {
-                const chatBody = document.getElementById('chatBody');
+                
+                botMsg.innerHTML = reply;
+                chatBody.appendChild(botMsg);
                 chatBody.scrollTop = chatBody.scrollHeight;
-            }
-        });
+            }, 600);
+        }
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

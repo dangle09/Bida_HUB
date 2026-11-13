@@ -74,8 +74,8 @@
             }
             else
             {
-                <a asp-controller="Login" asp-action="Login" class="btn btn-sm btn-success px-3">
-                    <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập nội bộ
+                <a href="#booking" class="btn btn-sm btn-success px-3">
+                    <i class="bi bi-calendar-check me-1"></i> Đặt bàn trước
                 </a>
             }
         </div>
@@ -88,15 +88,15 @@
             <ul class="nav flex-column sidebar-nav py-3">
                 <li class="sidebar-header">VẬN HÀNH & BÁN HÀNG</li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">
+                    <a class="nav-link active" asp-controller="Home" asp-action="Index">
                         <i class="bi bi-house-door"></i>
                         <span>Trang chủ khách</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" asp-controller="Categories" asp-action="Index">
+                    <a class="nav-link" href="#services">
                         <i class="bi bi-tags"></i>
-                        <span>Danh mục dịch vụ</span>
+                        <span>Dịch vụ & Thực đơn</span>
                     </a>
                 </li>
                 <li class="nav-item">

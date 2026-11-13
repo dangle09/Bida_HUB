@@ -146,7 +146,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 7px 15px;
-    border-radius: 5px;
+    border-radius: 2px !important;
     border: none;
     white-space: nowrap;
     transition: all 0.2s ease;
@@ -170,7 +170,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 6px 14px;
-    border-radius: 5px;
+    border-radius: 2px !important;
     white-space: nowrap;
     transition: all 0.2s ease;
     display: inline-flex;
@@ -183,7 +183,8 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     color: #ffffff !important;
 }
 
-/* Nút chuẩn chung */
+/* Nút chuẩn chung: Cả .btn-bolt và .btn-bolt-neon đều mang sắc xanh neon thương hiệu */
+.btn-bolt,
 .btn-bolt-neon {
     background-color: var(--bolt-neon);
     color: #05080c !important;
@@ -192,17 +193,22 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     font-size: 0.88rem;
     text-transform: uppercase;
     padding: 10px 24px;
-    border-radius: 6px;
+    border-radius: 2px !important;
     border: none;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    box-shadow: 0 4px 15px rgba(166, 255, 0, 0.25);
 }
 
+.btn-bolt:hover,
 .btn-bolt-neon:hover {
     background-color: #bbf83a;
-    box-shadow: 0 0 16px var(--bolt-neon-glow);
+    color: #000000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--bolt-neon-glow);
 }
 
 .btn-bolt-outline {
@@ -214,7 +220,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     font-size: 0.88rem;
     text-transform: uppercase;
     padding: 9px 22px;
-    border-radius: 6px;
+    border-radius: 2px !important;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
@@ -232,8 +238,8 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     min-height: 80vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, rgba(9, 12, 18, 0.96) 0%, rgba(13, 18, 26, 0.88) 60%, rgba(9, 12, 18, 0.97) 100%),
-                url('/images/home.jpg') center/cover no-repeat;
+    background: linear-gradient(135deg, rgba(9, 12, 18, 0.92) 0%, rgba(13, 18, 26, 0.82) 60%, rgba(9, 12, 18, 0.94) 100%),
+                url('/images/hero-bg.jpg') center/cover no-repeat;
     padding: 80px 0 50px;
     border-bottom: 1px solid var(--bolt-border);
 }
@@ -243,7 +249,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     align-items: center;
     gap: 6px;
     padding: 4px 14px;
-    border-radius: 20px;
+    border-radius: 2px !important;
     background: rgba(166, 255, 0, 0.08);
     border: 1px solid rgba(166, 255, 0, 0.2);
     color: var(--bolt-neon);
@@ -324,13 +330,24 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 
 .section-badge {
     color: var(--bolt-neon);
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    font-size: 0.8rem;
-    letter-spacing: 1.8px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 2px;
     text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.section-badge::after {
+    content: "";
     display: inline-block;
-    margin-bottom: 8px;
+    width: 48px;
+    height: 2px;
+    background-color: var(--bolt-neon);
+    flex-shrink: 0;
 }
 
 .section-title {
@@ -466,7 +483,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     background: transparent;
     color: #94a3b8;
     border: 1px solid var(--bolt-border);
-    border-radius: 6px;
+    border-radius: 2px !important;
     padding: 9px 20px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
@@ -514,7 +531,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 .slider-arrow-btn {
     width: 38px;
     height: 38px;
-    border-radius: 6px;
+    border-radius: 2px !important;
     background: var(--bolt-card);
     border: 1px solid var(--bolt-border);
     color: #cbd5e1;
@@ -552,7 +569,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     flex-shrink: 0;
     background: linear-gradient(160deg, #111726 0%, #0c101a 100%);
     border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 10px;
+    border-radius: 2px !important;
     overflow: hidden;
     transition: all 0.28s ease;
     box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.6);
@@ -617,10 +634,9 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 
 /* 8. GIẢI ĐẤU */
 .tournament-box {
-    background: linear-gradient(135deg, rgba(18, 23, 34, 0.96) 0%, rgba(9, 12, 18, 0.98) 100%),
-                url('/images/courses.jpg') center/cover no-repeat;
+    background: linear-gradient(135deg, rgba(16, 21, 33, 0.98) 0%, rgba(7, 9, 14, 0.99) 100%);
     border: 1px solid rgba(166, 255, 0, 0.4);
-    border-radius: 12px;
+    border-radius: 2px !important;
     padding: 40px 35px;
     box-shadow: 0 0 25px rgba(166, 255, 0, 0.08);
 }
@@ -630,7 +646,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     border: 1px solid rgba(166, 255, 0, 0.3);
     color: var(--bolt-neon);
     padding: 6px 16px;
-    border-radius: 20px;
+    border-radius: 2px !important;
     font-size: 0.92rem;
     font-weight: 600;
     display: inline-block;
@@ -657,7 +673,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 .booking-poster-slot {
     background: var(--bolt-card);
     border: 1px solid var(--bolt-border);
-    border-radius: 10px;
+    border-radius: 2px !important;
     overflow: hidden;
     position: relative;
     display: flex;
@@ -676,6 +692,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     flex-direction: column;
     justify-content: flex-end;
     padding: 30px 24px;
+    border-radius: 2px !important;
 }
 
 .poster-overlay {
@@ -686,7 +703,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 .booking-card {
     background: linear-gradient(160deg, #111726 0%, #0c101a 100%);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
+    border-radius: 2px !important;
     padding: 36px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
 }
@@ -695,7 +712,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     background-color: #090c12;
     border: 1px solid var(--bolt-border);
     color: #ffffff;
-    border-radius: 6px;
+    border-radius: 2px !important;
     padding: 10px 14px;
     font-size: 0.9rem;
 }
@@ -923,4 +940,105 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     border-top: 1px solid var(--bolt-border);
     display: flex;
     gap: 8px;
+}
+
+
+/* ============================================================== */
+/* PHẦN GIỚI THIỆU MỞ RỘNG (ABOUT US SHOWCASE & CƠ THỦ VIỆT NAM)   */
+/* ============================================================== */
+.about-vertical-pill {
+    position: absolute;
+    right: 0px;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    transform: none;
+    background: var(--bolt-neon, #a6ff00);
+    color: #000000;
+    padding: 2rem 0.65rem;
+    border-radius: 2px !important;
+    box-shadow: 0 0 25px rgba(166, 255, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+}
+
+.about-vertical-pill .vertical-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-weight: 800;
+    font-size: 0.82rem;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-family: var(--font-heading);
+}
+
+.about-vertical-pill .vertical-hotline {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    opacity: 0.95;
+    font-family: var(--font-heading);
+}
+
+.hover-lift {
+    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px var(--bolt-neon-glow) !important;
+    border-color: var(--bolt-neon) !important;
+}
+
+/* ============================================================== */
+/* QUY TẮC VUÔNG VỨC TOÀN TRANG (BORDER-RADIUS: 2PX CHUẨN MINIMALISM) */
+/* ============================================================== */
+.bolt-card,
+.pricing-card,
+.service-card,
+.tournament-box,
+.booking-form-card,
+.booking-card,
+.booking-poster-slot,
+.poster-inner,
+.product-slider .item-card,
+.item-card,
+.item-img-wrap,
+.bolt-tab-btn,
+.slider-arrow-btn,
+.testimonial-card,
+.card,
+.stat-box,
+.prize-badge,
+.pricing-badge,
+.hero-tagline,
+.modal-content,
+.modal-content-bolt,
+.about-feature-box,
+.about-img-box,
+.team-card,
+.promo-banner,
+.form-control,
+.form-select,
+.form-control-bolt,
+.form-select-bolt,
+.dropdown-menu,
+.alert,
+.badge,
+.btn,
+.btn-lg,
+.btn-sm,
+.btn-bolt,
+.btn-bolt-neon,
+.btn-bolt-neon-sm,
+.btn-bolt-outline,
+.btn-bolt-outline-sm {
+    border-radius: 2px !important;
 }
