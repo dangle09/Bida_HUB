@@ -167,7 +167,7 @@ namespace QuanLyQuanBida.Data
             // 15. Users: 3 Tài khoản quản lý (Admin, Manager, Cashier - Không tạo tài khoản Waiter)
             var users = new User[]
             {
-                new() { Username = "admin", PasswordHash = HashPassword("giangcc111"), FullName = "Đào Ngọc Giang (Admin)", Email = "giangadmin@bms.com", PhoneNumber = "0988001122", IsActive = true, CreatedAt = DateTime.Now },
+                new() { Username = "admin", PasswordHash = HashPassword("giangcc111"), FullName = "Đào Ngọc Giang (Admin)", Email = "giangadmin@bms.com", PhoneNumber = "0347987360", IsActive = true, CreatedAt = DateTime.Now },
                 new() { Username = "manager", PasswordHash = HashPassword("dangcc111"), FullName = "Lê Nhật Đăng (Quản lý Cơ sở)", Email = "manager@boltbilliards.vn", PhoneNumber = "0912334455", IsActive = true, CreatedAt = DateTime.Now },
                 new() { Username = "cashier", PasswordHash = HashPassword("khoacc111"), FullName = "Trần Thị Mai (Thu ngân POS)", Email = "cashier@boltbilliards.vn", PhoneNumber = "0977889900", IsActive = true, CreatedAt = DateTime.Now }
             };
@@ -196,7 +196,7 @@ namespace QuanLyQuanBida.Data
             // 18. Customers
             var customers = new Customer[]
             {
-                new() { MembershipTierId = membershipTiers[2].Id, Code = "KH_001", FullName = "Đào Ngọc Giang", PhoneNumber = "0988112233", AccumulatedPoints = 550, AccountBalance = 500000, CreatedAt = DateTime.Now },
+                new() { MembershipTierId = membershipTiers[2].Id, Code = "KH_001", FullName = "Đào Ngọc Giang", PhoneNumber = "0347987360", AccumulatedPoints = 550, AccountBalance = 500000, CreatedAt = DateTime.Now },
                 new() { MembershipTierId = membershipTiers[1].Id, Code = "KH_002", FullName = "Nguyễn Hoàng Nam", PhoneNumber = "0912345678", AccumulatedPoints = 180, AccountBalance = 200000, CreatedAt = DateTime.Now },
                 new() { MembershipTierId = membershipTiers[3].Id, Code = "KH_003", FullName = "Trần Quốc Bảo", PhoneNumber = "0909998877", AccumulatedPoints = 1250, AccountBalance = 1500000, CreatedAt = DateTime.Now }
             };
