@@ -1,0 +1,229 @@
+@model QuanLyQuanBida.ViewModels.LoginViewModel
+@{
+    Layout = null; // Trang đăng nhập độc lập toàn màn hình sang trọng
+    ViewData["Title"] = "Đăng nhập hệ thống - BOLT BILLIARDS";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="~/images/bolt-billiards-logo.png" />
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bolt-neon: #a6ff00;
+            --bolt-neon-glow: rgba(166, 255, 0, 0.35);
+            --bolt-dark: #07090e;
+            --bolt-card: rgba(15, 20, 31, 0.88);
+            --bolt-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bolt-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(166, 255, 0, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0, 150, 255, 0.05) 0%, transparent 40%),
+                linear-gradient(180deg, #07090e 0%, #0d121c 100%);
+            color: #ffffff;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .login-card {
+            background: var(--bolt-card);
+            border: 1px solid var(--bolt-border);
+            border-radius: 2px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(166, 255, 0, 0.08);
+            backdrop-filter: blur(16px);
+            width: 100%;
+            max-width: 460px;
+            padding: 2.5rem 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--bolt-neon), transparent);
+        }
+
+        .brand-logo {
+            height: 60px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 12px var(--bolt-neon-glow));
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            border-radius: 2px;
+            padding: 0.75rem 1rem 0.75rem 2.8rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.07);
+            border-color: var(--bolt-neon);
+            box-shadow: 0 0 15px var(--bolt-neon-glow);
+            color: #fff;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8e9bb0;
+            font-size: 1.1rem;
+            z-index: 5;
+        }
+
+        .btn-neon {
+            background-color: var(--bolt-neon);
+            color: #000;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            border-radius: 2px;
+            padding: 0.85rem;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px var(--bolt-neon-glow);
+            text-transform: uppercase;
+        }
+
+        .btn-neon:hover {
+            background-color: #b8ff1a;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(166, 255, 0, 0.5);
+        }
+
+        .quick-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 2px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .quick-badge:hover {
+            border-color: var(--bolt-neon);
+            background: rgba(166, 255, 0, 0.12);
+            color: var(--bolt-neon);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <!-- Logo & Thương hiệu -->
+        <div class="text-center mb-4">
+            <a asp-controller="Home" asp-action="Index">
+                <img src="~/images/bolt-billiards-logo.png" alt="BOLT BILLIARDS" class="brand-logo mb-2" />
+            </a>
+            <h4 class="fw-bold text-white mb-1">BOLT BILLIARDS</h4>
+            <div class="text-muted small">Cổng Đăng Nhập Vận Hành Nội Bộ & Quản Trị</div>
+        </div>
+
+        <!-- Thông báo lỗi (nếu có) -->
+        <div asp-validation-summary="All" class="alert alert-danger py-2 small" style="background: rgba(220, 53, 69, 0.15); border-color: #dc3545; color: #ff8585; border-radius: 2px; @(ViewData.ModelState.IsValid ? "display:none;" : "")" role="alert"></div>
+
+        <!-- Form Đăng nhập -->
+        <form asp-controller="Login" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" method="post" novalidate>
+            @Html.AntiForgeryToken()
+
+            <!-- Tài khoản / Email -->
+            <div class="mb-3 position-relative">
+                <label asp-for="Email" class="form-label small fw-semibold text-light mb-1">Tài khoản / Email</label>
+                <i class="bi bi-person input-icon" style="top: 38px;"></i>
+                <input type="text" asp-for="Email" id="inputEmail" class="form-control" placeholder="admin hoặc thungan_mai..." autofocus required />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <!-- Mật khẩu -->
+            <div class="mb-3 position-relative">
+                <label asp-for="Password" class="form-label small fw-semibold text-light mb-1">Mật khẩu</label>
+                <i class="bi bi-lock input-icon" style="top: 38px;"></i>
+                <input asp-for="Password" id="inputPassword" type="password" class="form-control" placeholder="Nhập mật khẩu..." required />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <!-- Ghi nhớ & Quên MK -->
+            <div class="d-flex justify-content-between align-items-center mb-4 small">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" style="background-color: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2);" />
+                    <label asp-for="RememberMe" class="form-check-label text-muted">Ghi nhớ 24h</label>
+                </div>
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted small hover-neon">
+                    <i class="bi bi-arrow-left"></i> Về trang chủ
+                </a>
+            </div>
+
+            <!-- Nút Đăng nhập -->
+            <button type="submit" class="btn btn-neon w-100 mb-3">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Đăng Nhập
+            </button>
+        </form>
+
+        <!-- Phần hỗ trợ Test Phân quyền nhanh cho Giảng viên & Sinh viên -->
+        <div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
+            <div class="small text-muted mb-2 text-center fw-semibold">
+                <i class="bi bi-lightning-charge text-warning me-1"></i>Chọn tài khoản mẫu để kiểm thử phân quyền:
+            </div>
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                <button type="button" class="quick-badge" onclick="fillAccount('admin', 'giangcc111')" title="Vai trò Manager / Admin: Toàn quyền CRUD danh mục">
+                    <i class="bi bi-shield-lock text-warning"></i>
+                    <span><strong>Manager:</strong> admin</span>
+                </button>
+                <button type="button" class="quick-badge" onclick="fillAccount('thungan_mai', 'dangcc111')" title="Vai trò Employee: Chỉ xem, bị chặn Create/Edit/Delete">
+                    <i class="bi bi-person text-info"></i>
+                    <span><strong>Employee:</strong> thungan_mai</span>
+                </button>
+                <button type="button" class="quick-badge" onclick="fillAccount('phucvu_tuan', 'khoacc111')" title="Vai trò Employee: Nhân viên phục vụ">
+                    <i class="bi bi-person text-success"></i>
+                    <span><strong>Employee:</strong> phucvu_tuan</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script tự động điền tài khoản để test cực nhanh -->
+    <script>
+        function fillAccount(username, password) {
+            document.getElementById('inputEmail').value = username;
+            document.getElementById('inputPassword').value = password;
+        }
+    </script>
+</body>
+</html>

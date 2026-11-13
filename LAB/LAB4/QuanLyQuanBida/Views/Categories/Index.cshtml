@@ -1,0 +1,139 @@
+@model IEnumerable<QuanLyQuanBida.Models.Category>
+@{
+    ViewData["Title"] = "Quản lý Danh mục Dịch vụ & Đồ uống";
+    Layout = "_Layout";
+    var itemCounts = ViewBag.ItemCounts as Dictionary<int, int> ?? new Dictionary<int, int>();
+    bool isManager = User.IsInRole("Manager") || User.IsInRole("Admin");
+}
+
+<div class="container-fluid px-0">
+    <!-- Header của trang -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-tags text-success"></i>
+                Danh Mục Đồ Uống & Dịch Vụ
+            </h2>
+            <p class="text-secondary small mb-0">
+                Thực hiện yêu cầu Lab 4 - Phần II: Quản lý xem, thêm, sửa, xóa với phân quyền <code>EmployeeOrManager</code> & <code>ManagerOnly</code>.
+            </p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            @if (isManager)
+            {
+                <a asp-action="Create" class="btn btn-success fw-bold d-flex align-items-center gap-2 shadow-sm" style="background-color: var(--primary-green, #a6ff00); color: #000; border: none;">
+                    <i class="bi bi-plus-circle-fill"></i>
+                    <span>Thêm Danh Mục Mới</span>
+                </a>
+            }
+            else
+            {
+                <span class="badge bg-secondary p-2 d-flex align-items-center gap-1" title="Chỉ Manager mới có quyền thêm mới danh mục">
+                    <i class="bi bi-lock-fill text-warning"></i> Chế độ Nhân viên (Chỉ xem)
+                </span>
+            }
+        </div>
+    </div>
+
+    <!-- Thông báo kết quả thao tác -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show bg-success bg-opacity-10 border-success text-success d-flex align-items-center gap-2 py-2" role="alert">
+            <i class="bi bi-check-circle-fill fs-5"></i>
+            <div>@TempData["SuccessMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show bg-danger bg-opacity-10 border-danger text-danger d-flex align-items-center gap-2 py-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            <div>@TempData["ErrorMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Bảng dữ liệu danh mục -->
+    <div class="card bg-dark border-secondary border-opacity-50 shadow-sm rounded-3 overflow-hidden">
+        <div class="card-header bg-black bg-opacity-30 border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
+            <span class="fw-semibold text-light small text-uppercase">
+                <i class="bi bi-list-ul me-1"></i> Danh sách hiện có (@Model.Count() danh mục)
+            </span>
+            <div class="badge bg-dark border border-secondary text-secondary">
+                Policy: <span class="text-success">EmployeeOrManager</span> (Xem) | <span class="text-warning">ManagerOnly</span> (CRUD)
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead class="table-dark text-secondary small text-uppercase border-secondary">
+                    <tr>
+                        <th style="width: 80px;" class="text-center">#ID</th>
+                        <th style="width: 160px;">Mã Code</th>
+                        <th>Tên Danh Mục</th>
+                        <th style="width: 180px;" class="text-center">Số lượng món</th>
+                        <th style="width: 220px;" class="text-end">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            int count = itemCounts.ContainsKey(item.Id) ? itemCounts[item.Id] : 0;
+                            <tr>
+                                <td class="text-center text-muted fw-semibold">@item.Id</td>
+                                <td>
+                                    <span class="badge bg-dark border border-secondary text-info font-monospace">@item.Code</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-white">@item.Name</div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-dark border border-secondary text-light">
+                                        <i class="bi bi-cup-straw text-warning me-1"></i>@count món
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <!-- Xem chi tiết (Cả Employee & Manager đều được) -->
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" title="Xem chi tiết">
+                                            <i class="bi bi-eye"></i> Xem
+                                        </a>
+
+                                        @if (isManager)
+                                        {
+                                            <!-- Sửa (Chỉ Manager) -->
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning" title="Chỉnh sửa danh mục">
+                                                <i class="bi bi-pencil-square"></i> Sửa
+                                            </a>
+                                            <!-- Xóa (Chỉ Manager) -->
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Xóa danh mục">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <!-- Khi là Employee, nút bị khóa để hướng dẫn quyền -->
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary opacity-50" title="Chỉ Manager mới được sửa (Nhấn để test AccessDenied)">
+                                                <i class="bi bi-lock"></i> Sửa
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-secondary opacity-50" title="Chỉ Manager mới được xóa (Nhấn để test AccessDenied)">
+                                                <i class="bi bi-lock"></i> Xóa
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">Chưa có danh mục nào. Hãy thêm mới!</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
