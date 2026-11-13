@@ -1,8 +1,802 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    Layout = "_CustomerLayout";
+    ViewData["Title"] = "BOLT BILLIARDS - CLB Bida Hiện Đại & Đẳng Cấp";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- 1. HERO SECTION (BANNER QUẢNG CÁO CHÍNH) -->
+<section class="bolt-hero" id="home">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="hero-tagline">
+                    <i class="bi bi-lightning-charge"></i> CLB Bida Đẳng Cấp Tại Đồng Nai
+                </div>
+                <h1 class="hero-title">
+                    CHINH PHỤC ĐỈNH CAO<br />
+                    CÙNG <span class="neon">BOLT</span> BILLIARDS
+                </h1>
+                <p class="hero-desc">
+                    Trải nghiệm không gian thi đấu chuyên nghiệp với dàn bàn Aileex & Gabriels nhập khẩu, bi Aramith Pro Cup, phòng máy lạnh 100% cực mát và ẩm thực F&B đa dạng phục vụ xuyên đêm 24/7.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="#booking" class="btn btn-bolt-neon">
+                        <i class="bi bi-calendar-check"></i> ĐẶT BÀN NGAY
+                    </a>
+                    <a href="#pricing" class="btn btn-bolt-outline">
+                        <i class="bi bi-tag"></i> XEM BẢNG GIÁ
+                    </a>
+                </div>
+
+                <!-- Thống kê nhanh tối giản -->
+                <div class="row hero-stats-row g-3">
+                    <div class="col-3 stat-box">
+                        <div class="stat-number">24+</div>
+                        <div class="stat-label">Bàn Thi Đấu</div>
+                    </div>
+                    <div class="col-3 stat-box">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Vải Nỉ Simonis</div>
+                    </div>
+                    <div class="col-3 stat-box">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Mở Xuyên Đêm</div>
+                    </div>
+                    <div class="col-3 stat-box">
+                        <div class="stat-number">15Tr</div>
+                        <div class="stat-label">Giải Thưởng</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hình ảnh Logo Bolt Billiards -->
+            <div class="col-lg-5 text-center mt-5 mt-lg-0">
+                <div class="position-relative d-inline-block">
+                    <img src="~/images/bolt-billiards-logo.png" alt="Bolt Billiards" class="img-fluid" style="max-height: 380px; filter: drop-shadow(0 0 25px rgba(166, 255, 0, 0.35));" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. VÌ SAO CHỌN BOLT BILLIARDS (ABOUT - MINIMALISM ICONS) -->
+<section class="section-pad" id="about">
+    <div class="container">
+        <div class="text-center">
+            <span class="section-badge">ƯU ĐIỂM VƯỢT TRỘI</span>
+            <h2 class="section-title">VÌ SAO CƠ THỦ CHỌN BOLT BILLIARDS?</h2>
+            <p class="section-subtitle">
+                BOLT BILLIARDS mang đến trải nghiệm bida thể thao tiêu chuẩn cao nhất cho cả người chơi phong trào lẫn cơ thủ chuyên nghiệp tại Đồng Nai.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="bolt-card">
+                    <div class="bolt-card-icon">
+                        <i class="bi bi-grid-3x3"></i>
+                    </div>
+                    <h4>Bàn Chuẩn Thi Đấu</h4>
+                    <p class="text-secondary small mb-0">
+                        100% bàn Aileex 9020 và Gabriels nhập khẩu, mặt đá phiến tự nhiên siêu phẳng, băng cao su đàn hồi chuẩn xác từng góc đánh.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="bolt-card">
+                    <div class="bolt-card-icon">
+                        <i class="bi bi-award"></i>
+                    </div>
+                    <h4>Bi & Cơ Đạt Chuẩn</h4>
+                    <p class="text-secondary small mb-0">
+                        Bi Aramith Pro Cup TV nhập khẩu từ Bỉ cho độ đảo bi hoàn hảo. Dàn gậy bida carbon thẳng tắp, đầu Kamui & lơ Master luôn sẵn sàng.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="bolt-card">
+                    <div class="bolt-card-icon">
+                        <i class="bi bi-cup-hot"></i>
+                    </div>
+                    <h4>Ẩm Thực F&B 24/7</h4>
+                    <p class="text-secondary small mb-0">
+                        Phục vụ đồ ăn nóng sốt (Mì xào, cơm chiên, bánh mì) và nước uống mát lạnh (Cà phê muối, trà đào, nước tăng lực) tận bàn chơi.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="bolt-card">
+                    <div class="bolt-card-icon">
+                        <i class="bi bi-trophy"></i>
+                    </div>
+                    <h4>Giải Đấu Hàng Tháng</h4>
+                    <p class="text-secondary small mb-0">
+                        Tổ chức các giải phong trào và mở rộng định kỳ với tổng giải thưởng lên đến 15 triệu đồng, bảng xếp hạng cơ thủ uy tín.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. BẢNG GIÁ GIỜ CHƠI CÔNG KHAI (PRICING) -->
+<section class="section-pad-alt" id="pricing">
+    <div class="container">
+        <div class="text-center">
+            <span class="section-badge">CHI PHÍ MINH BẠCH</span>
+            <h2 class="section-title">BẢNG GIÁ GIỜ CHƠI</h2>
+            <p class="section-subtitle">
+                Giá niêm yết rõ ràng, không phụ thu ẩn, đã bao gồm trà đá và khăn lạnh miễn phí trong suốt giờ chơi.
+            </p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+            <!-- Bàn Pool 9-Ball -->
+            <div class="col-lg-4 col-md-6">
+                <div class="pricing-card">
+                    <h3 class="pricing-name">BÀN POOL 9-BALL (LỖ)</h3>
+                    <div class="pricing-price">59.000<small style="font-size: 1.1rem;">đ</small></div>
+                    <div class="pricing-unit">Khung giờ: 08:00 - 17:00 / Giờ</div>
+                    <div class="badge bg-dark border border-secondary text-warning mb-3">Tối (17h - 08h): 69.000đ/h</div>
+                    
+                    <ul class="pricing-features">
+                        <li><i class="bi bi-check2"></i> Bàn Aileex 9020 chuẩn quốc tế</li>
+                        <li><i class="bi bi-check2"></i> Nỉ Simonis 860 siêu mượt</li>
+                        <li><i class="bi bi-check2"></i> Bi Aramith Tournament TV</li>
+                        <li><i class="bi bi-check2"></i> Miễn phí nước trà đá & khăn lạnh</li>
+                        <li><i class="bi bi-check2"></i> Bảng điểm điện tử cảm ứng</li>
+                    </ul>
+
+                    <a href="#booking" class="btn btn-outline-light w-100 py-2 btn-sm">CHỌN ĐẶT BÀN POOL</a>
+                </div>
+            </div>
+
+            <!-- Bàn Carom (Libre / 3 Băng) - Nổi Bật -->
+            <div class="col-lg-4 col-md-6">
+                <div class="pricing-card featured">
+                    <span class="featured-ribbon">CƠ THỦ YÊU THÍCH</span>
+                    <h3 class="pricing-name text-white">BÀN CAROM (LIBRE / 3C)</h3>
+                    <div class="pricing-price">65.000<small style="font-size: 1.1rem;">đ</small></div>
+                    <div class="pricing-unit">Khung giờ: 08:00 - 17:00 / Giờ</div>
+                    <div class="badge bg-success text-dark fw-bold mb-3">Tối (17h - 08h): 75.000đ/h</div>
+
+                    <ul class="pricing-features">
+                        <li><i class="bi bi-check2"></i> Bàn Gabriels nhập khẩu cao cấp</li>
+                        <li><i class="bi bi-check2"></i> <strong>Hệ thống sưởi nhiệt mặt đá</strong> tự động</li>
+                        <li><i class="bi bi-check2"></i> Nỉ Royal Pro cao cấp thi đấu 3C</li>
+                        <li><i class="bi bi-check2"></i> Bi Aramith Pro Cup 3 bi siêu nảy</li>
+                        <li><i class="bi bi-check2"></i> Bảng điểm điện tử chuẩn UMB</li>
+                    </ul>
+
+                    <a href="#booking" class="btn btn-bolt-neon w-100 py-2 btn-sm">CHỌN ĐẶT BÀN CAROM</a>
+                </div>
+            </div>
+
+            <!-- Bàn VIP Riêng Tư -->
+            <div class="col-lg-4 col-md-6">
+                <div class="pricing-card">
+                    <h3 class="pricing-name">PHÒNG VIP ĐẲNG CẤP</h3>
+                    <div class="pricing-price">119.000<small style="font-size: 1.1rem;">đ</small></div>
+                    <div class="pricing-unit">Áp dụng mọi khung giờ 24/7</div>
+                    <div class="badge bg-dark border border-secondary text-info mb-3">Không gian riêng tư 100%</div>
+
+                    <ul class="pricing-features">
+                        <li><i class="bi bi-check2"></i> Không gian cách âm, phòng máy lạnh riêng</li>
+                        <li><i class="bi bi-check2"></i> Smart TV 65" xem giải thế giới</li>
+                        <li><i class="bi bi-check2"></i> Ghế sofa da êm ái cho người xem</li>
+                        <li><i class="bi bi-check2"></i> Phục vụ viên chuyên trách tại phòng</li>
+                        <li><i class="bi bi-check2"></i> Tặng kèm đĩa trái cây tươi theo mùa</li>
+                    </ul>
+
+                    <a href="#booking" class="btn btn-outline-light w-100 py-2 btn-sm">ĐẶT PHÒNG VIP</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. DỊCH VỤ & GIAN HÀNG PHỤ KIỆN (SLIDER TRƯỢT MŨI TÊN 2 HƯỚNG - ẢNH 1) -->
+<section class="section-pad" id="services">
+    <div class="container">
+        <div class="text-center">
+            <span class="section-badge">DỊCH VỤ & TIỆN ÍCH</span>
+            <h2 class="section-title">DỊCH VỤ CÂU LẠC BỘ</h2>
+            <p class="section-subtitle">
+                Nạp năng lượng sau những ván đấu căng thẳng hoặc trang bị cho mình dàn cơ bida đẳng cấp từ shop của chúng tôi.
+            </p>
+        </div>
+
+        <!-- Thanh điều hướng Tab + 2 Nút Mũi Tên Trượt Sản Phẩm (Ảnh 1) -->
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between mb-3 gap-3">
+            <!-- Tabs -->
+            <div class="bolt-tabs mb-0" id="servicesTab" role="tablist">
+                <button class="bolt-tab-btn active" id="fnb-tab" data-bs-toggle="pill" data-bs-target="#fnb" type="button">
+                    <i class="bi bi-cup-straw"></i> Thực Đơn Đồ Uống & Ăn Nhẹ
+                </button>
+                <button class="bolt-tab-btn" id="shop-tab" data-bs-toggle="pill" data-bs-target="#shop" type="button">
+                    <i class="bi bi-tools"></i> Gian Hàng Phụ Kiện Cơ Thủ
+                </button>
+            </div>
+
+            <!-- Nút mũi tên 2 hướng để lướt sản phẩm -->
+            <div class="slider-nav-buttons d-flex align-items-center gap-2">
+                <span class="text-secondary small d-none d-sm-inline me-1">Cuộn xem thêm:</span>
+                <button class="slider-arrow-btn" id="slidePrevBtn" title="Lùi lại">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="slider-arrow-btn" id="slideNextBtn" title="Xem tiếp">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="tab-content" id="servicesTabContent">
+            <!-- TAB 1: MENU ĐỒ UỐNG & ĂN NHẸ (10 MÓN ĐA DẠNG) -->
+            <div class="tab-pane fade show active" id="fnb">
+                <div class="product-slider" id="fnbSlider">
+                    <!-- Món 1 -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/fnb/fnb-1-caphe-muoi.png" alt="Cà Phê Muối Đặc Sản" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Cà Phê Muối Đặc Sản</h5>
+                            <p class="item-desc">Cà phê Robusta thơm đậm đà kết hợp lớp kem béo mặn nhẹ.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">28.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-success">Phổ biến</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Món 2 -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/fnb/fnb-2-tra-dao.jpg" alt="Trà Đào Cam Sả" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Trà Đào Cam Sả</h5>
+                            <p class="item-desc">Trà ướp hương sả tự nhiên, miếng đào giòn ngọt giải khát tức thì.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">32.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-info">Mát lạnh</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Món 3 -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/fnb/fnb-3-redbull.jpg" alt="RedBull Thái Ướp Lạnh" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">RedBull Thái Ướp Lạnh</h5>
+                            <p class="item-desc">Bổ sung năng lượng và tăng cường tập trung cho cơ thủ.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">22.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-warning">Tăng lực</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Món 4 -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/fnb/fnb-4-mi-xuc-xich.jpg" alt="Mì Trứng Xúc Xích Bò" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Mì Trứng Xúc Xích Bò</h5>
+                            <p class="item-desc">Mì ăn liền xào giòn hoặc nước, kèm trứng ốp la và xúc xích.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">35.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-danger">Nóng sốt</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Món 5 (Mới) -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/fnb/fnb-5-banh-mi-chao.jpg" alt="Bánh Mì Chảo Đặc Biệt" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Bánh Mì Chảo Đặc Biệt</h5>
+                            <p class="item-desc">Trứng ốp la, pate gan béo thơm, xúc xích tiêu, sốt bơ đậm đà.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">38.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-warning">Món mới</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Món 6 (Mới) -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/fnb/fnb-6-com-chien.jpg" alt="Cơm Chiên Bò Dưa Chua" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Cơm Chiên Bò Dưa Chua</h5>
+                            <p class="item-desc">Cơm chiên hạt vàng giòn, bò mềm xào dưa cải muối chua ngọt vừa vị.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">45.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-success">Ăn no</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Món 7 (Mới) -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/fnb/fnb-7-khoai-tay-lac.jpg" alt="Khoai Tây Chiên Lắc Phô Mai" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Khoai Tây Chiên Lắc Phô Mai</h5>
+                            <p class="item-desc">Khoai tây cọng giòn rụm phủ đều bột phô mai béo thơm nức mũi.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">30.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-info">Ăn vặt</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Món 8 (Mới) -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/fnb/fnb-8-tra-mang-cau.jpg" alt="Trà Mãng Cầu Tươi" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Trà Mãng Cầu Tươi</h5>
+                            <p class="item-desc">Trà lài thanh mát hòa quyện múi mãng cầu dầm chua ngọt thơm lừng.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">32.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-info">Giải khát</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Món 9 (Mới) -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/fnb/fnb-9-heineken.jpg" alt="Heineken Silver Ướp Lạnh" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Heineken Silver Ướp Lạnh</h5>
+                            <p class="item-desc">Bia lon ướp tuyết cực sảng khoái cho những trận giao lưu chiến hữu.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">28.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-secondary">Đồ uống</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Món 10 (Mới) -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/fnb/fnb-10-kho-bo.jpg" alt="Khô Bò Vắt Chanh Ớt" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Khô Bò Vắt Chanh Ớt</h5>
+                            <p class="item-desc">Thịt bò sấy sợi ớt cay nhẹ, thêm chanh tươi chua dịu ăn lai rai cực cuốn.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">40.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-danger">Mồi nhắm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: GIAN HÀNG PHỤ KIỆN CƠ THỦ (8 DỤNG CỤ CHUYÊN NGHIỆP) -->
+            <div class="tab-pane fade" id="shop">
+                <div class="product-slider" id="shopSlider">
+                    <!-- Phụ kiện 1 -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/shop/shop-1-co-fury.jpg" alt="Cơ Bida Fury Carbon Pro" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Cơ Bida Fury Carbon Pro</h5>
+                            <p class="item-desc">Ngọn bọc sợi Carbon chống cong vênh, trợ lực cú đánh mượt mà.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">2.850.000đ</span>
+                                <span class="badge bg-success text-dark fw-bold">Chính hãng</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phụ kiện 2 -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/shop/shop-2-gang-tay.jpg" alt="Găng Tay Bolt Co Giãn" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Găng Tay Bolt Co Giãn</h5>
+                            <p class="item-desc">Vải thun lạnh thoáng khí, in logo phản quang, chống trơn mồ hôi.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">65.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-info">Độc quyền</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phụ kiện 3 -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/shop/shop-3-lo-master.jpg" alt="Lơ Bida Master USA" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Lơ Bida Master USA (Hộp)</h5>
+                            <p class="item-desc">Lơ chuẩn xuất xứ Mỹ, bám đầu tẩy cực tốt, hạn chế tối đa tặc cơ.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">40.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-secondary">Hộp 2 viên</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phụ kiện 4 -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/shop/shop-4-bao-da.jpg" alt="Bao Da Đựng Cơ 1 Gốc 2 Ngọn" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Bao Da Đựng Cơ 1 Gốc 2 Ngọn</h5>
+                            <p class="item-desc">Chất liệu da PU chống thấm nước, có ngăn phụ chứa lơ và găng tay.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">350.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-warning">Chống sốc</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phụ kiện 5 (Mới) -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/shop/shop-5-khuc-noi.jpg" alt="Khúc Nối Cơ Carbon Extension" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Khúc Nối Cơ Carbon Extension</h5>
+                            <p class="item-desc">Khúc nối dài 20cm bằng Carbon siêu nhẹ, hỗ trợ thế bi xa tầm với.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">320.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-info">Trợ lực</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phụ kiện 6 (Mới) -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/shop/shop-6-dau-tay-kamui.jpg" alt="Đầu Tẩy Kamui Clear Black" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Đầu Tẩy Kamui Clear Black</h5>
+                            <p class="item-desc">Đầu da nhiều lớp Nhật Bản bám bi cực xoáy, kiểm tra chuẩn thi đấu.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">260.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-success">Cao cấp</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phụ kiện 7 (Mới) -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/shop/shop-7-khan-lau.jpg" alt="Khăn Lau Cơ Sợi Microfiber" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Khăn Lau Cơ Sợi Microfiber</h5>
+                            <p class="item-desc">Thấm hút mồ hôi và bụi lơ, giữ ngọn cơ luôn sạch trơn láng.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">35.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-secondary">Phụ kiện</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phụ kiện 8 (Mới) -->
+                    <div class="item-card">
+                        <div class="item-img-wrap">
+                            <img src="~/images/shop/shop-8-bit-ren.jpg" alt="Bịt Ren Bảo Vệ Khớp Nối Cơ" class="product-thumb-img" />
+                        </div>
+                        <div class="item-body">
+                            <h5 class="item-title">Bịt Ren Bảo Vệ Khớp Nối Cơ</h5>
+                            <p class="item-desc">Bộ chụp ren bảo vệ khớp nối bằng nhôm Anode, chống sứt ren gậy.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-price">75.000đ</span>
+                                <span class="badge bg-dark border border-secondary text-warning">Bảo vệ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. GIẢI ĐẤU CLB PHONG TRÀO (POPUP MODAL ĐĂNG KÝ - ẢNH 2) -->
+<section class="section-pad-alt" id="tournaments">
+    <div class="container">
+        <div class="tournament-box">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <span class="prize-badge">
+                        <i class="bi bi-trophy me-1"></i> TỔNG GIẢI THƯỞNG: 15.000.000 VNĐ
+                    </span>
+                    <h2 class="text-white mb-3" style="font-size: 2.3rem;">
+                        BOLT OPEN CHAMPIONSHIP 2026
+                    </h2>
+                    <p class="text-light mb-4" style="font-weight: 300;">
+                        Giải đấu bida phong trào định kỳ lớn nhất Đồng Nai dành cho tất cả các cơ thủ đam mê bộ môn Pool 9-Ball & 10-Ball.
+                    </p>
+
+                    <!-- Icon viền mỏng nét thanh (Ảnh 3) -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6">
+                            <div class="tour-info-item">
+                                <i class="bi bi-calendar-event"></i>
+                                <span>Khởi tranh: <strong class="text-white">Ngày 25 hàng tháng</strong></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="tour-info-item">
+                                <i class="bi bi-person-check"></i>
+                                <span>Số lượng: <strong class="text-white">32 Cơ thủ (Chia bảng)</strong></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="tour-info-item">
+                                <i class="bi bi-geo-alt"></i>
+                                <span>Địa điểm: <strong class="text-white">BOLT Club Đồng Nai</strong></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="tour-info-item">
+                                <i class="bi bi-shield-check"></i>
+                                <span>Thể thức: <strong class="text-white">Race to 7 (Chạm 7)</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nút bấm Bật Popup Modal Form Đăng Ký (Ảnh 2) -->
+                    <button type="button" class="btn btn-bolt-neon" data-bs-toggle="modal" data-bs-target="#tournamentModal">
+                        <i class="bi bi-pencil-square"></i> ĐĂNG KÝ THAM GIA NGAY
+                    </button>
+                </div>
+
+                <!-- Bảng cơ cấu giải -->
+                <div class="col-lg-5 mt-4 mt-lg-0">
+                    <div class="card p-3 border-secondary" style="background: rgba(9, 12, 18, 0.9); border: 1px solid var(--bolt-border) !important;">
+                        <h6 class="text-center text-white fw-bold mb-3 font-heading" style="letter-spacing: 1px;">CƠ CẤU GIẢI THƯỞNG</h6>
+                        <ul class="list-unstyled mb-0 small">
+                            <li class="d-flex justify-content-between align-items-center p-2 mb-2 rounded bg-dark border border-secondary">
+                                <span class="text-light">🥇 Giải Nhất (Vô Địch):</span>
+                                <span class="fw-bold" style="color: var(--bolt-neon);">8.000.000đ + Cúp</span>
+                            </li>
+                            <li class="d-flex justify-content-between align-items-center p-2 mb-2 rounded bg-dark border border-secondary">
+                                <span class="text-light">🥈 Giải Nhì (Á Quân):</span>
+                                <span class="fw-bold text-white">4.000.000đ + Cờ</span>
+                            </li>
+                            <li class="d-flex justify-content-between align-items-center p-2 mb-2 rounded bg-dark border border-secondary">
+                                <span class="text-light">🥉 Đồng Hạng Ba (2 giải):</span>
+                                <span class="fw-bold text-white">1.500.000đ / giải</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. ĐẶT BÀN TRỰC TUYẾN 24/7 (BỐ CỤC: 1/3 ẢNH DỌC + 2/3 FORM BÊN PHẢI - ẢNH 3) -->
+<section class="section-pad" id="booking">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="section-badge">GIỮ CHỖ NHANH CHÓNG</span>
+            <h2 class="section-title mb-2">ĐẶT BÀN TRỰC TUYẾN</h2>
+            <p class="section-subtitle mb-0">
+                Chỉ mất 30 giây để đặt trước tại BOLT BILLIARDS Đồng Nai, nhân viên sẽ chuẩn bị bàn sạch sẽ và giữ vị trí đẹp nhất cho bạn!
+            </p>
+        </div>
+
+        <div class="row g-4 align-items-stretch mt-2">
+            <!-- 1/3 CỘT TRÁI: KHUNG ẢNH DỌC CHỪA CHỖ THÊM ẢNH SAU (ẢNH 3) -->
+            <div class="col-lg-4 col-md-5">
+                <div class="booking-poster-slot h-100">
+                    <div class="poster-inner">
+                        <div class="poster-overlay">
+                            <span class="badge bg-success text-dark fw-bold mb-2">BOLT ĐỒNG NAI</span>
+                            <h4 class="text-white font-heading">ĐẲNG CẤP CƠ THỦ</h4>
+                            <p class="small text-secondary mb-0">
+                                Dàn bàn chuẩn quốc tế luôn sẵn sàng đón tiếp bạn và những người anh em đam mê bộ môn bi-a.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2/3 CỘT PHẢI: FORM ĐẶT BÀN (ẢNH 3) -->
+            <div class="col-lg-8 col-md-7">
+                <div class="booking-card h-100">
+                    <form id="onlineBookingForm">
+                        <div class="row g-3">
+                            <!-- Họ tên -->
+                            <div class="col-md-6">
+                                <label class="form-label-bolt">Họ và tên *</label>
+                                <input type="text" class="form-control form-control-bolt" id="bookName" placeholder="Ví dụ: Nguyễn Văn A" required />
+                            </div>
+
+                            <!-- Số điện thoại -->
+                            <div class="col-md-6">
+                                <label class="form-label-bolt">Số điện thoại *</label>
+                                <input type="tel" class="form-control form-control-bolt" id="bookPhone" placeholder="Ví dụ: 0987654321" required />
+                            </div>
+
+                            <!-- Chọn loại bàn -->
+                            <div class="col-md-6">
+                                <label class="form-label-bolt">Loại Bàn Yêu Cầu *</label>
+                                <select class="form-select form-select-bolt" id="bookTableType">
+                                    <option value="Pool 9-Ball (Bàn Lỗ)">Bàn Pool 9-Ball (Bàn Lỗ Chuẩn)</option>
+                                    <option value="Carom Libre (Băng Phổ Thông)">Bàn Carom Libre (Bida Phăng)</option>
+                                    <option value="Carom 3C (3 Băng Sưởi Nhiệt)">Bàn Carom 3 Băng Sưởi Nhiệt</option>
+                                    <option value="Phòng VIP Riêng Biệt">Phòng VIP Riêng Biệt (Smart TV)</option>
+                                </select>
+                            </div>
+
+                            <!-- Số người dự kiến -->
+                            <div class="col-md-6">
+                                <label class="form-label-bolt">Số Lượng Cơ Thủ</label>
+                                <select class="form-select form-select-bolt" id="bookGuests">
+                                    <option value="1-2 Người">1 - 2 Người (Đánh đơn / Luyện tập)</option>
+                                    <option value="3-4 Người">3 - 4 Người (Đánh đôi / Giao lưu)</option>
+                                    <option value="Nhóm đông (5+ người)">Nhóm đông cơ thủ (5+ người)</option>
+                                </select>
+                            </div>
+
+                            <!-- Ngày đến -->
+                            <div class="col-md-6">
+                                <label class="form-label-bolt">Ngày Đến *</label>
+                                <input type="date" class="form-control form-control-bolt" id="bookDate" required />
+                            </div>
+
+                            <!-- Giờ đến -->
+                            <div class="col-md-6">
+                                <label class="form-label-bolt">Giờ Đến Dự Kiến *</label>
+                                <input type="time" class="form-control form-control-bolt" id="bookTime" required />
+                            </div>
+
+                            <!-- Ghi chú thêm -->
+                            <div class="col-12">
+                                <label class="form-label-bolt">Ghi Chú Hoặc Yêu Cầu Thêm</label>
+                                <textarea class="form-control form-control-bolt" id="bookNote" rows="2" placeholder="Ví dụ: Lấy bàn gần điều hòa, chuẩn bị sẵn 2 cơ nặng 520g..."></textarea>
+                            </div>
+
+                            <!-- Nút Xác Nhận -->
+                            <div class="col-12 text-center mt-3">
+                                <button type="submit" class="btn btn-bolt-neon btn-lg w-100 py-3">
+                                    <i class="bi bi-check2 me-1"></i> XÁC NHẬN GỬI YÊU CẦU ĐẶT BÀN
+                                </button>
+                                <div class="text-secondary small mt-2">
+                                    <i class="bi bi-shield-check text-success"></i> Thông tin của bạn được bảo mật tuyệt đối. Chúng tôi sẽ gọi xác nhận trong 5 phút.
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. POPUP MODAL ĐĂNG KÝ GIẢI ĐẤU (ẢNH 2) -->
+<div class="modal fade" id="tournamentModal" tabindex="-1" aria-labelledby="tournamentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-bolt">
+            <div class="modal-header modal-header-bolt">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-trophy fs-4" style="color: var(--bolt-neon);"></i>
+                    <div>
+                        <h5 class="modal-title font-heading text-white mb-0" id="tournamentModalLabel">
+                            ĐĂNG KÝ THI ĐẤU BOLT CHAMPIONSHIP
+                        </h5>
+                        <small class="text-secondary" style="font-size: 0.75rem;">Giải đấu ngày 25 hàng tháng • Tổng thưởng 15.000.000đ</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-body-bolt">
+                <form id="tournamentRegisterForm">
+                    <div class="mb-3">
+                        <label class="form-label-bolt">Họ và tên cơ thủ *</label>
+                        <input type="text" class="form-control form-control-bolt" id="tourPlayerName" placeholder="Ví dụ: Nguyễn Hoàng Nam" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label-bolt">Số điện thoại liên hệ *</label>
+                        <input type="tel" class="form-control form-control-bolt" id="tourPlayerPhone" placeholder="Ví dụ: 0987654321" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label-bolt">Hạng cơ thủ dự kiến *</label>
+                        <select class="form-select form-select-bolt" id="tourPlayerRank">
+                            <option value="Hạng E (Cơ thủ tốt - Chạm 6)">Hạng E (Phong trào tốt - Chạm 6)</option>
+                            <option value="Hạng F (Phong trào vừa - Chạm 5)">Hạng F (Phong trào vừa - Chạm 5)</option>
+                            <option value="Hạng G (Mới giao lưu - Chạm 4)">Hạng G (Giao lưu phong trào - Chạm 4)</option>
+                            <option value="Hạng Mở Rộng Open (Chạm 7)">Hạng Mở Rộng Open (Chạm 7)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label-bolt">CLB hoặc Đội sinh hoạt (Nếu có)</label>
+                        <input type="text" class="form-control form-control-bolt" id="tourPlayerClub" placeholder="Ví dụ: Tự do hoặc CLB Biên Hòa" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label-bolt">Ghi chú thêm</label>
+                        <textarea class="form-control form-control-bolt" id="tourPlayerNote" rows="2" placeholder="Ghi chú về lịch thi đấu nếu cần..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-bolt-neon w-100 py-2">
+                        <i class="bi bi-check2 me-1"></i> XÁC NHẬN GỬI ĐĂNG KÝ THI ĐẤU
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Set ngày mặc định là hôm nay
+        document.getElementById('bookDate').valueAsDate = new Date();
+
+        // Xử lý mũi tên trượt qua lại giữa các sản phẩm (Ảnh 1)
+        function getActiveSlider() {
+            if ($('#fnb').hasClass('show') || $('#fnb').hasClass('active')) {
+                return document.getElementById('fnbSlider');
+            }
+            return document.getElementById('shopSlider');
+        }
+
+        $('#slidePrevBtn').click(function () {
+            const slider = getActiveSlider();
+            if (slider) {
+                slider.scrollBy({ left: -280, behavior: 'smooth' });
+            }
+        });
+
+        $('#slideNextBtn').click(function () {
+            const slider = getActiveSlider();
+            if (slider) {
+                slider.scrollBy({ left: 280, behavior: 'smooth' });
+            }
+        });
+
+        // Xử lý gửi Form Đặt Bàn (Ảnh 3)
+        $('#onlineBookingForm').submit(function (e) {
+            e.preventDefault();
+            const name = $('#bookName').val();
+            const phone = $('#bookPhone').val();
+            const table = $('#bookTableType').val();
+            const time = $('#bookTime').val();
+
+            alert(`🎉 ĐẶT BÀN THÀNH CÔNG!\n\nCảm ơn bạn ${name} (${phone})!\nBOLT BILLIARDS Đồng Nai đã nhận yêu cầu đặt [${table}] lúc ${time}.\nNhân viên thu ngân sẽ gọi lại để xác nhận số bàn trống cho bạn ngay ạ!`);
+            this.reset();
+            document.getElementById('bookDate').valueAsDate = new Date();
+        });
+
+        // Xử lý gửi Form Đăng Ký Giải Đấu (Ảnh 2)
+        $('#tournamentRegisterForm').submit(function (e) {
+            e.preventDefault();
+            const name = $('#tourPlayerName').val();
+            const phone = $('#tourPlayerPhone').val();
+            const rank = $('#tourPlayerRank').val();
+
+            // Đóng Modal
+            const modalEl = document.getElementById('tournamentModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+
+            alert(`🏆 ĐĂNG KÝ GIẢI THÀNH CÔNG!\n\nChào mừng cơ thủ: ${name} (${phone})\nHạng đăng ký: ${rank}\nBan tổ chức giải BOLT OPEN CHAMPIONSHIP sẽ liên hệ xếp lịch thi đấu cho bạn trước ngày 24 hàng tháng nhé!`);
+            this.reset();
+        });
+    </script>
+}

@@ -1,31 +1,80 @@
-html {
-  font-size: 14px;
+/* BẢNG MÀU CHUẨN XÁM + XANH LÁ BIDA */
+:root {
+    --bg-main: #12161f;       /* 60% Xám than nền chính */
+    --bg-card: #1b202c;       /* 30% Xám Slate cho Card, Sidebar, Topbar */
+    --border-color: #2b3345;  /* Đường kẻ phân cách */
+    
+    --primary-green: #10b981; /* 10% Xanh lá nỉ bida */
+    --hover-green: #34d399;   /* Xanh lá sáng khi rê chuột */
+    
+    --text-main: #f1f5f9;     /* Chữ chính trắng sáng dịu */
+    --text-muted: #94a3b8;    /* Chữ phụ xám tro */
+    
+    /* Màu trạng thái bàn */
+    --status-free: #10b981;   /* Bàn trống (Xanh lá) */
+    --status-busy: #ef4444;   /* Bàn đang chơi (Đỏ) */
+    --status-clean: #f59e0b;  /* Bàn đang dọn (Vàng) */
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* 1. NỀN TOÀN BỘ TRANG */
 body {
-  margin-bottom: 60px;
+    background-color: var(--bg-main) !important;
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* 2. CARD VÀ KHUNG CHỨA DỮ LIỆU */
+.card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px;
+    color: var(--text-main);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.card-header {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    font-weight: 600;
+}
+
+/* 3. NÚT BẤM CHÍNH (ĐIỂM NHẤN XANH LÁ) */
+.btn-primary, .btn-success {
+    background-color: var(--primary-green) !important;
+    border-color: var(--primary-green) !important;
+    color: #0b1319 !important; /* Chữ đen đậm trên nền xanh cho rõ */
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    background-color: var(--hover-green) !important;
+    border-color: var(--hover-green) !important;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.35); /* Hiệu ứng phát sáng nhẹ */
+}
+
+/* 4. BẢNG DỮ LIỆU (TABLE DANH MỤC / HÓA ĐƠN) */
+.table {
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+
+.table th {
+    background-color: #171c26 !important;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border-color) !important;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.table td {
+    background-color: var(--bg-card) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    vertical-align: middle;
+}
+
+/* 5. MENU SIDEBAR ĐANG CHỌN (ACTIVE) */
+.sidebar-nav .nav-link.active {
+    color: var(--primary-green) !important;
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    border-left: 3px solid var(--primary-green);
 }
