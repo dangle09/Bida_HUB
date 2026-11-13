@@ -1,44 +1,51 @@
 @{
-    ViewData["Title"] = "Từ chối truy cập (Access Denied)";
+    ViewData["Title"] = "Từ chối truy cập (403 Access Denied) - BOLT BILLIARDS";
     Layout = "_Layout";
 }
 
-<div class="container py-5 text-center">
-    <div class="row justify-content-center">
+<div class="container-fluid px-0">
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <a asp-controller="Categories" asp-action="Index" class="text-secondary text-decoration-none">Quản lý hàng hóa</a>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Từ chối truy cập (403)</span>
+    </div>
+
+    <div class="row justify-content-center pt-4">
         <div class="col-md-8 col-lg-6">
-            <div class="card bg-dark text-white border-danger border-opacity-50 p-4 rounded-4 shadow-lg" style="background: rgba(20, 24, 33, 0.95); backdrop-filter: blur(10px);">
+            <div class="card bg-dark text-white border-danger border-opacity-50 p-4 shadow-lg text-center" style="border-radius: 2px !important; background-color: var(--bg-card, #0e131d) !important;">
                 <div class="mb-3">
-                    <span class="d-inline-flex p-3 rounded-circle bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">
+                    <span class="d-inline-flex p-3 bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25" style="border-radius: 2px !important;">
                         <i class="bi bi-shield-lock-fill fs-1"></i>
                     </span>
                 </div>
                 
-                <h3 class="fw-bold text-danger mb-2">403 - KHÔNG CÓ QUYỀN TRUY CẬP</h3>
+                <h3 class="fw-bold text-danger mb-2 font-heading">403 - TỪ CHỐI TRUY CẬP HỆ THỐNG</h3>
                 <p class="text-secondary small mb-4">
-                    Khu vực hoặc hành động này chỉ dành riêng cho tài khoản có vai trò <strong>Quản lý (Manager / Admin)</strong> 
-                    theo chính sách phân quyền <code>ManagerOnly</code> của Lab 4.
+                    Thao tác Thêm, Sửa, Xóa danh mục yêu cầu quyền <strong>Admin</strong> hoặc <strong>Manager</strong> 
+                    theo chính sách phân quyền <code>AdminOrManager</code>. Tài khoản Thu ngân (Cashier) chỉ có quyền xem danh mục & sơ đồ bàn.
                 </p>
 
-                <div class="bg-black bg-opacity-40 p-3 rounded-3 text-start small mb-4 border border-secondary border-opacity-25">
+                <div class="bg-black bg-opacity-40 p-3 text-start small mb-4 border border-secondary border-opacity-25" style="border-radius: 2px !important;">
                     <div class="d-flex justify-content-between py-1 border-bottom border-secondary border-opacity-25">
                         <span class="text-muted">Tài khoản hiện tại:</span>
                         <span class="fw-semibold text-light">@User.Identity?.Name</span>
                     </div>
                     <div class="d-flex justify-content-between py-1">
                         <span class="text-muted">Vai trò hiện tại:</span>
-                        <span class="badge bg-warning text-dark">
-                            @(User.IsInRole("Manager") ? "Manager" : "Employee")
+                        <span class="badge @(User.IsInRole("Admin") ? "bg-danger" : User.IsInRole("Manager") ? "bg-warning text-dark" : "bg-info text-dark")" style="border-radius: 2px !important;">
+                            @(User.IsInRole("Admin") ? "👑 Admin" : User.IsInRole("Manager") ? "⭐ Manager" : "👤 Cashier")
                         </span>
                     </div>
                 </div>
 
                 <div class="d-flex gap-2 justify-content-center">
-                    <a asp-controller="Categories" asp-action="Index" class="btn btn-outline-light px-4 rounded-3">
-                        <i class="bi bi-arrow-left me-1"></i> Về Danh Mục
+                    <a asp-controller="Categories" asp-action="Index" class="btn btn-outline-light px-4" style="border-radius: 2px !important;">
+                        <i class="bi bi-arrow-left me-1"></i> Quay Lại Bảng Danh Mục
                     </a>
                     <form asp-controller="Login" asp-action="Logout" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger px-4 rounded-3">
+                        <button type="submit" class="btn btn-danger px-4 fw-bold" style="border-radius: 2px !important;">
                             <i class="bi bi-box-arrow-right me-1"></i> Đổi Tài Khoản Quản Lý
                         </button>
                     </form>

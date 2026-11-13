@@ -30,16 +30,24 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     });
 
-// 2. Phân quyền: Cấu hình các Policy vai trò
+// 2. Phân quyền: Cấu hình các Policy vai trò theo yêu cầu phân quyền Admin / Manager / Cashier
 builder.Services.AddAuthorization(options =>
 {
-    // Policy cho phép cả Employee và Manager (dùng khi chấp nhận một trong hai)
-    options.AddPolicy("EmployeeOrManager", policy =>
-        policy.RequireRole("Employee", "Manager"));
+    // Policy cho phép truy cập khu vực Quản lý Dashboard / POS (Admin, Manager, Cashier)
+    options.AddPolicy("ManagementAccess", policy =>
+        policy.RequireRole("Admin", "Manager", "Cashier"));
 
-    // Policy chỉ cho phép Manager
+    // Tương thích ngược với policy cũ
+    options.AddPolicy("EmployeeOrManager", policy =>
+        policy.RequireRole("Admin", "Manager", "Cashier"));
+
+    // Policy cho phép Thêm, Sửa, Xóa danh mục (Admin và Manager đều làm được)
+    options.AddPolicy("AdminOrManager", policy =>
+        policy.RequireRole("Admin", "Manager"));
+
+    // Tương thích ngược với policy cũ
     options.AddPolicy("ManagerOnly", policy =>
-        policy.RequireRole("Manager"));
+        policy.RequireRole("Admin", "Manager"));
 });
 
 var app = builder.Build();

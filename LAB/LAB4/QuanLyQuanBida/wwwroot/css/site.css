@@ -1,82 +1,448 @@
-/* BẢNG MÀU CHUẨN XÁM + XANH LÁ BIDA */
+/* BOLT BILLIARDS - ADMIN POS DASHBOARD THEME
+   Đồng bộ 100% với Web vãng lai: Đen obsidian (#07090e), Xám Slate (#0e131d), Neon Lime (#a6ff00)
+   Bố cục chuẩn Wireframe: Topbar 60px cố định, Sidebar 260px cố định cuộn dọc, Footer StatusBar 35px
+   Quy tắc bo góc: 2px radius toàn trang
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
-    --bg-main: #12161f;       /* 60% Xám than nền chính */
-    --bg-card: #1b202c;       /* 30% Xám Slate cho Card, Sidebar, Topbar */
-    --border-color: #2b3345;  /* Đường kẻ phân cách */
+    --bg-main: #07090e;              /* Nền tối chính */
+    --bg-card: #0d121c;              /* Khung thẻ và bảng dữ liệu */
+    --bg-card-hover: #121826;        /* Trạng thái hover thẻ */
+    --border-color: rgba(255, 255, 255, 0.08); /* Viền mỏng tinh tế */
+    --border-hover: rgba(166, 255, 0, 0.35);
     
-    --primary-green: #10b981; /* 10% Xanh lá nỉ bida */
-    --hover-green: #34d399;   /* Xanh lá sáng khi rê chuột */
+    --primary-neon: #a6ff00;         /* Xanh neon thương hiệu Bolt */
+    --neon-glow: rgba(166, 255, 0, 0.35);
+    --hover-green: #bcf734;
     
-    --text-main: #f1f5f9;     /* Chữ chính trắng sáng dịu */
-    --text-muted: #94a3b8;    /* Chữ phụ xám tro */
+    --text-main: #f8fafc;            /* Chữ chính trắng sáng */
+    --text-muted: #94a3b8;           /* Chữ phụ xám bạc (rõ ràng, không bị chìm) */
+    --text-dim: #64748b;
     
-    /* Màu trạng thái bàn */
-    --status-free: #10b981;   /* Bàn trống (Xanh lá) */
-    --status-busy: #ef4444;   /* Bàn đang chơi (Đỏ) */
-    --status-clean: #f59e0b;  /* Bàn đang dọn (Vàng) */
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    
+    --topbar-height: 60px;
+    --sidebar-width: 260px;
+    --footer-height: 35px;
 }
 
-/* 1. NỀN TOÀN BỘ TRANG */
-body {
+* {
+    box-sizing: border-box;
+}
+
+body.bida-body {
     background-color: var(--bg-main) !important;
     color: var(--text-main);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--font-body);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
-/* 2. CARD VÀ KHUNG CHỨA DỮ LIỆU (VUÔNG VỨC BO 2PX) */
-.card, .btn, .form-control, .form-select, .modal-content, .alert {
+/* ========================================================= */
+/* 1. TOPBAR CỐ ĐỊNH TRÊN CÙNG (CAO 60PX)                    */
+/* ========================================================= */
+.bida-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--topbar-height);
+    background-color: rgba(10, 14, 22, 0.98);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 1030;
+    padding: 0 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bida-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.bida-brand img {
+    height: 36px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px var(--neon-glow));
+}
+
+.brand-text {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #ffffff;
+}
+
+.brand-sub {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Status Pill đồng hồ và ca trực */
+.status-pill {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 2px !important;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-main);
+}
+
+.indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--primary-neon);
+    box-shadow: 0 0 8px var(--primary-neon);
+    display: inline-block;
+}
+
+.avatar-badge {
+    width: 32px;
+    height: 32px;
+    background: rgba(166, 255, 0, 0.15);
+    border: 1px solid var(--primary-neon);
+    color: var(--primary-neon);
+    font-weight: 700;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 2px !important;
 }
+
+/* ========================================================= */
+/* 2. SIDEBAR MENU TRÁI (RỘNG 260PX, CUỘN DỌC, CỐ ĐỊNH)      */
+/* ========================================================= */
+.bida-sidebar {
+    position: fixed;
+    top: var(--topbar-height);
+    bottom: var(--footer-height);
+    left: 0;
+    width: var(--sidebar-width);
+    background-color: #0b0f17;
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    z-index: 1020;
+    padding: 1rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.bida-sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+.bida-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+.sidebar-heading {
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--primary-neon);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 0.85rem 1.25rem 0.35rem;
+    margin-top: 0.3rem;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-heading::after {
+    content: "";
+    flex-grow: 1;
+    height: 1px;
+    background: rgba(166, 255, 0, 0.2);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 1.25rem;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.sidebar-link i {
+    font-size: 1.1rem;
+    color: #64748b;
+    transition: all 0.2s ease;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-link:hover {
+    color: #ffffff;
+    background-color: rgba(166, 255, 0, 0.05);
+    border-left-color: var(--primary-neon);
+}
+
+.sidebar-link:hover i {
+    color: var(--primary-neon);
+}
+
+.sidebar-link.active {
+    color: #ffffff;
+    font-weight: 700;
+    background: linear-gradient(90deg, rgba(166, 255, 0, 0.12) 0%, transparent 100%);
+    border-left-color: var(--primary-neon);
+}
+
+.sidebar-link.active i {
+    color: var(--primary-neon);
+    filter: drop-shadow(0 0 6px var(--neon-glow));
+}
+
+.badge-sidebar-lab {
+    background-color: rgba(166, 255, 0, 0.15);
+    color: var(--primary-neon);
+    border: 1px solid var(--primary-neon);
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 2px !important;
+    margin-left: auto;
+    font-weight: 700;
+}
+
+/* ========================================================= */
+/* 3. VÙNG LÀM VIỆC CHÍNH (MAIN CONTENT)                     */
+/* ========================================================= */
+.bida-main-content {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--topbar-height);
+    margin-bottom: var(--footer-height);
+    min-height: calc(100vh - var(--topbar-height) - var(--footer-height));
+    padding: 1.5rem 2rem;
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(circle at 85% 15%, rgba(166, 255, 0, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 10% 85%, rgba(0, 150, 255, 0.03) 0%, transparent 40%);
+}
+
+.breadcrumb-pos {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+    letter-spacing: 0.4px;
+}
+
+.breadcrumb-pos a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.breadcrumb-pos a:hover {
+    color: var(--primary-neon);
+}
+
+.breadcrumb-pos .active {
+    color: var(--primary-neon);
+    font-weight: 600;
+}
+
+/* ========================================================= */
+/* 4. FOOTER / STATUS BAR CỐ ĐỊNH DƯỚI CÙNG (CAO 35PX)      */
+/* ========================================================= */
+.bida-statusbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--footer-height);
+    background-color: #06080d;
+    border-top: 1px solid var(--border-color);
+    z-index: 1030;
+    padding: 0 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.statusbar-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ========================================================= */
+/* 5. CARDS, BẢNG VÀ PHẦN TỬ GIAO DIỆN BO 2PX CHUẨN         */
+/* ========================================================= */
+.card,
+.card-header,
+.card-body,
+.btn,
+.form-control,
+.form-select,
+.dropdown-menu,
+.alert,
+.modal-content,
+.badge,
+.table-responsive {
+    border-radius: 2px !important;
+}
+
 .card {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-color) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     color: var(--text-main);
 }
 
 .card-header {
-    background-color: rgba(255, 255, 255, 0.02) !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
     border-bottom: 1px solid var(--border-color) !important;
-    font-weight: 600;
+    font-family: var(--font-heading);
+    font-weight: 700;
 }
 
-/* 3. NÚT BẤM CHÍNH (ĐIỂM NHẤN XANH LÁ) */
-.btn-primary, .btn-success {
-    background-color: var(--primary-green) !important;
-    border-color: var(--primary-green) !important;
-    color: #0b1319 !important; /* Chữ đen đậm trên nền xanh cho rõ */
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.btn-primary:hover, .btn-success:hover {
-    background-color: var(--hover-green) !important;
-    border-color: var(--hover-green) !important;
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.35); /* Hiệu ứng phát sáng nhẹ */
-}
-
-/* 4. BẢNG DỮ LIỆU (TABLE DANH MỤC / HÓA ĐƠN) */
-.table {
-    color: var(--text-main) !important;
-    border-color: var(--border-color) !important;
-}
-
-.table th {
-    background-color: #171c26 !important;
-    color: var(--text-muted);
-    border-bottom: 2px solid var(--border-color) !important;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-}
-
-.table td {
-    background-color: var(--bg-card) !important;
-    border-bottom: 1px solid var(--border-color) !important;
+/* Table Bida Dark */
+.table-bida {
+    width: 100%;
+    margin-bottom: 0;
+    color: #e2e8f0;
+    border-color: var(--border-color);
     vertical-align: middle;
 }
 
-/* 5. MENU SIDEBAR ĐANG CHỌN (ACTIVE) */
-.sidebar-nav .nav-link.active {
-    color: var(--primary-green) !important;
-    background-color: rgba(16, 185, 129, 0.1) !important;
-    border-left: 3px solid var(--primary-green);
+.table-bida th {
+    background-color: rgba(255, 255, 255, 0.04);
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #cbd5e1;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-bida td {
+    padding: 14px 16px;
+    background-color: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.9rem;
+}
+
+.table-bida tr:hover td {
+    background-color: rgba(166, 255, 0, 0.03);
+}
+
+/* Nút bấm chuẩn xanh neon */
+.btn-bolt-neon {
+    background-color: var(--primary-neon) !important;
+    color: #05080c !important;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 2px !important;
+    padding: 8px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px var(--neon-glow);
+}
+
+.btn-bolt-neon:hover {
+    background-color: var(--hover-green) !important;
+    color: #000000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(166, 255, 0, 0.5);
+}
+
+.btn-bolt-outline {
+    background: transparent !important;
+    color: var(--primary-neon) !important;
+    border: 1px solid var(--primary-neon) !important;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: 2px !important;
+    padding: 7px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-bolt-outline:hover {
+    background-color: rgba(166, 255, 0, 0.12) !important;
+    color: #ffffff !important;
+    border-color: var(--primary-neon) !important;
+}
+
+/* Thumbnail danh mục / sản phẩm */
+.thumb-category-wrap {
+    width: 54px;
+    height: 54px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: #080b12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px !important;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.thumb-category-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .bida-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    .bida-sidebar.show {
+        transform: translateX(0);
+    }
+    .bida-main-content {
+        margin-left: 0;
+        padding: 1.25rem 1rem;
+    }
 }

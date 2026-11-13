@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyQuanBida.Data;
 using QuanLyQuanBida.Models;
+using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,27 +14,31 @@ namespace QuanLyQuanBida.Controllers
 {
     /// <summary>
     /// Controller Quản lý Danh mục Đồ uống & Dịch vụ (Chuẩn kiến trúc ASP.NET Core MVC + Entity Framework Core)
-    /// Áp dụng Phân quyền Policy: EmployeeOrManager và ManagerOnly
+    /// Áp dụng Phân quyền:
+    /// - ManagementAccess: Admin, Manager, Cashier đều có quyền xem (Index, Details).
+    /// - AdminOrManager: Cả Admin và Manager đều có toàn quyền Thêm (Create), Sửa (Edit), Xóa (Delete). Cashier bị chặn 403.
     /// </summary>
     public class CategoriesController : Controller
     {
         private readonly QuanLyQuanBidaContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public CategoriesController(QuanLyQuanBidaContext context)
+        public CategoriesController(QuanLyQuanBidaContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         // =========================================================================
-        // 1. GET: /Categories/Index (Policy: EmployeeOrManager - Cả nhân viên & quản lý đều xem được)
+        // 1. GET: /Categories/Index (Policy: ManagementAccess - Admin, Manager, Cashier)
         // =========================================================================
-        [Authorize(Policy = "EmployeeOrManager")]
+        [Authorize(Policy = "ManagementAccess")]
         public async Task<IActionResult> Index()
         {
             ViewData["Title"] = "Quản lý danh mục đồ uống & dịch vụ";
             var categories = await _context.Categories.AsNoTracking().ToListAsync();
 
-            // Đếm số lượng sản phẩm thuộc từng danh mục để hiển thị trực quan
+            // Đếm số lượng sản phẩm/dịch vụ thuộc từng danh mục
             var counts = await _context.ServiceItems
                 .GroupBy(s => s.CategoryId)
                 .Select(g => new { CategoryId = g.Key, Count = g.Count() })
@@ -41,9 +49,9 @@ namespace QuanLyQuanBida.Controllers
         }
 
         // =========================================================================
-        // 2. GET: /Categories/Details/5 (Policy: EmployeeOrManager)
+        // 2. GET: /Categories/Details/5 (Policy: ManagementAccess)
         // =========================================================================
-        [Authorize(Policy = "EmployeeOrManager")]
+        [Authorize(Policy = "ManagementAccess")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -57,10 +65,10 @@ namespace QuanLyQuanBida.Controllers
                 return NotFound();
             }
 
-            // Danh sách các món ăn / đồ uống thuộc danh mục
+            // Danh sách các món ăn / đồ uống / dụng cụ thuộc danh mục (khớp 100% web vãng lai)
             var items = await _context.ServiceItems
                 .Where(s => s.CategoryId == id)
-                .OrderBy(s => s.Name)
+                .OrderBy(s => s.UnitPrice)
                 .ToListAsync();
 
             ViewBag.Items = items;
@@ -68,9 +76,9 @@ namespace QuanLyQuanBida.Controllers
         }
 
         // =========================================================================
-        // 3. GET: /Categories/Create (Policy: ManagerOnly - Chỉ Quản lý)
+        // 3. GET: /Categories/Create (Policy: AdminOrManager - Cả Admin và Manager)
         // =========================================================================
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Policy = "AdminOrManager")]
         public IActionResult Create()
         {
             ViewData["Title"] = "Thêm mới danh mục";
@@ -80,8 +88,8 @@ namespace QuanLyQuanBida.Controllers
         // POST: /Categories/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "ManagerOnly")]
-        public async Task<IActionResult> Create([Bind("Code,Name")] Category category)
+        [Authorize(Policy = "AdminOrManager")]
+        public async Task<IActionResult> Create([Bind("Code,Name,Image")] Category category, IFormFile? ImageFile)
         {
             if (string.IsNullOrWhiteSpace(category.Code))
             {
@@ -94,6 +102,22 @@ namespace QuanLyQuanBida.Controllers
 
             if (ModelState.IsValid)
             {
+                // Xử lý upload ảnh đại diện sản phẩm / danh mục
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    var uploadDir = Path.Combine(_env.WebRootPath, "images", "categories");
+                    Directory.CreateDirectory(uploadDir);
+                    var extension = Path.GetExtension(ImageFile.FileName).ToLowerInvariant();
+                    var fileName = $"cat_{Guid.NewGuid():N}{extension}";
+                    var filePath = Path.Combine(uploadDir, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream);
+                    }
+                    category.Image = $"images/categories/{fileName}";
+                }
+
                 category.Code = category.Code.Trim().ToUpper();
                 category.Name = category.Name.Trim();
 
@@ -108,9 +132,9 @@ namespace QuanLyQuanBida.Controllers
         }
 
         // =========================================================================
-        // 4. GET: /Categories/Edit/5 (Policy: ManagerOnly - Chỉ Quản lý)
+        // 4. GET: /Categories/Edit/5 (Policy: AdminOrManager - Cả Admin và Manager)
         // =========================================================================
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Policy = "AdminOrManager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -131,8 +155,8 @@ namespace QuanLyQuanBida.Controllers
         // POST: /Categories/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "ManagerOnly")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Code,Name")] Category category)
+        [Authorize(Policy = "AdminOrManager")]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Code,Name,Image")] Category category, IFormFile? ImageFile, string? ExistingImage)
         {
             if (id != category.Id)
             {
@@ -152,6 +176,26 @@ namespace QuanLyQuanBida.Controllers
             {
                 try
                 {
+                    // Xử lý cập nhật ảnh mới hoặc giữ ảnh cũ
+                    if (ImageFile != null && ImageFile.Length > 0)
+                    {
+                        var uploadDir = Path.Combine(_env.WebRootPath, "images", "categories");
+                        Directory.CreateDirectory(uploadDir);
+                        var extension = Path.GetExtension(ImageFile.FileName).ToLowerInvariant();
+                        var fileName = $"cat_{Guid.NewGuid():N}{extension}";
+                        var filePath = Path.Combine(uploadDir, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await ImageFile.CopyToAsync(stream);
+                        }
+                        category.Image = $"images/categories/{fileName}";
+                    }
+                    else if (string.IsNullOrWhiteSpace(category.Image) && !string.IsNullOrWhiteSpace(ExistingImage))
+                    {
+                        category.Image = ExistingImage;
+                    }
+
                     category.Code = category.Code.Trim().ToUpper();
                     category.Name = category.Name.Trim();
 
@@ -178,9 +222,9 @@ namespace QuanLyQuanBida.Controllers
         }
 
         // =========================================================================
-        // 5. GET: /Categories/Delete/5 (Policy: ManagerOnly - Chỉ Quản lý)
+        // 5. GET: /Categories/Delete/5 (Policy: AdminOrManager - Cả Admin và Manager)
         // =========================================================================
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Policy = "AdminOrManager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -204,7 +248,7 @@ namespace QuanLyQuanBida.Controllers
         // POST: /Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Policy = "AdminOrManager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var category = await _context.Categories.FindAsync(id);
@@ -213,13 +257,13 @@ namespace QuanLyQuanBida.Controllers
                 var itemCount = await _context.ServiceItems.CountAsync(s => s.CategoryId == id);
                 if (itemCount > 0)
                 {
-                    TempData["ErrorMessage"] = $"Không thể xóa danh mục '{category.Name}' vì đang có {itemCount} món dịch vụ liên kết.";
+                    TempData["ErrorMessage"] = $"Không thể xóa danh mục '{category.Name}' vì đang có {itemCount} món/dụng cụ liên kết.";
                     return RedirectToAction(nameof(Index));
                 }
 
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = $"Đã xóa danh mục '{category.Name}' thành công.";
+                TempData["SuccessMessage"] = $"Đã xóa thành công danh mục '{category.Name}'.";
             }
 
             return RedirectToAction(nameof(Index));

@@ -84,26 +84,29 @@ namespace QuanLyQuanBida.Controllers
                                       where ur.UserId == user.Id
                                       select r.Name).FirstOrDefaultAsync();
 
-                    // Chuẩn hóa Policy: Admin/Manager -> "Manager", Cashier/Waiter/Khác -> "Employee"
-                    var roleName = (!string.IsNullOrEmpty(role) &&
-                                   (role.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
-                                    role.Equals("Manager", StringComparison.OrdinalIgnoreCase)))
-                                   ? "Manager"
-                                   : "Employee";
-
+                    // Thiết lập danh sách Claim Roles chuẩn:
+                    // Admin: nhận cả Role "Admin" và "Manager"
+                    // Manager: nhận Role "Manager"
+                    // Cashier: nhận Role "Cashier" và "Employee"
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(ClaimTypes.Name, string.IsNullOrWhiteSpace(user.FullName) ? user.Username : user.FullName),
                         new Claim(ClaimTypes.Email, user.Email ?? $"{user.Username}@boltbilliards.vn"),
-                        new Claim(ClaimTypes.Role, roleName),
                         new Claim("Username", user.Username)
                     };
 
-                    // Nếu vai trò là Admin, thêm claim Admin để hỗ trợ IsInRole("Admin")
-                    if (!string.IsNullOrEmpty(role) && !claims.Any(c => c.Type == ClaimTypes.Role && c.Value.Equals(role, StringComparison.OrdinalIgnoreCase)))
+                    if (!string.IsNullOrEmpty(role))
                     {
                         claims.Add(new Claim(ClaimTypes.Role, role));
+                        if (role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, "Manager"));
+                        }
+                        else if (role.Equals("Cashier", StringComparison.OrdinalIgnoreCase))
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, "Employee"));
+                        }
                     }
 
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

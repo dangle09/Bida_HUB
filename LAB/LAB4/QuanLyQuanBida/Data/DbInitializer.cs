@@ -79,13 +79,14 @@ namespace QuanLyQuanBida.Data
             };
             context.MembershipTiers.AddRange(membershipTiers);
 
-            // 7. Categories
+            // 7. Categories (Đồng bộ 100% với Web vãng lai)
             var categories = new Category[]
             {
-                new() { Code = "SOFT_DRINK", Name = "Nước Giải Khát & Đóng Lon" },
-                new() { Code = "BEER", Name = "Bia Các Loại" },
-                new() { Code = "SNACK", Name = "Đồ Ăn Nhanh & Mì Ăn Liền" },
-                new() { Code = "SMOKE_TOWEL", Name = "Thuốc Lá & Khăn Lạnh" }
+                new() { Code = "DRINK", Name = "Nước Giải Khát & Cà Phê", Image = "images/fnb/fnb-1-caphe-muoi.png" },
+                new() { Code = "FOOD", Name = "Ẩm Thực F&B & Đồ Ăn Nhanh", Image = "images/fnb/fnb-4-mi-xuc-xich.jpg" },
+                new() { Code = "BEER", Name = "Bia Các Loại Ướp Lạnh", Image = "images/fnb/fnb-9-heineken.jpg" },
+                new() { Code = "CUES", Name = "Cơ Bida & Ngọn Carbon", Image = "images/shop/shop-1-co-fury.jpg" },
+                new() { Code = "ACCESSORIES", Name = "Dụng Cụ & Phụ Kiện Cơ Thủ", Image = "images/shop/shop-2-gang-tay.jpg" }
             };
             context.Categories.AddRange(categories);
 
@@ -163,12 +164,12 @@ namespace QuanLyQuanBida.Data
             };
             context.RolePermissions.AddRange(rolePermissions);
 
-            // 15. Users (Mật khẩu được băm SHA256 chuẩn bảo mật)
+            // 15. Users: 3 Tài khoản quản lý (Admin, Manager, Cashier - Không tạo tài khoản Waiter)
             var users = new User[]
             {
                 new() { Username = "admin", PasswordHash = HashPassword("giangcc111"), FullName = "Đào Ngọc Giang (Admin)", Email = "giangadmin@bms.com", PhoneNumber = "0988001122", IsActive = true, CreatedAt = DateTime.Now },
-                new() { Username = "thungan_mai", PasswordHash = HashPassword("dangcc111"), FullName = "Trần Thị Mai", Email = "maitt@bms.com", PhoneNumber = "0912334455", IsActive = true, CreatedAt = DateTime.Now },
-                new() { Username = "phucvu_tuan", PasswordHash = HashPassword("khoacc111"), FullName = "Lê Tuấn Vũ", Email = "vult@bms.com", PhoneNumber = "0977889900", IsActive = true, CreatedAt = DateTime.Now }
+                new() { Username = "manager", PasswordHash = HashPassword("dangcc111"), FullName = "Lê Nhật Đăng (Quản lý Cơ sở)", Email = "manager@boltbilliards.vn", PhoneNumber = "0912334455", IsActive = true, CreatedAt = DateTime.Now },
+                new() { Username = "cashier", PasswordHash = HashPassword("khoacc111"), FullName = "Trần Thị Mai (Thu ngân POS)", Email = "cashier@boltbilliards.vn", PhoneNumber = "0977889900", IsActive = true, CreatedAt = DateTime.Now }
             };
             context.Users.AddRange(users);
 
@@ -201,15 +202,41 @@ namespace QuanLyQuanBida.Data
             };
             context.Customers.AddRange(customers);
 
-            // 19. ServiceItems
+            // 19. ServiceItems (Đồng bộ 100% khớp danh sách món ăn & dụng cụ bida trên Web Vãng Lai)
             var serviceItems = new ServiceItem[]
             {
-                new() { CategoryId = categories[0].Id, Code = "SP_REDBULL", Name = "Nước tăng lực RedBull Thái", Unit = "Lon", UnitPrice = 20000, IsActive = true },
-                new() { CategoryId = categories[0].Id, Code = "SP_C2", Name = "Trà xanh C2 hương chanh", Unit = "Chai", UnitPrice = 15000, IsActive = true },
-                new() { CategoryId = categories[0].Id, Code = "SP_SUOI", Name = "Nước khoáng Aquafina 500ml", Unit = "Chai", UnitPrice = 10000, IsActive = true },
-                new() { CategoryId = categories[1].Id, Code = "SP_TIGER", Name = "Bia Tiger Bạc 330ml", Unit = "Lon", UnitPrice = 25000, IsActive = true },
-                new() { CategoryId = categories[2].Id, Code = "SP_MI_TRUNG", Name = "Mì tôm 2 trứng xúc xích", Unit = "Tô", UnitPrice = 35000, IsActive = true },
-                new() { CategoryId = categories[3].Id, Code = "SP_555", Name = "Thuốc lá State Express 555", Unit = "Gói", UnitPrice = 40000, IsActive = true }
+                // Nhóm 1: Nước Giải Khát & Cà Phê
+                new() { CategoryId = categories[0].Id, Code = "SP_CF_MUOI", Name = "Cà Phê Muối Đặc Sản", Unit = "Ly", UnitPrice = 28000, Image = "images/fnb/fnb-1-caphe-muoi.png", IsActive = true },
+                new() { CategoryId = categories[0].Id, Code = "SP_TRA_DAO", Name = "Trà Đào Cam Sả", Unit = "Ly", UnitPrice = 32000, Image = "images/fnb/fnb-2-tra-dao.jpg", IsActive = true },
+                new() { CategoryId = categories[0].Id, Code = "SP_REDBULL", Name = "RedBull Thái Ướp Lạnh", Unit = "Lon", UnitPrice = 22000, Image = "images/fnb/fnb-3-redbull.jpg", IsActive = true },
+                new() { CategoryId = categories[0].Id, Code = "SP_TRA_MC", Name = "Trà Mãng Cầu Tươi", Unit = "Ly", UnitPrice = 32000, Image = "images/fnb/fnb-8-tra-mang-cau.jpg", IsActive = true },
+                new() { CategoryId = categories[0].Id, Code = "SP_C2", Name = "Trà xanh C2 hương chanh", Unit = "Chai", UnitPrice = 15000, Image = "images/fnb/fnb-2-tra-dao.jpg", IsActive = true },
+                new() { CategoryId = categories[0].Id, Code = "SP_SUOI", Name = "Nước khoáng Aquafina 500ml", Unit = "Chai", UnitPrice = 10000, Image = "images/fnb/fnb-3-redbull.jpg", IsActive = true },
+
+                // Nhóm 2: Ẩm Thực F&B & Đồ Ăn Nhanh
+                new() { CategoryId = categories[1].Id, Code = "SP_MI_TRUNG", Name = "Mì Trứng Xúc Xích Bò", Unit = "Tô", UnitPrice = 35000, Image = "images/fnb/fnb-4-mi-xuc-xich.jpg", IsActive = true },
+                new() { CategoryId = categories[1].Id, Code = "SP_BANH_MI", Name = "Bánh Mì Chảo Đặc Biệt", Unit = "Phần", UnitPrice = 38000, Image = "images/fnb/fnb-5-banh-mi-chao.jpg", IsActive = true },
+                new() { CategoryId = categories[1].Id, Code = "SP_COM_CHIEN", Name = "Cơm Chiên Bò Dưa Chua", Unit = "Dĩa", UnitPrice = 45000, Image = "images/fnb/fnb-6-com-chien.jpg", IsActive = true },
+                new() { CategoryId = categories[1].Id, Code = "SP_KHOAI_TAY", Name = "Khoai Tây Lắc Phô Mai", Unit = "Dĩa", UnitPrice = 30000, Image = "images/fnb/fnb-7-khoai-tay-lac.jpg", IsActive = true },
+                new() { CategoryId = categories[1].Id, Code = "SP_KHO_BO", Name = "Khô Bò Vắt Chanh Ớt", Unit = "Dĩa", UnitPrice = 40000, Image = "images/fnb/fnb-10-kho-bo.jpg", IsActive = true },
+
+                // Nhóm 3: Bia Các Loại Ướp Lạnh
+                new() { CategoryId = categories[2].Id, Code = "SP_HEINEKEN", Name = "Heineken Silver Ướp Lạnh", Unit = "Lon", UnitPrice = 28000, Image = "images/fnb/fnb-9-heineken.jpg", IsActive = true },
+                new() { CategoryId = categories[2].Id, Code = "SP_TIGER", Name = "Bia Tiger Bạc 330ml", Unit = "Lon", UnitPrice = 25000, Image = "images/fnb/fnb-9-heineken.jpg", IsActive = true },
+                new() { CategoryId = categories[2].Id, Code = "SP_CORONA", Name = "Bia Corona Extra Chai", Unit = "Chai", UnitPrice = 38000, Image = "images/fnb/fnb-9-heineken.jpg", IsActive = true },
+
+                // Nhóm 4: Cơ Bida & Ngọn Carbon
+                new() { CategoryId = categories[3].Id, Code = "SP_CO_FURY", Name = "Cơ Bida Fury Carbon Pro", Unit = "Cây", UnitPrice = 2850000, Image = "images/shop/shop-1-co-fury.jpg", IsActive = true },
+                new() { CategoryId = categories[3].Id, Code = "SP_CO_AILEEX", Name = "Cơ Bida Lỗ Aileex Carbon", Unit = "Cây", UnitPrice = 1650000, Image = "images/shop/shop-1-co-fury.jpg", IsActive = true },
+                new() { CategoryId = categories[3].Id, Code = "SP_KHUC_NOI", Name = "Khúc Nối Cơ Carbon Extension", Unit = "Cây", UnitPrice = 220000, Image = "images/shop/shop-5-khuc-noi.jpg", IsActive = true },
+
+                // Nhóm 5: Dụng Cụ & Phụ Kiện Cơ Thủ
+                new() { CategoryId = categories[4].Id, Code = "SP_GANG_TAY", Name = "Găng Tay Bolt Co Giãn", Unit = "Cái", UnitPrice = 65000, Image = "images/shop/shop-2-gang-tay.jpg", IsActive = true },
+                new() { CategoryId = categories[4].Id, Code = "SP_LO_MASTER", Name = "Lơ Bida Master USA (Hộp)", Unit = "Hộp", UnitPrice = 40000, Image = "images/shop/shop-3-lo-master.jpg", IsActive = true },
+                new() { CategoryId = categories[4].Id, Code = "SP_BAO_DA", Name = "Bao Da Đựng Cơ 1 Gốc 2 Ngọn", Unit = "Bao", UnitPrice = 350000, Image = "images/shop/shop-4-bao-da.jpg", IsActive = true },
+                new() { CategoryId = categories[4].Id, Code = "SP_DAU_TAY", Name = "Đầu Tẩy Kamui Nhật Bản", Unit = "Hộp", UnitPrice = 180000, Image = "images/shop/shop-6-dau-tay-kamui.jpg", IsActive = true },
+                new() { CategoryId = categories[4].Id, Code = "SP_KHAN_LAU", Name = "Khăn Lau Cơ Chuyên Dụng", Unit = "Cái", UnitPrice = 30000, Image = "images/shop/shop-7-khan-lau.jpg", IsActive = true },
+                new() { CategoryId = categories[4].Id, Code = "SP_BIT_REN", Name = "Nắp Bịt Ren Bảo Vệ Khớp Nối", Unit = "Bộ", UnitPrice = 80000, Image = "images/shop/shop-8-bit-ren.jpg", IsActive = true }
             };
             context.ServiceItems.AddRange(serviceItems);
 
@@ -219,12 +246,12 @@ namespace QuanLyQuanBida.Data
             // GIAI ĐOẠN 3: BẢNG PHỤ THUỘC CẤP 2
             // ==========================================
 
-            // 20. UserRoles
+            // 20. UserRoles (Admin -> Role 1, Manager -> Role 2, Cashier -> Role 3)
             var userRoles = new UserRole[]
             {
-                new() { UserId = users[0].Id, RoleId = roles[0].Id, CreatedAt = DateTime.Now },
-                new() { UserId = users[1].Id, RoleId = roles[2].Id, CreatedAt = DateTime.Now },
-                new() { UserId = users[2].Id, RoleId = roles[3].Id, CreatedAt = DateTime.Now }
+                new() { UserId = users[0].Id, RoleId = roles[0].Id, CreatedAt = DateTime.Now }, // admin -> Admin
+                new() { UserId = users[1].Id, RoleId = roles[1].Id, CreatedAt = DateTime.Now }, // manager -> Manager
+                new() { UserId = users[2].Id, RoleId = roles[2].Id, CreatedAt = DateTime.Now }  // cashier -> Cashier
             };
             context.UserRoles.AddRange(userRoles);
 
