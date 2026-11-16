@@ -79,14 +79,13 @@ namespace QuanLyQuanBida.Data
             };
             context.MembershipTiers.AddRange(membershipTiers);
 
-            // 7. Categories (Đồng bộ 100% với Web vãng lai)
+            // 7. Categories (Đồng bộ 100% với Web vãng lai - Gộp Cơ bida & Phụ kiện vào 1 danh mục)
             var categories = new Category[]
             {
                 new() { Code = "DRINK", Name = "Nước Giải Khát & Cà Phê", Image = "images/fnb/fnb-1-caphe-muoi.png" },
                 new() { Code = "FOOD", Name = "Ẩm Thực F&B & Đồ Ăn Nhanh", Image = "images/fnb/fnb-4-mi-xuc-xich.jpg" },
                 new() { Code = "BEER", Name = "Bia Các Loại Ướp Lạnh", Image = "images/fnb/fnb-9-heineken.jpg" },
-                new() { Code = "CUES", Name = "Cơ Bida & Ngọn Carbon", Image = "images/shop/shop-1-co-fury.jpg" },
-                new() { Code = "ACCESSORIES", Name = "Dụng Cụ & Phụ Kiện Cơ Thủ", Image = "images/shop/shop-2-gang-tay.jpg" }
+                new() { Code = "ACCESSORIES", Name = "Dụng Cụ, Cơ Bida & Phụ Kiện Cơ Thủ", Image = "images/shop/shop-1-co-fury.jpg" }
             };
             context.Categories.AddRange(categories);
 
@@ -225,18 +224,16 @@ namespace QuanLyQuanBida.Data
                 new() { CategoryId = categories[2].Id, Code = "SP_TIGER", Name = "Bia Tiger Bạc 330ml", Unit = "Lon", UnitPrice = 25000, Image = "images/fnb/fnb-9-heineken.jpg", IsActive = true },
                 new() { CategoryId = categories[2].Id, Code = "SP_CORONA", Name = "Bia Corona Extra Chai", Unit = "Chai", UnitPrice = 38000, Image = "images/fnb/fnb-9-heineken.jpg", IsActive = true },
 
-                // Nhóm 4: Cơ Bida & Ngọn Carbon
+                // Nhóm 4: Dụng Cụ, Cơ Bida & Phụ Kiện Cơ Thủ (gộp cơ bida, ngọn carbon & phụ kiện)
                 new() { CategoryId = categories[3].Id, Code = "SP_CO_FURY", Name = "Cơ Bida Fury Carbon Pro", Unit = "Cây", UnitPrice = 2850000, Image = "images/shop/shop-1-co-fury.jpg", IsActive = true },
                 new() { CategoryId = categories[3].Id, Code = "SP_CO_AILEEX", Name = "Cơ Bida Lỗ Aileex Carbon", Unit = "Cây", UnitPrice = 1650000, Image = "images/shop/shop-1-co-fury.jpg", IsActive = true },
                 new() { CategoryId = categories[3].Id, Code = "SP_KHUC_NOI", Name = "Khúc Nối Cơ Carbon Extension", Unit = "Cây", UnitPrice = 220000, Image = "images/shop/shop-5-khuc-noi.jpg", IsActive = true },
-
-                // Nhóm 5: Dụng Cụ & Phụ Kiện Cơ Thủ
-                new() { CategoryId = categories[4].Id, Code = "SP_GANG_TAY", Name = "Găng Tay Bolt Co Giãn", Unit = "Cái", UnitPrice = 65000, Image = "images/shop/shop-2-gang-tay.jpg", IsActive = true },
-                new() { CategoryId = categories[4].Id, Code = "SP_LO_MASTER", Name = "Lơ Bida Master USA (Hộp)", Unit = "Hộp", UnitPrice = 40000, Image = "images/shop/shop-3-lo-master.jpg", IsActive = true },
-                new() { CategoryId = categories[4].Id, Code = "SP_BAO_DA", Name = "Bao Da Đựng Cơ 1 Gốc 2 Ngọn", Unit = "Bao", UnitPrice = 350000, Image = "images/shop/shop-4-bao-da.jpg", IsActive = true },
-                new() { CategoryId = categories[4].Id, Code = "SP_DAU_TAY", Name = "Đầu Tẩy Kamui Nhật Bản", Unit = "Hộp", UnitPrice = 180000, Image = "images/shop/shop-6-dau-tay-kamui.jpg", IsActive = true },
-                new() { CategoryId = categories[4].Id, Code = "SP_KHAN_LAU", Name = "Khăn Lau Cơ Chuyên Dụng", Unit = "Cái", UnitPrice = 30000, Image = "images/shop/shop-7-khan-lau.jpg", IsActive = true },
-                new() { CategoryId = categories[4].Id, Code = "SP_BIT_REN", Name = "Nắp Bịt Ren Bảo Vệ Khớp Nối", Unit = "Bộ", UnitPrice = 80000, Image = "images/shop/shop-8-bit-ren.jpg", IsActive = true }
+                new() { CategoryId = categories[3].Id, Code = "SP_GANG_TAY", Name = "Găng Tay Bolt Co Giãn", Unit = "Cái", UnitPrice = 65000, Image = "images/shop/shop-2-gang-tay.jpg", IsActive = true },
+                new() { CategoryId = categories[3].Id, Code = "SP_LO_MASTER", Name = "Lơ Bida Master USA (Hộp)", Unit = "Hộp", UnitPrice = 40000, Image = "images/shop/shop-3-lo-master.jpg", IsActive = true },
+                new() { CategoryId = categories[3].Id, Code = "SP_BAO_DA", Name = "Bao Da Đựng Cơ 1 Gốc 2 Ngọn", Unit = "Bao", UnitPrice = 350000, Image = "images/shop/shop-4-bao-da.jpg", IsActive = true },
+                new() { CategoryId = categories[3].Id, Code = "SP_DAU_TAY", Name = "Đầu Tẩy Kamui Nhật Bản", Unit = "Hộp", UnitPrice = 180000, Image = "images/shop/shop-6-dau-tay-kamui.jpg", IsActive = true },
+                new() { CategoryId = categories[3].Id, Code = "SP_KHAN_LAU", Name = "Khăn Lau Cơ Chuyên Dụng", Unit = "Cái", UnitPrice = 30000, Image = "images/shop/shop-7-khan-lau.jpg", IsActive = true },
+                new() { CategoryId = categories[3].Id, Code = "SP_BIT_REN", Name = "Nắp Bịt Ren Bảo Vệ Khớp Nối", Unit = "Bộ", UnitPrice = 80000, Image = "images/shop/shop-8-bit-ren.jpg", IsActive = true }
             };
             context.ServiceItems.AddRange(serviceItems);
 
