@@ -1,7 +1,16 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - TAB DANH MỤC: XEM CHI TIẾT DANH MỤC
+   - Tên file: Views/Categories/Details.cshtml
+   - Vai trò: Giao diện xem chi tiết danh mục và danh sách các món ăn / vật phẩm thuộc nhóm
+   - Layout khung sườn: Views/Shared/_AdminLayout.cshtml
+   - File CSS: wwwroot/css/admin-pos.css
+   - Controller phụ trách: Controllers/CategoriesController.cs (Action Details)
+   - URL truy cập: http://localhost:PORT/Categories/Details/{id}
+   =================================================================================== *@
 @model QuanLyQuanBida.Models.Category
 @{
     ViewData["Title"] = "Chi tiết Danh mục - " + Model.Name;
-    Layout = "_Layout";
+    Layout = "_AdminLayout";
     var items = ViewBag.Items as List<QuanLyQuanBida.Models.ServiceItem> ?? new List<QuanLyQuanBida.Models.ServiceItem>();
     bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
 }

@@ -1,7 +1,11 @@
-/* BOLT BILLIARDS - MINIMALIST PREMIUM DARK THEME
-   Bản sắc: Đen than obsidian (#090c12), Xám Slate (#121722), Neon Lime (#a6ff00)
-   Phong cách: Tối giản (Minimalism), Viền mỏng sắc nét (Thin Stroke), Chuyên nghiệp
-*/
+/* ===================================================================================
+   BOLT BILLIARDS - CUSTOMER THEME (FILE CSS CỦA WEB VÃNG LAI / KHÁCH HÀNG)
+   - Sử dụng cho: Web Vãng Lai (Trang chủ khách hàng, Bảng giá, Menu đồ uống, Đặt bàn online)
+   - Layout đi kèm: Views/Shared/_CustomerLayout.cshtml
+   - View chính: Views/Home/Index.cshtml
+   - Bản sắc: Đen than obsidian (#07090e), Xám Slate (#101522), Neon Lime (#a6ff00)
+   - Phong cách: Tối giản (Minimalism), Viền mỏng sắc nét, Chuyên nghiệp
+   =================================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 

@@ -10,13 +10,19 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+// ===================================================================================
+// CONTROLLER CỦA WEB QUẢN LÝ (TAB 1: QUẢN LÝ DANH MỤC HÀNG HÓA & DỊCH VỤ)
+// - Route chính: http://localhost:PORT/Categories hoặc /Categories/Index
+// - Quản lý các View trong thư mục: Views/Categories/ (Index, Create, Edit, Details, Delete)
+// - Sử dụng khung giao diện chung: Views/Shared/_AdminLayout.cshtml
+// - Phân quyền:
+//     + ManagementAccess (Admin, Manager, Cashier): Được xem Index, Details
+//     + AdminOrManager (Admin, Manager): Được Thêm (Create), Sửa (Edit), Xóa (Delete)
+// ===================================================================================
 namespace QuanLyQuanBida.Controllers
 {
     /// <summary>
     /// Controller Quản lý Danh mục Đồ uống & Dịch vụ (Chuẩn kiến trúc ASP.NET Core MVC + Entity Framework Core)
-    /// Áp dụng Phân quyền:
-    /// - ManagementAccess: Admin, Manager, Cashier đều có quyền xem (Index, Details).
-    /// - AdminOrManager: Cả Admin và Manager đều có toàn quyền Thêm (Create), Sửa (Edit), Xóa (Delete). Cashier bị chặn 403.
     /// </summary>
     public class CategoriesController : Controller
     {

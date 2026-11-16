@@ -1,7 +1,16 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - TAB DANH MỤC: FORM THÊM MỚI DANH MỤC
+   - Tên file: Views/Categories/Create.cshtml
+   - Vai trò: Giao diện form tạo mới danh mục hàng hóa (Upload ảnh, mã code, tên)
+   - Layout khung sườn: Views/Shared/_AdminLayout.cshtml
+   - File CSS: wwwroot/css/admin-pos.css
+   - Controller phụ trách: Controllers/CategoriesController.cs (Action Create GET/POST)
+   - URL truy cập: http://localhost:PORT/Categories/Create
+   =================================================================================== *@
 @model QuanLyQuanBida.Models.Category
 @{
     ViewData["Title"] = "Thêm mới Danh mục - BOLT BILLIARDS";
-    Layout = "_Layout";
+    Layout = "_AdminLayout";
 }
 
 <div class="container-fluid px-0">

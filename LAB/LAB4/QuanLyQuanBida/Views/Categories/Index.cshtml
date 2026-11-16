@@ -1,7 +1,16 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - TAB: QUẢN LÝ DANH MỤC
+   - Tên file: Views/Categories/Index.cshtml
+   - Vai trò: ĐÂY CHỈ LÀ 1 TAB CHỨC NĂNG RIÊNG BIỆT (Danh sách nhóm hàng hóa & dịch vụ)
+   - Layout khung sườn: Views/Shared/_AdminLayout.cshtml (Topbar + Sidebar + Footer)
+   - File CSS: wwwroot/css/admin-pos.css
+   - Controller phụ trách: Controllers/CategoriesController.cs (Action Index)
+   - URL truy cập: http://localhost:PORT/Categories hoặc /Categories/Index
+   =================================================================================== *@
 @model IEnumerable<QuanLyQuanBida.Models.Category>
 @{
     ViewData["Title"] = "Quản lý Danh mục Hàng hóa & Dịch vụ";
-    Layout = "_Layout";
+    Layout = "_AdminLayout";
     var itemCounts = ViewBag.ItemCounts as Dictionary<int, int> ?? new Dictionary<int, int>();
     bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
 }

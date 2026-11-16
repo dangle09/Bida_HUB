@@ -1,7 +1,16 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - TAB DANH MỤC: XÁC NHẬN XÓA DANH MỤC
+   - Tên file: Views/Categories/Delete.cshtml
+   - Vai trò: Giao diện cảnh báo xác nhận xóa danh mục
+   - Layout khung sườn: Views/Shared/_AdminLayout.cshtml
+   - File CSS: wwwroot/css/admin-pos.css
+   - Controller phụ trách: Controllers/CategoriesController.cs (Action Delete GET/POST)
+   - URL truy cập: http://localhost:PORT/Categories/Delete/{id}
+   =================================================================================== *@
 @model QuanLyQuanBida.Models.Category
 @{
     ViewData["Title"] = "Xác nhận xóa Danh mục - BOLT BILLIARDS";
-    Layout = "_Layout";
+    Layout = "_AdminLayout";
     int itemCount = ViewBag.ItemCount ?? 0;
 }
 

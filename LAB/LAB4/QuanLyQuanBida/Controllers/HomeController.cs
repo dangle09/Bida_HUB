@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuanLyQuanBida.Models;
 
+// ===================================================================================
+// CONTROLLER CỦA WEB VÃNG LAI (DÀNH CHO KHÁCH HÀNG)
+// - Route chính: http://localhost:PORT/ hoặc /Home/Index
+// - Action Index() sẽ trả về View: Views/Home/Index.cshtml (dùng _CustomerLayout.cshtml)
+// ===================================================================================
 namespace QuanLyQuanBida.Controllers
 {
     public class HomeController : Controller

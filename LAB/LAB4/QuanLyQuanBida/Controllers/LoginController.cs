@@ -12,6 +12,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
+// ===================================================================================
+// CONTROLLER CỔNG ĐĂNG NHẬP NỘI BỘ (DÀNH CHO NHÂN VIÊN HỆ THỐNG)
+// - Route chính: http://localhost:PORT/Login hoặc /Login/Login
+// - Quản lý View: Views/Login/Login.cshtml
+// - Phụ trách: Xác thực đăng nhập Cookie Auth, cấp Role (Admin, Manager, Cashier), Đăng xuất
+// ===================================================================================
 namespace QuanLyQuanBida.Controllers
 {
     /// <summary>

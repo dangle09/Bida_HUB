@@ -1,7 +1,16 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - TAB DANH MỤC: FORM CHỈNH SỬA DANH MỤC
+   - Tên file: Views/Categories/Edit.cshtml
+   - Vai trò: Giao diện form sửa đổi danh mục hàng hóa (Thay ảnh, sửa tên, đổi mã)
+   - Layout khung sườn: Views/Shared/_AdminLayout.cshtml
+   - File CSS: wwwroot/css/admin-pos.css
+   - Controller phụ trách: Controllers/CategoriesController.cs (Action Edit GET/POST)
+   - URL truy cập: http://localhost:PORT/Categories/Edit/{id}
+   =================================================================================== *@
 @model QuanLyQuanBida.Models.Category
 @{
     ViewData["Title"] = "Chỉnh sửa Danh mục - BOLT BILLIARDS";
-    Layout = "_Layout";
+    Layout = "_AdminLayout";
 }
 
 <div class="container-fluid px-0">
