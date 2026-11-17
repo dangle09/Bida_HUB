@@ -255,10 +255,47 @@
                     </div>
                 </div>
             </div>
+            <div class="modal-footer border-secondary border-opacity-25 justify-content-between">
+                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-dismiss="modal" onclick="openCancelInvoiceModal()" style="border-radius: 2px !important;">
+                    <i class="bi bi-x-octagon me-1"></i> Hủy Hóa Đơn
+                </button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
+                    <button type="button" class="btn btn-bolt-neon btn-sm" onclick="alert('Đã gửi lệnh in lại hóa đơn ra máy in nhiệt K80 (Bản in lại lần 1 - Ghi Audit Log).');" style="border-radius: 2px !important;">
+                        <i class="bi bi-printer"></i> In Lại Hóa Đơn
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL HỦY HÓA ĐƠN ĐÃ THANH TOÁN (QUY TẮC BR04 - GHI AUDIT LOG) -->
+<div class="modal fade" id="modalCancelInvoice" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-danger text-light" style="border-radius: 2px !important;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold text-danger d-flex align-items-center gap-2">
+                    <i class="bi bi-exclamation-octagon-fill"></i> XÁC NHẬN HỦY HÓA ĐƠN (AUDIT LOG)
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-50 small py-2 mb-3" style="border-radius: 2px !important;">
+                    <strong>Quy tắc nghiệp vụ BR04:</strong> Chỉ tài khoản Quản lý / Admin mới có quyền hủy hóa đơn đã chốt thanh toán. Mọi thao tác sẽ bị lưu vết vĩnh viễn vào bảng <code>nhat_ky_hoat_dong</code>.
+                </div>
+                <div class="mb-3 small">
+                    Mã hóa đơn cần hủy: <strong id="cancelBillCode" class="text-warning font-monospace">HD261117-028</strong>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small text-muted">Lý do hủy hóa đơn (* Bắt buộc nhập):</label>
+                    <textarea id="cancelBillReason" class="form-control form-control-sm bg-black text-light border-secondary" rows="3" placeholder="VD: Thu ngân áp nhầm mã voucher hoặc tính nhầm bàn..." style="border-radius: 2px !important;"></textarea>
+                </div>
+            </div>
             <div class="modal-footer border-secondary border-opacity-25">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
-                <button type="button" class="btn btn-bolt-neon btn-sm" onclick="alert('Đã gửi lệnh in lại hóa đơn ra máy in nhiệt K80.');" style="border-radius: 2px !important;">
-                    <i class="bi bi-printer"></i> In Lại Hóa Đơn
+                <button type="button" class="btn btn-danger btn-sm fw-bold" onclick="confirmCancelBill()" style="border-radius: 2px !important;">
+                    <i class="bi bi-trash3 me-1"></i> Xác Nhận Hủy & Lưu Audit Log
                 </button>
             </div>
         </div>
@@ -267,6 +304,22 @@
 
 @section Scripts {
     <script>
+        function openCancelInvoiceModal() {
+            document.getElementById('cancelBillCode').textContent = document.getElementById('receiptCode').textContent;
+            document.getElementById('cancelBillReason').value = '';
+            new bootstrap.Modal(document.getElementById('modalCancelInvoice')).show();
+        }
+        function confirmCancelBill() {
+            const reason = document.getElementById('cancelBillReason').value.trim();
+            const code = document.getElementById('cancelBillCode').textContent;
+            if (!reason) {
+                alert('Vui lòng bắt buộc nhập lý do hủy hóa đơn theo quy định BR04!');
+                return;
+            }
+            alert('Đã hủy hóa đơn ' + code + ' thành công và ghi vết vào Nhật ký Audit Trail.\nLý do: ' + reason);
+            bootstrap.Modal.getInstance(document.getElementById('modalCancelInvoice')).hide();
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             var searchInput = document.getElementById('invoiceSearchInput');
             var shiftFilter = document.getElementById('invoiceShiftFilter');

@@ -605,6 +605,117 @@
             </table>
         </div>
     </div>
+
+    <!-- CẤU HÌNH GÓI COMBO GIỜ CHƠI + ĐỒ UỐNG (ĐỒNG BỘ AI TRỢ LÝ & USE CASE) -->
+    <div class="card bg-dark border-secondary border-opacity-50 mt-4" style="border-radius: 2px !important;">
+        <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h6 class="text-white fw-bold mb-0"><i class="bi bi-stars text-warning me-2"></i>CẤU HÌNH GÓI COMBO GIỜ CHƠI + ĐỒ UỐNG (4 GÓI ĐANG MỞ)</h6>
+                <div class="text-muted small" style="font-size: 0.76rem;">Kết hợp giờ chơi bida và đồ ăn/thức uống giúp tăng 25% doanh thu F&B giờ thấp điểm</div>
+            </div>
+            <button class="btn btn-bolt-outline btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemCombo" style="border-radius: 2px !important;">
+                <i class="bi bi-plus-lg me-1"></i> Tạo Gói Combo Mới
+            </button>
+        </div>
+        <div class="card-body p-3">
+            <div class="row g-3" id="comboListRow">
+                <div class="col-md-6 col-xl-3">
+                    <div class="p-3 bg-black border border-secondary border-opacity-50 h-100" style="border-radius: 2px !important;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-warning text-dark fw-bold" style="border-radius: 2px;">COMBO-01</span>
+                            <span class="badge bg-success bg-opacity-25 text-success" style="border-radius: 2px;">Đang áp dụng</span>
+                        </div>
+                        <div class="fw-bold text-white mb-1">Combo Sáng Tỉnh Táo</div>
+                        <div class="text-muted small mb-2">2 giờ Bàn Pool + 2 Cà phê muối + 1 Bánh mì</div>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
+                            <span class="text-muted text-decoration-line-through small">201.000 đ</span>
+                            <span class="fw-bold" style="color: var(--primary-neon);">159.000 đ</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="p-3 bg-black border border-secondary border-opacity-50 h-100" style="border-radius: 2px !important;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-info text-dark fw-bold" style="border-radius: 2px;">COMBO-02</span>
+                            <span class="badge bg-success bg-opacity-25 text-success" style="border-radius: 2px;">Đang áp dụng</span>
+                        </div>
+                        <div class="fw-bold text-white mb-1">Combo Sinh Viên (Happy Hour)</div>
+                        <div class="text-muted small mb-2">3 giờ Bàn Pool + 2 Trà đào cam sả + 1 Khô bò</div>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
+                            <span class="text-muted text-decoration-line-through small">284.000 đ</span>
+                            <span class="fw-bold" style="color: var(--primary-neon);">219.000 đ</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="p-3 bg-black border border-secondary border-opacity-50 h-100" style="border-radius: 2px !important;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-danger text-light fw-bold" style="border-radius: 2px;">COMBO-03</span>
+                            <span class="badge bg-success bg-opacity-25 text-success" style="border-radius: 2px;">Đang áp dụng</span>
+                        </div>
+                        <div class="fw-bold text-white mb-1">Combo Chiến Thần Đêm</div>
+                        <div class="text-muted small mb-2">3 giờ Bàn Carom + 4 Redbull Thái + 2 Mì trứng xúc xích</div>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
+                            <span class="text-muted text-decoration-line-through small">368.000 đ</span>
+                            <span class="fw-bold" style="color: var(--primary-neon);">299.000 đ</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="p-3 bg-black border border-secondary border-opacity-50 h-100" style="border-radius: 2px !important;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary text-light fw-bold" style="border-radius: 2px;">COMBO-VIP</span>
+                            <span class="badge bg-success bg-opacity-25 text-success" style="border-radius: 2px;">Đang áp dụng</span>
+                        </div>
+                        <div class="fw-bold text-white mb-1">Combo Phòng VIP Giao Lưu</div>
+                        <div class="text-muted small mb-2">2 giờ Phòng VIP 3 Băng + 6 Bia Heineken + 2 Dĩa Trái cây</div>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
+                            <span class="text-muted text-decoration-line-through small">540.000 đ</span>
+                            <span class="fw-bold" style="color: var(--primary-neon);">449.000 đ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TẠO GÓI COMBO MỚI -->
+<div class="modal fade" id="modalThemCombo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold"><i class="bi bi-stars text-warning me-2"></i>TẠO GÓI COMBO GIỜ CHƠI + F&B</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Tên gói Combo (*):</label>
+                    <input type="text" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="VD: Combo Cuối Tuần Bùng Nổ" style="border-radius: 2px !important;" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Thành phần giờ chơi & món kèm (*):</label>
+                    <input type="text" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="VD: 2 giờ Pool + 2 Nước ngọt + 1 Khô gà" style="border-radius: 2px !important;" />
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label class="form-label small text-muted">Giá gốc (VNĐ):</label>
+                        <input type="number" class="form-control form-control-sm bg-black text-light border-secondary" value="220000" style="border-radius: 2px !important;" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small text-muted">Giá ưu đãi Combo (VNĐ):</label>
+                        <input type="number" class="form-control form-control-sm bg-black text-warning fw-bold border-secondary" value="179000" style="border-radius: 2px !important;" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Hủy</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã lưu gói Combo ưu đãi mới và đồng bộ lên màn hình POS!');" style="border-radius: 2px !important;">
+                    <i class="bi bi-check-lg me-1"></i> Lưu Gói Combo
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- ========================================================================= -->

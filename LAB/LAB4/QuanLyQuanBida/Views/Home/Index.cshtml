@@ -1602,7 +1602,29 @@
 
                             </div>
 
-
+                            <!-- Tùy chọn Đặt cọc giữ bàn trước qua VietQR (Khớp Use Case Đặt bàn online) -->
+                            <div class="col-12">
+                                <div class="p-3 border border-secondary border-opacity-50" style="background: rgba(166, 255, 0, 0.04); border-radius: 2px;">
+                                    <div class="form-check d-flex align-items-center gap-2 mb-0">
+                                        <input class="form-check-input mt-0" type="checkbox" id="bookDepositCheck" onchange="document.getElementById('depositQrBox').classList.toggle('d-none', !this.checked);" style="border-radius: 2px;" />
+                                        <label class="form-check-label text-white small fw-bold" for="bookDepositCheck" style="cursor: pointer;">
+                                            <i class="bi bi-qr-code-scan text-warning me-1"></i> Đặt cọc giữ bàn trước (50.000đ - Ưu tiên giữ bàn VIP & trừ thẳng vào hóa đơn)
+                                        </label>
+                                    </div>
+                                    <div id="depositQrBox" class="d-none mt-3 pt-3 border-top border-secondary border-opacity-25">
+                                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                                            <div class="bg-white p-2 text-center" style="border-radius: 2px; width: 92px; height: 92px; display: flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-qr-code text-dark" style="font-size: 4rem; line-height: 1;"></i>
+                                            </div>
+                                            <div class="small text-light">
+                                                <div class="fw-bold text-warning">MB Bank - 0362870986 - DAO NGOC GIANG</div>
+                                                <div class="text-secondary">Số tiền cọc: <strong class="text-white">50.000 đ</strong></div>
+                                                <div class="text-secondary">Nội dung CK: <strong class="text-info font-monospace">COC_BAN_BOLT + SĐT</strong></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Nút Xác Nhận -->
 

@@ -100,6 +100,11 @@
                 <i class="bi bi-clock-history me-1"></i> Biểu Phí Theo Khung Giờ (Time Slots)
             </button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-thietbi-btn" data-bs-toggle="pill" data-bs-target="#tab-thietbi" type="button" role="tab" aria-controls="tab-thietbi" aria-selected="false">
+                <i class="bi bi-lamp me-1"></i> Thiết Bị Đi Kèm Bàn (Bi, Cơ, Đèn)
+            </button>
+        </li>
     </ul>
 
     <!-- NỘI DUNG TABS -->
@@ -256,6 +261,74 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: THIẾT BỊ ĐI KÈM BÀN BIDA (BẢNG thiet_bi_ban) -->
+        <div class="tab-pane fade" id="tab-thietbi" role="tabpanel" aria-labelledby="tab-thietbi-btn">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
+                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white fw-bold mb-0"><i class="bi bi-lamp text-warning me-2"></i>Trang Thiết Bị Bàn Bida (Bộ Bi Aramith, Đèn LED, Cơ CLB, Bảng Điểm)</h6>
+                        <div class="text-muted small" style="font-size: 0.76rem;">Theo dõi tình trạng hao mòn phụ kiện trang bị cố định theo từng bàn</div>
+                    </div>
+                    <button class="btn btn-bolt-outline btn-sm" onclick="alert('Đã xuất danh sách kiểm kê trang thiết bị 20 bàn bida.');" style="border-radius: 2px !important;">
+                        <i class="bi bi-clipboard-data me-1"></i> Kiểm kê thiết bị
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.85rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem;">
+                            <tr>
+                                <th class="ps-3 py-2">Bàn Bida</th>
+                                <th>Bộ Bi Chuẩn</th>
+                                <th>Đèn LED Chiếu Sáng</th>
+                                <th>Cơ CLB & Cầu Nối</th>
+                                <th>Bảng Điểm & Tam Giác</th>
+                                <th class="text-center">Tình Trạng</th>
+                                <th class="text-center pe-3">Cập Nhật</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ps-3 fw-bold text-white">BÀN 01 - BÀN 03 <small class="text-muted">(Pool)</small></td>
+                                <td>Aramith Pro-Cup TV (16 bi)</td>
+                                <td>LED Panel Chống Chói 120W</td>
+                                <td>4 Cơ Fury + 1 Lết</td>
+                                <td>Bảng cơ + Tam giác gỗ</td>
+                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">TỐT (100%)</span></td>
+                                <td class="text-center pe-3"><button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Thiết bị Bàn 01-03 đang hoạt động ổn định.');"><i class="bi bi-wrench"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3 fw-bold text-white">BÀN 04 & BÀN 08 <small class="text-muted">(Pool)</small></td>
+                                <td>Aramith Premier (Cần đánh bóng)</td>
+                                <td>LED Panel 120W (Nhấp nháy nhẹ)</td>
+                                <td>4 Cơ CLB (2 đầu tẩy mòn)</td>
+                                <td>Bảng cơ + Tam giác nhựa</td>
+                                <td class="text-center"><span class="badge bg-warning text-dark" style="border-radius: 2px;">CẦN BẢO DƯỠNG</span></td>
+                                <td class="text-center pe-3"><button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Đã tạo yêu cầu thay đầu cơ và đánh bóng bi cho Bàn 04 & 08!');"><i class="bi bi-wrench"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3 fw-bold text-white">BÀN 11 - BÀN 16 <small class="text-muted">(Carom)</small></td>
+                                <td>Aramith Pro-Cup 3 Bi (Đỏ/Trắng/Vàng)</td>
+                                <td>LED Máng Đôi Carom Chuyên Dụng</td>
+                                <td>4 Cơ Carom Libre</td>
+                                <td>Bảng điểm điện tử LED</td>
+                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">TỐT (98%)</span></td>
+                                <td class="text-center pe-3"><button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Thiết bị khu Carom Tầng 2 hoạt động tốt.');"><i class="bi bi-wrench"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3 fw-bold text-warning">BÀN 17 - BÀN 20 <small class="text-warning">(VIP 3 Băng)</small></td>
+                                <td>Dynaspheres Platinum 3 Băng</td>
+                                <td>Hệ thống sưởi bàn + LED VIP</td>
+                                <td>2 Cơ VIP + Giá đỡ cơ gửi</td>
+                                <td>Màn hình bảng điểm Cảm ứng</td>
+                                <td class="text-center"><span class="badge bg-info text-dark" style="border-radius: 2px;">CHUẨN THI ĐẤU</span></td>
+                                <td class="text-center pe-3"><button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Phòng VIP 3 Băng đạt chuẩn thi đấu Quốc tế.');"><i class="bi bi-wrench"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

@@ -105,6 +105,11 @@
                 <i class="bi bi-calculator me-1"></i> Bảng Lương & Chấm Công Tháng 11
             </button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-audit-btn" data-bs-toggle="pill" data-bs-target="#tab-audit" type="button" role="tab" aria-controls="tab-audit" aria-selected="false">
+                <i class="bi bi-shield-lock me-1"></i> Nhật Ký Hệ Thống (Audit Trail)
+            </button>
+        </li>
     </ul>
 
     <!-- NỘI DUNG TABS -->
@@ -446,6 +451,75 @@
                                 <td class="text-end">25.000 đ</td>
                                 <td class="text-end text-success">+ 600.000 đ</td>
                                 <td class="text-end pe-3 fw-bold" style="color: var(--primary-neon);">3.400.000 đ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: NHẬT KÝ HOẠT ĐỘNG HỆ THỐNG (AUDIT TRAIL - BẢNG nhat_ky_hoat_dong) -->
+        <div class="tab-pane fade" id="tab-audit" role="tabpanel" aria-labelledby="tab-audit-btn">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
+                <div class="card-header bg-transparent border-secondary border-opacity-25 p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h6 class="text-white fw-bold mb-0"><i class="bi bi-shield-check text-info me-2"></i>Nhật Ký Kiểm Toán & Lưu Vết Hệ Thống (Audit Log)</h6>
+                        <div class="text-muted small" style="font-size: 0.76rem;">Tự động ghi vết toàn bộ thao tác đăng nhập, sửa giá, đổi bàn, in lại hóa đơn & hủy bill chống gian lận</div>
+                    </div>
+                    <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-50" style="border-radius: 2px;">Đang kích hoạt giám sát thời gian thực</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.84rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem;">
+                            <tr>
+                                <th class="ps-3 py-2">Thời Gian</th>
+                                <th>Nhân Sự Thực Hiện</th>
+                                <th>Hành Động</th>
+                                <th>Bảng / Phân Hệ</th>
+                                <th>Mô Tả Chi Tiết Thao Tác</th>
+                                <th class="pe-3 text-end">Địa Chỉ IP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ps-3 font-monospace text-muted">17/11 21:45:12</td>
+                                <td class="fw-bold text-white">Đào Ngọc Giang <small class="text-danger">(Admin)</small></td>
+                                <td><span class="badge bg-success bg-opacity-25 text-success" style="border-radius: 2px;">LOGIN</span></td>
+                                <td class="font-monospace text-info">nguoi_dung</td>
+                                <td>Đăng nhập hệ thống quản trị thành công bằng tài khoản admin</td>
+                                <td class="pe-3 text-end font-monospace text-muted">192.168.1.10</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3 font-monospace text-muted">17/11 20:18:05</td>
+                                <td class="fw-bold text-white">Trương Đăng Khoa <small class="text-info">(Cashier)</small></td>
+                                <td><span class="badge bg-warning bg-opacity-25 text-warning" style="border-radius: 2px;">TRANSFER_TABLE</span></td>
+                                <td class="font-monospace text-info">chuyen_ban</td>
+                                <td>Chuyển khách từ Bàn 04 (Pool) sang Bàn 19 (VIP 3 Băng) - Chốt lũy tiến 45 phút</td>
+                                <td class="pe-3 text-end font-monospace text-muted">192.168.1.15</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3 font-monospace text-muted">17/11 19:52:40</td>
+                                <td class="fw-bold text-white">Lê Nhật Đăng <small class="text-warning">(Manager)</small></td>
+                                <td><span class="badge bg-primary bg-opacity-25 text-primary" style="border-radius: 2px;">UPDATE_PRICE</span></td>
+                                <td class="font-monospace text-info">gia_ban_khung_gio</td>
+                                <td>Cập nhật khung giờ vàng (Happy Hours 08:00 - 14:00) bàn Pool 9FT: 50.000đ/h</td>
+                                <td class="pe-3 text-end font-monospace text-muted">192.168.1.12</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3 font-monospace text-muted">17/11 18:30:11</td>
+                                <td class="fw-bold text-white">Trương Đăng Khoa <small class="text-info">(Cashier)</small></td>
+                                <td><span class="badge bg-info bg-opacity-25 text-info" style="border-radius: 2px;">REPRINT_BILL</span></td>
+                                <td class="font-monospace text-info">hoa_don</td>
+                                <td>In lại hóa đơn HD-261117-018 (Bản in lại lần 1 - Lý do: Kẹt giấy máy in K80)</td>
+                                <td class="pe-3 text-end font-monospace text-muted">192.168.1.15</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3 font-monospace text-muted">17/11 16:05:22</td>
+                                <td class="fw-bold text-white">Lê Nhật Đăng <small class="text-warning">(Manager)</small></td>
+                                <td><span class="badge bg-danger bg-opacity-25 text-danger" style="border-radius: 2px;">INVENTORY_AUDIT</span></td>
+                                <td class="font-monospace text-info">phieu_kiem_kho</td>
+                                <td>Xác nhận biên bản kiểm kê ca sáng: Điều chỉnh lệch -1 lon Heineken (móp vỏ)</td>
+                                <td class="pe-3 text-end font-monospace text-muted">192.168.1.12</td>
                             </tr>
                         </tbody>
                     </table>

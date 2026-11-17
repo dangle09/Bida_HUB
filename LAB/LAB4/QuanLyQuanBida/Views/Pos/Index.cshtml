@@ -34,6 +34,9 @@
             <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="location.reload();" style="border-radius: 2px !important;">
                 <i class="bi bi-arrow-clockwise"></i> Làm mới (F5)
             </button>
+            <button class="btn btn-outline-info btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalGopBan" style="border-radius: 2px !important;">
+                <i class="bi bi-intersect"></i> Gộp bàn / Ghép bill
+            </button>
             <button class="btn btn-bolt-outline btn-sm" data-bs-toggle="modal" data-bs-target="#modalChuyenCa" style="border-radius: 2px !important;">
                 <i class="bi bi-person-badge"></i> Chuyển ca trực
             </button>
@@ -1812,6 +1815,50 @@
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
                 <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã bàn giao ca trực thành công! Xuất phiếu bàn giao két tiền.');" style="border-radius: 2px !important;">
                     <i class="bi bi-check-circle-fill"></i> Xác nhận bàn giao ca
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL 6: GỘP BÀN / GHÉP HÓA ĐƠN (MERGE BILLS)                             -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="modalGopBan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-intersect text-info"></i> GỘP BÀN / GHÉP HÓA ĐƠN THANH TOÁN
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="small text-muted mb-3">Gộp toàn bộ tiền giờ và danh sách món F&B từ các bàn phụ vào bàn đại diện để thanh toán chung 1 hóa đơn:</p>
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Chọn Bàn nguồn (Bàn cần gộp đi) (*):</label>
+                    <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                        <option value="B02">BÀN 02 - Cơ thủ Giang & Bạn (Tạm tính: 126.000 đ)</option>
+                        <option value="B03">BÀN 03 - Khách vãng lai (Tạm tính: 302.000 đ)</option>
+                        <option value="B05">BÀN 05 - Nguyễn Thành Nam (Tạm tính: 60.000 đ)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Chọn Bàn đích (Bàn đại diện thanh toán chung) (*):</label>
+                    <select class="form-select bg-black text-warning border-secondary fw-bold" style="border-radius: 2px !important;">
+                        <option value="B01">BÀN 01 - Hoàng Minh Tuấn (Tạm tính: 164.000 đ)</option>
+                        <option value="B19">BÀN 19 (VIP) - Lê Nhật Đăng (Tạm tính: 285.000 đ)</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small text-muted">Ghi chú gộp hóa đơn (Lưu Audit Log):</label>
+                    <input type="text" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="VD: Nhóm khách giao lưu thanh toán chung 1 bill..." style="border-radius: 2px !important;" />
+                </div>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Hủy</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã gộp tiền giờ và danh sách F&B sang bàn đại diện thành công!');" style="border-radius: 2px !important;">
+                    <i class="bi bi-check2-all me-1"></i> Xác Nhận Gộp Hóa Đơn
                 </button>
             </div>
         </div>
