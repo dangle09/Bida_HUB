@@ -1,0 +1,803 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - HỘI VIÊN & GIẢI ĐẤU: KHÁCH HÀNG & VIP
+   - Tên file: Views/Customers/Index.cshtml
+   - Vai trò: Quản lý đầy đủ 156 hội viên CLB, tích lũy điểm thưởng, quản lý tủ đồ cơ
+   - Đồng bộ 100% với số liệu KPI: 156 Hội viên (14 Kim Cương, 38 Vàng, 42 Bạc, 62 Standard)
+   - Layout: Views/Shared/_AdminLayout.cshtml
+   - CSS: wwwroot/css/admin-pos.css (Chuẩn bo góc 2px radius toàn trang)
+   =================================================================================== *@
+@{
+    ViewData["Title"] = "Khách hàng & VIP - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+
+    // Xây dựng danh sách chuẩn xác ĐỦ 156 HỘI VIÊN đồng bộ toàn diện với hệ thống
+    var memberList = new List<dynamic>();
+
+    // 14 VIP KIM CƯƠNG (DIAMOND)
+    var diamondNames = new[] {
+        ("VIP-8888", "Đào Ngọc Giang", "0347.987.360", 4850, 18600000, "01/01/2026", "Cơ thủ thường trực CLB • Tủ cơ #01"),
+        ("VIP-8889", "Master Dũng", "0903.111.222", 4200, 16500000, "05/01/2026", "HLV Bida Libre • Tủ cơ #04"),
+        ("VIP-8890", "Trần Quốc Bảo", "0918.234.567", 3950, 15200000, "12/01/2026", "VIP Diamond thường trực"),
+        ("VIP-8891", "Nguyễn Hoàng Nam", "0909.876.543", 3800, 14800000, "18/01/2026", "VIP Diamond Tầng 1"),
+        ("VIP-8892", "Võ Thành Long", "0938.456.789", 3650, 14200000, "25/01/2026", "VIP Diamond Carom"),
+        ("VIP-8893", "Đặng Văn Lâm", "0987.654.321", 3500, 13700000, "02/02/2026", "VIP Diamond Phòng VIP"),
+        ("VIP-8894", "Bùi Tiến Dũng", "0912.987.654", 3420, 13400000, "10/02/2026", "VIP Diamond"),
+        ("VIP-8895", "Phan Văn Đức", "0933.876.543", 3350, 13100000, "15/02/2026", "VIP Diamond"),
+        ("VIP-8896", "Lương Xuân Trường", "0977.123.987", 3280, 12800000, "20/02/2026", "VIP Diamond"),
+        ("VIP-8897", "Nguyễn Tuấn Anh", "0966.543.210", 3200, 12500000, "25/02/2026", "VIP Diamond"),
+        ("VIP-8898", "Đỗ Duy Mạnh", "0944.321.654", 3150, 12300000, "01/03/2026", "VIP Diamond"),
+        ("VIP-8899", "Đoàn Văn Hậu", "0919.876.123", 3100, 12100000, "05/03/2026", "VIP Diamond"),
+        ("VIP-8900", "Hà Đức Chinh", "0908.654.987", 3050, 11900000, "10/03/2026", "VIP Diamond"),
+        ("VIP-8901", "Nguyễn Tiến Linh", "0937.210.987", 3000, 11700000, "15/03/2026", "VIP Diamond")
+    };
+    foreach (var d in diamondNames) {
+        memberList.Add(new { Code = d.Item1, Name = d.Item2, Phone = d.Item3, Tier = "diamond", TierName = "💎 VIP DIAMOND", Points = d.Item4, Discount = "-15% Giờ & F&B", Spend = d.Item5, JoinDate = d.Item6, Note = d.Item7 });
+    }
+
+    // 38 VIP VÀNG (GOLD)
+    var goldNames = new[] {
+        ("VIP-1024", "Lê Nhật Đăng", "0912.334.455", 2340, 9450000, "15/02/2026", "Cơ thủ Carom 3 Băng • Tủ cơ #02"),
+        ("VIP-2048", "Hoàng Minh Tuấn", "0908.776.655", 2120, 8500000, "12/03/2026", "Thành viên thường xuyên Tầng 1"),
+        ("VIP-1102", "Nguyễn Đình Trọng", "0933.123.456", 1890, 7650000, "20/04/2026", "Cơ thủ 3 Băng Phòng VIP"),
+        ("VIP-0888", "Nguyễn Văn Năm (Chú Năm)", "0903.445.667", 2850, 11400000, "10/01/2026", "Cơ thủ kỳ cựu Tầng 2 Carom"),
+        ("VIP-1025", "Nguyễn Hữu Thắng", "0945.678.901", 1750, 7000000, "14/03/2026", "Khách VIP quen thuộc"),
+        ("VIP-1026", "Trương Đăng Khoa", "0913.456.780", 2200, 8900000, "18/02/2026", "Hạt giống số 2 Giải đấu"),
+        ("VIP-1027", "Võ Văn Hoàng", "0978.112.233", 1950, 7800000, "22/03/2026", "Cơ thủ Pool Bàn 02"),
+        ("VIP-1028", "Trần Đình Quang", "0989.334.455", 1680, 6700000, "05/04/2026", "Khách thường trực"),
+        ("VIP-1029", "Lê Văn Tùng", "0902.556.677", 1820, 7300000, "28/02/2026", "Hội viên VIP Vàng"),
+        ("VIP-1030", "Nguyễn Văn Hùng", "0935.778.899", 1600, 6400000, "08/04/2026", "Hội viên VIP Vàng")
+    };
+    foreach (var g in goldNames) {
+        memberList.Add(new { Code = g.Item1, Name = g.Item2, Phone = g.Item3, Tier = "gold", TierName = "⭐ VIP GOLD", Points = g.Item4, Discount = "-10% Giờ chơi", Spend = g.Item5, JoinDate = g.Item6, Note = g.Item7 });
+    }
+    for (int i = 11; i <= 38; i++) {
+        string code = $"VIP-10{30 + i}";
+        string phone = $"091{i:00}.{(200 + i * 7):000}.{(300 + i * 11):000}";
+        int pts = 1500 - (i * 18);
+        long sp = 6000000 - (i * 70000);
+        string[] sampleNames = { "Huỳnh Anh Tuấn", "Phạm Quốc Huy", "Ngô Thanh Tùng", "Đỗ Quang Minh", "Vũ Minh Trí", "Dương Quốc Hoàng", "Lý Gia Huy", "Mai Xuân Hùng", "Hồ Văn Cường", "Đặng Đình Phúc" };
+        string name = sampleNames[(i - 11) % sampleNames.Length] + $" (V{i})";
+        memberList.Add(new { Code = code, Name = name, Phone = phone, Tier = "gold", TierName = "⭐ VIP GOLD", Points = pts, Discount = "-10% Giờ chơi", Spend = sp, JoinDate = $"{(i % 28) + 1:00}/03/2026", Note = "Hội viên VIP Vàng tích cực" });
+    }
+
+    // 42 VIP BẠC (SILVER)
+    var silverTop = new[] {
+        ("VIP-0512", "Phạm Trần Bạch Long", "0982.870.986", 1120, 4200000, "10/05/2026", "Cơ thủ Pool 9-Ball • Tủ cơ #03"),
+        ("VIP-0340", "Bùi Đức Thắng", "0971.554.321", 980, 3900000, "05/06/2026", "Cơ thủ trẻ tiềm năng CLB"),
+        ("VIP-0513", "Đỗ Hải Đăng", "0934.567.890", 1050, 4100000, "12/05/2026", "Cơ thủ Pool Bàn 12"),
+        ("VIP-0514", "Trịnh Công Minh", "0906.789.012", 920, 3700000, "18/05/2026", "Hội viên Bạc"),
+        ("VIP-0515", "Vũ Đình Khang", "0917.890.123", 890, 3550000, "25/05/2026", "Cơ thủ Giải đấu Tứ kết")
+    };
+    foreach (var s in silverTop) {
+        memberList.Add(new { Code = s.Item1, Name = s.Item2, Phone = s.Item3, Tier = "silver", TierName = "🥈 VIP SILVER", Points = s.Item4, Discount = "-5% Giờ chơi", Spend = s.Item5, JoinDate = s.Item6, Note = s.Item7 });
+    }
+    for (int i = 6; i <= 42; i++) {
+        string code = $"VIP-05{30 + i}";
+        string phone = $"097{i:00}.{(150 + i * 9):000}.{(400 + i * 5):000}";
+        int pts = 950 - (i * 12);
+        long sp = 3800000 - (i * 45000);
+        string[] sampleNames = { "Lâm Gia Huy", "Phan Trí Dũng", "Tạ Quang Bửu", "Cao Minh Thắng", "Đinh Hữu Lộc", "Lê Khánh Toàn", "Hoàng Kim Long", "Bạch Thái Bưởi", "Chu Văn An", "Trần Đại Nghĩa" };
+        string name = sampleNames[(i - 6) % sampleNames.Length] + $" (S{i})";
+        memberList.Add(new { Code = code, Name = name, Phone = phone, Tier = "silver", TierName = "🥈 VIP SILVER", Points = pts, Discount = "-5% Giờ chơi", Spend = sp, JoinDate = $"{(i % 28) + 1:00}/05/2026", Note = "Hội viên VIP Bạc thân thiết" });
+    }
+
+    // 62 TIÊU CHUẨN (STANDARD)
+    var standardTop = new[] {
+        ("STD-0101", "Trần Quang Huy", "0962.333.888", 320, 1250000, "02/11/2026", "Hội viên mới tháng 11"),
+        ("STD-0102", "Nguyễn Thành Nam", "0948.222.111", 150, 600000, "10/11/2026", "Cơ thủ Bàn 05"),
+        ("STD-0103", "Phan Văn Hậu", "0915.666.777", 280, 1100000, "04/11/2026", "Khách chơi Pool"),
+        ("STD-0104", "Lê Thanh Sơn", "0907.888.999", 220, 880000, "08/11/2026", "Hội viên mới"),
+        ("STD-0105", "Ngô Trí Dũng", "0939.000.111", 310, 1200000, "01/11/2026", "Khách chơi Carom")
+    };
+    foreach (var st in standardTop) {
+        memberList.Add(new { Code = st.Item1, Name = st.Item2, Phone = st.Item3, Tier = "standard", TierName = "STANDARD", Points = st.Item4, Discount = "Tích lũy", Spend = st.Item5, JoinDate = st.Item6, Note = st.Item7 });
+    }
+    for (int i = 6; i <= 62; i++) {
+        string code = $"STD-01{i:00}";
+        string phone = $"096{i:00}.{(100 + i * 8):000}.{(200 + i * 12):000}";
+        int pts = 300 - (i * 3);
+        long sp = 1200000 - (i * 12000);
+        string[] sampleNames = { "Nguyễn Văn An", "Trần Đình Trọng", "Lê Quốc Trung", "Phạm Văn Quyết", "Vũ Tiến Thành", "Đặng Hữu Phúc", "Bùi Thế Anh", "Đỗ Mạnh Hùng", "Hồ Minh Quân", "Dương Nhật Nam" };
+        string name = sampleNames[(i - 6) % sampleNames.Length] + $" (Std{i})";
+        memberList.Add(new { Code = code, Name = name, Phone = phone, Tier = "standard", TierName = "STANDARD", Points = pts, Discount = "Tích lũy", Spend = sp, JoinDate = $"{(i % 28) + 1:00}/10/2026", Note = "Hội viên Tiêu chuẩn tích lũy" });
+    }
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <span class="text-secondary">Trang chủ</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-secondary">Hội viên & Giải đấu</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Khách hàng & VIP</span>
+    </div>
+
+    <!-- Header Trang & Tác vụ nhanh -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-award-fill text-warning"></i>
+                HỘI VIÊN THÂN THIẾT, TÍCH ĐIỂM & GỬI CƠ
+            </h2>
+            <div class="text-muted small">Quản lý cấp bậc VIP, tích lũy điểm thưởng và dịch vụ bảo quản tủ đồ cơ bida riêng</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalGuiCo" style="border-radius: 2px !important;">
+                <i class="bi bi-safe2 text-info"></i> Nhận gửi cơ bida
+            </button>
+            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemHoiVien" style="border-radius: 2px !important;">
+                <i class="bi bi-person-plus-fill"></i> Đăng Ký Hội Viên Mới
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 THẺ THỐNG KÊ KPI HỘI VIÊN (ĐỒNG BỘ 100% VỚI DANH SÁCH 156 CƠ THỦ) -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tổng hội viên CLB</p>
+                    <div class="kpi-value text-white">156 <small class="fs-6 text-muted fw-normal">Cơ thủ</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
+                    <i class="bi bi-gem"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">VIP Kim Cương (-15%)</p>
+                    <div class="kpi-value" style="color: #38bdf8;">14 <small class="fs-6 text-info fw-normal">Thành viên</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
+                    <i class="bi bi-shield-fill-check"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">VIP Vàng (-10%)</p>
+                    <div class="kpi-value" style="color: #eab308;">38 <small class="fs-6 text-warning fw-normal">Thành viên</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #a855f7; background: rgba(168, 85, 247, 0.1);">
+                    <i class="bi bi-star-half"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Điểm thưởng lưu hành</p>
+                    <div class="kpi-value text-white">45.200 <small class="fs-6 text-muted fw-normal">Pts</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABS ĐIỀU HƯỚNG: DANH SÁCH 156 HỘI VIÊN & TỦ ĐỒ CƠ GỬI -->
+    <ul class="nav nav-pills nav-pills-bolt mb-3" id="customerTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-hoivien-btn" data-bs-toggle="pill" data-bs-target="#tab-hoivien" type="button" role="tab" aria-controls="tab-hoivien" aria-selected="true">
+                <i class="bi bi-card-heading me-1"></i> Danh Sách Hội Viên & Điểm Tích Lũy (<span id="totalMemberBadge">156 cơ thủ</span>)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-coguibtn" data-bs-toggle="pill" data-bs-target="#tab-cogui" type="button" role="tab" aria-controls="tab-cogui" aria-selected="false">
+                <i class="bi bi-safe me-1"></i> Tủ Đồ Cá Nhân & Cơ Khách Gửi (6 Tủ đang sử dụng)
+            </button>
+        </li>
+    </ul>
+
+    <!-- NỘI DUNG TABS -->
+    <div class="tab-content" id="customerTabsContent">
+        <!-- ========================================================================= -->
+        <!-- TAB 1: DANH SÁCH ĐỦ 156 HỘI VIÊN (CÓ PHÂN TRANG & BỘ LỌC TỨC THÌ)          -->
+        <!-- ========================================================================= -->
+        <div class="tab-pane fade show active" id="tab-hoivien" role="tabpanel">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
+                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <input type="text" id="customerSearchInput" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="Tìm theo tên hội viên, SĐT, mã thẻ..." style="width: 280px; border-radius: 2px !important;" />
+                        <select id="customerTierFilter" class="form-select form-select-sm bg-black text-light border-secondary" style="width: 220px; border-radius: 2px !important;">
+                            <option value="">Tất cả hạng thẻ (156)</option>
+                            <option value="diamond">VIP Kim Cương (14)</option>
+                            <option value="gold">VIP Vàng (38)</option>
+                            <option value="silver">VIP Bạc (42)</option>
+                            <option value="standard">Standard (62)</option>
+                        </select>
+                    </div>
+                    <div class="text-muted small">
+                        Hiển thị <span id="showingCount" class="text-white fw-bold">156</span> / 156 hội viên • Tích 10 điểm cho mỗi 100K chi tiêu
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" id="customersTable" style="font-size: 0.86rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                            <tr>
+                                <th class="ps-3">MÃ THẺ</th>
+                                <th>HỌ VÀ TÊN CƠ THỦ</th>
+                                <th>SỐ ĐIỆN THOẠI</th>
+                                <th>HẠNG THÀNH VIÊN</th>
+                                <th class="text-center">ĐIỂM TÍCH LŨY</th>
+                                <th class="text-center">MỨC GIẢM</th>
+                                <th class="text-end">TỔNG CHI TIÊU</th>
+                                <th>NGÀY GIA NHẬP</th>
+                                <th class="text-center pe-3">THAO TÁC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in memberList)
+                            {
+                                <tr data-tier="@m.Tier" class="member-row">
+                                    <td class="ps-3">
+                                        <strong class="font-monospace @(m.Tier == "diamond" ? "text-info" : m.Tier == "gold" ? "text-warning" : "text-light")">@m.Code</strong>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-white member-name d-flex align-items-center gap-2">
+                                            <div style="width: 24px; height: 24px; border-radius: 2px; background: @(m.Tier == "diamond" ? "var(--primary-neon)" : m.Tier == "gold" ? "#eab308" : "#475569"); color: #000; font-size: 0.72rem; font-weight: bold; display: flex; align-items: center; justify-content: center;">
+                                                @m.Name.Substring(0, 1)
+                                            </div>
+                                            <span>@m.Name</span>
+                                        </div>
+                                        <div class="small text-muted" style="font-size: 0.74rem;">@m.Note</div>
+                                    </td>
+                                    <td class="member-phone font-monospace">@m.Phone</td>
+                                    <td>
+                                        <span class="badge bg-black border @(m.Tier == "diamond" ? "border-info text-info" : m.Tier == "gold" ? "border-warning text-warning" : m.Tier == "silver" ? "border-secondary text-light" : "border-dark text-muted") fw-bold" style="border-radius: 2px;">
+                                            @m.TierName
+                                        </span>
+                                    </td>
+                                    <td class="text-center fw-bold member-points" style="color: var(--primary-neon);">
+                                        @m.Points.ToString("N0") Pts
+                                    </td>
+                                    <td class="text-center text-success fw-bold">@m.Discount</td>
+                                    <td class="text-end fw-bold text-white">@m.Spend.ToString("N0") đ</td>
+                                    <td class="small text-muted">@m.JoinDate</td>
+                                    <td class="text-center pe-3">
+                                        <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="@m.Name" data-card="@m.Code" data-points="@m.Points" title="Cộng điểm thưởng" style="border-radius: 2px !important;">
+                                            <i class="bi bi-coin"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info p-1 px-2 btn-edit-customer" data-name="@m.Name" data-card="@m.Code" data-phone="@m.Phone" data-tier="@m.Tier" data-spend="@m.Spend" title="Chỉnh sửa thông tin & ảnh đại diện" style="border-radius: 2px !important;">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- THANH PHÂN TRANG CLIENT-SIDE CHUẨN 2PX RADIUS -->
+                <div class="card-footer bg-black bg-opacity-40 border-secondary border-opacity-25 py-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <div class="small text-muted">
+                        Trang <strong id="currentPageNum" class="text-white">1</strong> / <span id="totalPageNum">11</span> (15 hội viên/trang)
+                    </div>
+                    <div class="d-flex align-items-center gap-1" id="paginationControls">
+                        <button class="btn btn-dark btn-sm border-secondary text-light" id="btnPrevPage" onclick="changePage(-1);" style="border-radius: 2px !important;">
+                            <i class="bi bi-chevron-left"></i> Trước
+                        </button>
+                        <div id="pageNumbersContainer" class="d-flex gap-1"></div>
+                        <button class="btn btn-dark btn-sm border-secondary text-light" id="btnNextPage" onclick="changePage(1);" style="border-radius: 2px !important;">
+                            Sau <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 2: TỦ ĐỒ CÁ NHÂN & CƠ KHÁCH GỬI (6 TỦ ĐANG SỬ DỤNG)                   -->
+        <!-- ========================================================================= -->
+        <div class="tab-pane fade" id="tab-cogui" role="tabpanel">
+            <div class="row g-3">
+                <!-- TỦ #01 -->
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card bg-dark border-secondary border-opacity-50 p-3" style="border-radius: 2px !important;">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge text-dark fw-bold px-2 py-1" style="background: var(--primary-neon); border-radius: 2px;">TỦ #01 (ĐANG KHÓA)</span>
+                            <span class="badge bg-black border border-info text-info">VIP Diamond</span>
+                        </div>
+                        <h5 class="fw-bold text-white fs-6 mb-1">Cơ thủ: Đào Ngọc Giang</h5>
+                        <div class="text-muted small mb-2"><i class="bi bi-telephone me-1"></i> 0347.987.360</div>
+                        <div class="p-2 bg-black border border-secondary border-opacity-40 small mb-2" style="border-radius: 2px;">
+                            <div class="text-warning fw-semibold"><i class="bi bi-magic me-1"></i> Predator SP2 Revo Carbon 12.4mm</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">Đầu tẩy Kamui Black Clear M • Trọng lượng 530g</div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <span>Gửi ngày: 01/01/2026</span>
+                            <button class="btn btn-sm btn-outline-light" onclick="alert('Đã xuất biên lai giao nhận cơ cho khách.');" style="border-radius: 2px !important; font-size: 0.75rem;">Trả cơ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TỦ #02 -->
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card bg-dark border-secondary border-opacity-50 p-3" style="border-radius: 2px !important;">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge text-dark fw-bold px-2 py-1" style="background: var(--primary-neon); border-radius: 2px;">TỦ #02 (ĐANG KHÓA)</span>
+                            <span class="badge bg-black border border-warning text-warning">VIP Gold</span>
+                        </div>
+                        <h5 class="fw-bold text-white fs-6 mb-1">Cơ thủ: Lê Nhật Đăng</h5>
+                        <div class="text-muted small mb-2"><i class="bi bi-telephone me-1"></i> 0912.334.455</div>
+                        <div class="p-2 bg-black border border-secondary border-opacity-40 small mb-2" style="border-radius: 2px;">
+                            <div class="text-warning fw-semibold"><i class="bi bi-magic me-1"></i> Molinari Carom 3 Băng CRM-30</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">Ngọn mộc Maple Bắc Mỹ • Trọng lượng 525g</div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <span>Gửi ngày: 15/02/2026</span>
+                            <button class="btn btn-sm btn-outline-light" onclick="alert('Đã xuất biên lai giao nhận cơ cho khách.');" style="border-radius: 2px !important; font-size: 0.75rem;">Trả cơ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TỦ #03 -->
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card bg-dark border-secondary border-opacity-50 p-3" style="border-radius: 2px !important;">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge text-dark fw-bold px-2 py-1" style="background: var(--primary-neon); border-radius: 2px;">TỦ #03 (ĐANG KHÓA)</span>
+                            <span class="badge bg-black border border-secondary text-light">VIP Silver</span>
+                        </div>
+                        <h5 class="fw-bold text-white fs-6 mb-1">Cơ thủ: Phạm Trần Bạch Long</h5>
+                        <div class="text-muted small mb-2"><i class="bi bi-telephone me-1"></i> 0982.870.986</div>
+                        <div class="p-2 bg-black border border-secondary border-opacity-40 small mb-2" style="border-radius: 2px;">
+                            <div class="text-warning fw-semibold"><i class="bi bi-magic me-1"></i> Fury One Carbon Series O-03</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">Tay cầm bọc da êm ái • Trọng lượng 535g</div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <span>Gửi ngày: 10/05/2026</span>
+                            <button class="btn btn-sm btn-outline-light" onclick="alert('Đã xuất biên lai giao nhận cơ cho khách.');" style="border-radius: 2px !important; font-size: 0.75rem;">Trả cơ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TỦ #04 -->
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card bg-dark border-secondary border-opacity-50 p-3" style="border-radius: 2px !important;">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge text-dark fw-bold px-2 py-1" style="background: var(--primary-neon); border-radius: 2px;">TỦ #04 (ĐANG KHÓA)</span>
+                            <span class="badge bg-black border border-info text-info">VIP Diamond</span>
+                        </div>
+                        <h5 class="fw-bold text-white fs-6 mb-1">Cơ thủ: Master Dũng</h5>
+                        <div class="text-muted small mb-2"><i class="bi bi-telephone me-1"></i> 0903.111.222</div>
+                        <div class="p-2 bg-black border border-secondary border-opacity-40 small mb-2" style="border-radius: 2px;">
+                            <div class="text-warning fw-semibold"><i class="bi bi-magic me-1"></i> Mezz EC9 WX-Sigma</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">Ngọn Sigma công nghệ Nhật Bản • Trọng lượng 530g</div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <span>Gửi ngày: 05/01/2026</span>
+                            <button class="btn btn-sm btn-outline-light" onclick="alert('Đã xuất biên lai giao nhận cơ cho khách.');" style="border-radius: 2px !important; font-size: 0.75rem;">Trả cơ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TỦ #05 -->
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card bg-dark border-secondary border-opacity-50 p-3" style="border-radius: 2px !important;">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge text-dark fw-bold px-2 py-1" style="background: var(--primary-neon); border-radius: 2px;">TỦ #05 (ĐANG KHÓA)</span>
+                            <span class="badge bg-black border border-warning text-warning">VIP Gold</span>
+                        </div>
+                        <h5 class="fw-bold text-white fs-6 mb-1">Cơ thủ: Chú Năm Carom</h5>
+                        <div class="text-muted small mb-2"><i class="bi bi-telephone me-1"></i> 0903.445.667</div>
+                        <div class="p-2 bg-black border border-secondary border-opacity-40 small mb-2" style="border-radius: 2px;">
+                            <div class="text-warning fw-semibold"><i class="bi bi-magic me-1"></i> Longoni Sultan Carom Libre</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">Cơ thủ kỳ cựu • Trọng lượng 520g</div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <span>Gửi ngày: 10/01/2026</span>
+                            <button class="btn btn-sm btn-outline-light" onclick="alert('Đã xuất biên lai giao nhận cơ cho khách.');" style="border-radius: 2px !important; font-size: 0.75rem;">Trả cơ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TỦ #06 -->
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card bg-dark border-secondary border-opacity-50 p-3" style="border-radius: 2px !important;">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge text-dark fw-bold px-2 py-1" style="background: var(--primary-neon); border-radius: 2px;">TỦ #06 (ĐANG KHÓA)</span>
+                            <span class="badge bg-black border border-warning text-warning">VIP Gold</span>
+                        </div>
+                        <h5 class="fw-bold text-white fs-6 mb-1">Cơ thủ: Trương Đăng Khoa</h5>
+                        <div class="text-muted small mb-2"><i class="bi bi-telephone me-1"></i> 0913.456.780</div>
+                        <div class="p-2 bg-black border border-secondary border-opacity-40 small mb-2" style="border-radius: 2px;">
+                            <div class="text-warning fw-semibold"><i class="bi bi-magic me-1"></i> Cuetec Cynergy 15K Carbon</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">Cơ thi đấu Giải vô địch Bolt Cup • Trọng lượng 535g</div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <span>Gửi ngày: 18/02/2026</span>
+                            <button class="btn btn-sm btn-outline-light" onclick="alert('Đã xuất biên lai giao nhận cơ cho khách.');" style="border-radius: 2px !important; font-size: 0.75rem;">Trả cơ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL 1: ĐĂNG KÝ HỘI VIÊN MỚI (CÓ CHỌN VÀ PREVIEW ẢNH CHÂN DUNG/AVATAR)   -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="modalThemHoiVien" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-person-plus-fill text-warning"></i> ĐĂNG KÝ HỘI VIÊN CLB MỚI
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <!-- UPLOAD ẢNH CHÂN DUNG CƠ THỦ -->
+                    <div class="mb-3 text-center">
+                        <label class="form-label small text-muted d-block text-start">Ảnh chân dung / Avatar hội viên:</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 64px; height: 64px; border-radius: 2px; background: #1e293b; border: 1px dashed #64748b; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <img id="previewMemberAvatar" src="" alt="" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
+                                <i id="iconDefaultAvatar" class="bi bi-camera text-secondary fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1 text-start">
+                                <input type="file" id="memberAvatarInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewAvatar(this, 'previewMemberAvatar', 'iconDefaultAvatar');" style="border-radius: 2px !important;" />
+                                <div class="form-text text-muted small" style="font-size: 0.72rem;">Chụp ảnh trực tiếp hoặc tải ảnh CCCD/Avatar cơ thủ.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Họ và tên cơ thủ (*):</label>
+                        <input type="text" class="form-control bg-black text-light border-secondary fw-bold" placeholder="Nhập họ và tên..." style="border-radius: 2px !important;" required />
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Số điện thoại (*):</label>
+                            <input type="text" class="form-control bg-black text-light border-secondary font-monospace" placeholder="09xxxxxxxx" style="border-radius: 2px !important;" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Hạng thẻ đăng ký:</label>
+                            <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                                <option value="standard" selected>Standard (Tiêu chuẩn)</option>
+                                <option value="silver">VIP Bạc (Tích lũy 100đ)</option>
+                                <option value="gold">VIP Vàng (Tích lũy 500đ)</option>
+                                <option value="diamond">VIP Kim Cương (Tích lũy 1000đ)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Ghi chú hoặc bạn bè giới thiệu:</label>
+                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Nhập sở thích, loại hình bida sở trường..." style="border-radius: 2px !important;" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã kích hoạt thẻ hội viên mới và đồng bộ vào danh sách!');" style="border-radius: 2px !important;">
+                    <i class="bi bi-check-lg"></i> Kích hoạt thẻ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL 2: CHỈNH SỬA HỘI VIÊN (CÓ CHỌN VÀ PREVIEW ẢNH AVATAR)               -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="modalSuaHoiVien" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-pencil-square text-info"></i> CHỈNH SỬA THÔNG TIN HỘI VIÊN
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <!-- UPLOAD ĐỔI ẢNH AVATAR -->
+                    <div class="mb-3 text-center">
+                        <label class="form-label small text-muted d-block text-start">Ảnh chân dung / Avatar:</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 64px; height: 64px; border-radius: 2px; background: var(--primary-neon); color: #000; font-weight: bold; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden;" id="editAvatarBox">
+                                <img id="previewEditMemberAvatar" src="" alt="" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
+                                <span id="textEditMemberInitial">Đ</span>
+                            </div>
+                            <div class="flex-grow-1 text-start">
+                                <input type="file" id="editMemberAvatarInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewAvatar(this, 'previewEditMemberAvatar', 'textEditMemberInitial');" style="border-radius: 2px !important;" />
+                                <div class="form-text text-muted small" style="font-size: 0.72rem;">Cập nhật ảnh đại diện mới của cơ thủ.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Họ và tên cơ thủ (*):</label>
+                        <input type="text" id="editMemberName" class="form-control bg-black text-light border-secondary fw-bold" style="border-radius: 2px !important;" required />
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Mã thẻ hội viên:</label>
+                            <input type="text" id="editMemberCard" class="form-control bg-black text-info border-secondary font-monospace" readonly style="border-radius: 2px !important;" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Số điện thoại (*):</label>
+                            <input type="text" id="editMemberPhone" class="form-control bg-black text-light border-secondary font-monospace" style="border-radius: 2px !important;" />
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Cấp bậc hạng thẻ:</label>
+                            <select id="editMemberTier" class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                                <option value="diamond">VIP Kim Cương (-15%)</option>
+                                <option value="gold">VIP Vàng (-10%)</option>
+                                <option value="silver">VIP Bạc (-5%)</option>
+                                <option value="standard">Standard (Tiêu chuẩn)</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Tổng chi tiêu (VNĐ):</label>
+                            <input type="text" id="editMemberSpend" class="form-control bg-black text-warning border-secondary font-monospace" readonly style="border-radius: 2px !important;" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã cập nhật thông tin hội viên thành công!');" style="border-radius: 2px !important;">
+                    <i class="bi bi-check-lg"></i> Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL 3: TIẾP NHẬN BẢO QUẢN CƠ BIDA (CÓ CHỌN VÀ PREVIEW ẢNH CÂY CƠ GỬI)    -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="modalGuiCo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-safe2 text-info"></i> TIẾP NHẬN BẢO QUẢN CƠ BIDA
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Số tủ bảo quản (*):</label>
+                            <input type="text" class="form-control bg-black text-warning border-secondary fw-bold" value="TỦ #07 (TỦ MỚI)" readonly style="border-radius: 2px !important;" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Số điện thoại hội viên (*):</label>
+                            <input type="text" class="form-control bg-black text-light border-secondary" placeholder="09xxxxxxxx" style="border-radius: 2px !important;" required />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Tên hãng cơ & Model:</label>
+                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ví dụ: Predator SP2, Fury One, Mezz EC9..." style="border-radius: 2px !important;" />
+                    </div>
+
+                    <!-- UPLOAD ẢNH CÂY CƠ -->
+                    <div class="mb-3">
+                        <label class="form-label small text-muted d-block">Ảnh chụp cây cơ lúc bàn giao:</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 64px; height: 64px; border-radius: 2px; background: #1e293b; border: 1px dashed #64748b; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <img id="previewCueImage" src="" alt="" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
+                                <i id="iconDefaultCue" class="bi bi-camera text-secondary fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <input type="file" id="cueImageInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewAvatar(this, 'previewCueImage', 'iconDefaultCue');" style="border-radius: 2px !important;" />
+                                <div class="form-text text-muted small" style="font-size: 0.72rem;">Chụp ảnh ngọn, ren và chuôi cơ để đối chiếu lúc trả cơ.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Tình trạng kiểm tra ban đầu:</label>
+                        <textarea class="form-control bg-black text-light border-secondary" rows="2" placeholder="Ngọn thẳng, không xước, đầu tẩy còn tốt..." style="border-radius: 2px !important;"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Hủy</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã nhập tủ bảo quản cơ thành công! Đã gửi tin nhắn SMS xác nhận kèm ảnh cho khách.');" style="border-radius: 2px !important;">
+                    <i class="bi bi-shield-check"></i> Xác nhận cất tủ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL 4: CẬP NHẬT ĐIỂM THƯỞNG HỘI VIÊN                                    -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="modalCongDiem" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-coin text-warning"></i> CẬP NHẬT ĐIỂM THƯỞNG HỘI VIÊN
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="p-3 bg-black border border-secondary border-opacity-50 mb-3" style="border-radius: 2px !important;">
+                    <div class="fw-bold text-white fs-6" id="pointMemberName">Tên hội viên</div>
+                    <div class="small text-info font-monospace" id="pointMemberCard">Mã thẻ</div>
+                    <div class="small text-warning mt-1">Điểm hiện tại: <strong id="pointMemberCurrent">0 Pts</strong></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Số điểm cộng / trừ:</label>
+                    <input type="number" class="form-control bg-black text-warning border-secondary fw-bold" value="50" style="border-radius: 2px !important;" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Lý do điều chỉnh:</label>
+                    <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Tặng điểm sinh nhật, giải đấu, đền bù..." style="border-radius: 2px !important;" />
+                </div>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Hủy</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã cập nhật điểm thưởng hội viên thành công!');" style="border-radius: 2px !important;">
+                    <i class="bi bi-check-lg"></i> Xác nhận cộng điểm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function previewAvatar(input, previewImgId, hideElementId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById(previewImgId);
+                    var hideEl = document.getElementById(hideElementId);
+                    if (img) {
+                        img.src = e.target.result;
+                        img.style.display = 'block';
+                    }
+                    if (hideEl) {
+                        hideEl.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // QUẢN LÝ PHÂN TRANG VÀ BỘ LỌC 156 HỘI VIÊN
+        var currentPage = 1;
+        var pageSize = 15;
+        var allRows = [];
+        var filteredRows = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var searchInput = document.getElementById('customerSearchInput');
+            var tierFilter = document.getElementById('customerTierFilter');
+            allRows = Array.from(document.querySelectorAll('#customersTable tbody tr.member-row'));
+            filteredRows = allRows.slice();
+
+            function applyFilter() {
+                var query = (searchInput.value || '').trim().toLowerCase();
+                var selectedTier = (tierFilter.value || '').trim();
+
+                filteredRows = allRows.filter(function (row) {
+                    var tier = row.getAttribute('data-tier') || '';
+                    var text = row.textContent.toLowerCase();
+                    var matchesQuery = !query || text.includes(query);
+                    var matchesTier = !selectedTier || tier === selectedTier;
+                    return matchesQuery && matchesTier;
+                });
+
+                currentPage = 1;
+                renderPage();
+            }
+
+            window.renderPage = function() {
+                var total = filteredRows.length;
+                var totalPages = Math.ceil(total / pageSize) || 1;
+                if (currentPage > totalPages) currentPage = totalPages;
+                if (currentPage < 1) currentPage = 1;
+
+                var startIdx = (currentPage - 1) * pageSize;
+                var endIdx = startIdx + pageSize;
+
+                allRows.forEach(function (row) {
+                    row.style.display = 'none';
+                });
+
+                filteredRows.slice(startIdx, endIdx).forEach(function (row) {
+                    row.style.display = '';
+                });
+
+                // Cập nhật số liệu hiển thị
+                document.getElementById('showingCount').textContent = total;
+                document.getElementById('currentPageNum').textContent = currentPage;
+                document.getElementById('totalPageNum').textContent = totalPages;
+
+                // Nút Trước / Sau
+                document.getElementById('btnPrevPage').disabled = (currentPage === 1);
+                document.getElementById('btnNextPage').disabled = (currentPage === totalPages);
+
+                // Tạo số trang
+                var container = document.getElementById('pageNumbersContainer');
+                container.innerHTML = '';
+                var maxButtons = 5;
+                var startPage = Math.max(1, currentPage - 2);
+                var endPage = Math.min(totalPages, startPage + maxButtons - 1);
+                if (endPage - startPage < maxButtons - 1) {
+                    startPage = Math.max(1, endPage - maxButtons + 1);
+                }
+
+                for (var i = startPage; i <= endPage; i++) {
+                    var btn = document.createElement('button');
+                    btn.className = 'btn btn-sm ' + (i === currentPage ? 'btn-bolt-neon' : 'btn-dark border-secondary text-light');
+                    btn.style.borderRadius = '2px';
+                    btn.textContent = i;
+                    btn.onclick = (function(p) {
+                        return function() {
+                            currentPage = p;
+                            renderPage();
+                        };
+                    })(i);
+                    container.appendChild(btn);
+                }
+            };
+
+            window.changePage = function(delta) {
+                currentPage += delta;
+                renderPage();
+            };
+
+            if (searchInput) searchInput.addEventListener('input', applyFilter);
+            if (tierFilter) tierFilter.addEventListener('change', applyFilter);
+
+            renderPage();
+
+            // SỰ KIỆN NÚT CHỈNH SỬA
+            document.querySelectorAll('.btn-edit-customer').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var name = this.getAttribute('data-name');
+                    var card = this.getAttribute('data-card');
+                    var phone = this.getAttribute('data-phone');
+                    var tier = this.getAttribute('data-tier');
+                    var spend = this.getAttribute('data-spend');
+
+                    document.getElementById('editMemberName').value = name;
+                    document.getElementById('editMemberCard').value = card;
+                    document.getElementById('editMemberPhone').value = phone;
+                    document.getElementById('editMemberTier').value = tier;
+                    document.getElementById('editMemberSpend').value = Number(spend).toLocaleString('vi-VN') + ' đ';
+                    document.getElementById('textEditMemberInitial').textContent = name.substring(0, 1);
+
+                    var modal = new bootstrap.Modal(document.getElementById('modalSuaHoiVien'));
+                    modal.show();
+                });
+            });
+
+            // SỰ KIỆN NÚT CỘNG ĐIỂM
+            document.querySelectorAll('.btn-add-points').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var name = this.getAttribute('data-name');
+                    var card = this.getAttribute('data-card');
+                    var points = this.getAttribute('data-points');
+
+                    document.getElementById('pointMemberName').textContent = name;
+                    document.getElementById('pointMemberCard').textContent = card;
+                    document.getElementById('pointMemberCurrent').textContent = Number(points).toLocaleString('vi-VN') + ' Pts';
+
+                    var modal = new bootstrap.Modal(document.getElementById('modalCongDiem'));
+                    modal.show();
+                });
+            });
+        });
+    </script>
+}

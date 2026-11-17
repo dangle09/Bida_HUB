@@ -1,0 +1,368 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - QUẢN TRỊ: CÀI ĐẶT HỆ THỐNG
+   - Tên file: Views/Settings/Index.cshtml
+   - Vai trò: Giao diện cấu hình thiết bị máy in bill, VietQR ngân hàng, thông tin CLB
+   - Layout: Views/Shared/_AdminLayout.cshtml
+   - CSS: wwwroot/css/admin-pos.css (Chuẩn bo góc 2px radius toàn trang)
+   =================================================================================== *@
+@{
+    ViewData["Title"] = "Cài đặt hệ thống - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <span class="text-secondary">Trang chủ</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-secondary">Quản trị & Báo cáo</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Cài đặt hệ thống</span>
+    </div>
+
+    <!-- Header Trang & Tác vụ nhanh -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <div class="badge text-uppercase fw-bold px-2 py-1 mb-1" style="background: rgba(166, 255, 0, 0.15); color: var(--primary-neon); border-radius: 2px;">
+                <i class="bi bi-sliders me-1"></i> SYSTEM CONFIGURATION & HARDWARE
+            </div>
+            <h2 class="h3 fw-bold text-white mb-1 font-heading">
+                Cài đặt <span style="color: var(--primary-neon);">Hệ Thống & Thiết Bị POS</span>
+            </h2>
+            <div class="text-muted small">Cấu hình máy in nhiệt K80, tài khoản thanh toán VietQR, thông số quán và chính sách giờ chơi</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="alert('Đang gửi lệnh in thử mẫu hóa đơn K80 đến máy in quầy thu ngân...');" style="border-radius: 2px !important;">
+                <i class="bi bi-printer text-warning"></i> In Thử Bill K80
+            </button>
+            <button class="btn btn-bolt-neon btn-sm d-flex align-items-center gap-1 px-3" onclick="alert('Đã lưu toàn bộ cấu hình hệ thống thành công!');" style="border-radius: 2px !important;">
+                <i class="bi bi-check-lg"></i> Lưu Cấu Hình
+            </button>
+        </div>
+    </div>
+
+    <!-- TABS ĐIỀU HƯỚNG CÀI ĐẶT -->
+    <ul class="nav nav-pills nav-pills-bolt mb-4" id="settingTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-clb-btn" data-bs-toggle="pill" data-bs-target="#tab-clb" type="button" role="tab" aria-controls="tab-clb" aria-selected="true">
+                <i class="bi bi-building me-1"></i> Thông Tin Câu Lạc Bộ
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-printer-btn" data-bs-toggle="pill" data-bs-target="#tab-printer" type="button" role="tab" aria-controls="tab-printer" aria-selected="false">
+                <i class="bi bi-printer-fill me-1"></i> Máy In Hóa Đơn K80
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-vietqr-btn" data-bs-toggle="pill" data-bs-target="#tab-vietqr" type="button" role="tab" aria-controls="tab-vietqr" aria-selected="false">
+                <i class="bi bi-qr-code-scan me-1"></i> Ngân Hàng & VietQR
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-shift-btn" data-bs-toggle="pill" data-bs-target="#tab-shift" type="button" role="tab" aria-controls="tab-shift" aria-selected="false">
+                <i class="bi bi-clock-history me-1"></i> Ca Trực & Chính Sách Giá
+            </button>
+        </li>
+    </ul>
+
+    <!-- NỘI DUNG TABS -->
+    <div class="tab-content" id="settingTabContent">
+        <!-- ========================================================================= -->
+        <!-- TAB 1: THÔNG TIN CÂU LẠC BỘ (CÓ CHỌN ẢNH LOGO)                           -->
+        <!-- ========================================================================= -->
+        <div class="tab-pane fade show active" id="tab-clb" role="tabpanel" aria-labelledby="tab-clb-btn">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
+                <div class="card-body p-4">
+                    <h5 class="card-title font-heading fw-bold text-white mb-4 fs-6 pb-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2">
+                        <i class="bi bi-shop text-warning"></i> THÔNG TIN THƯƠNG HIỆU & ĐỊA ĐIỂM KINH DOANH
+                    </h5>
+
+                    <div class="row g-4">
+                        <!-- Upload Logo Quán -->
+                        <div class="col-12 col-md-4 text-center">
+                            <label class="form-label small text-muted d-block text-start mb-2">Logo đại diện CLB (*):</label>
+                            <div class="p-3 bg-black border border-secondary border-opacity-50 text-center mb-3" style="border-radius: 2px !important;">
+                                <img id="previewClubLogo" src="~/images/bolt-billiards-logo.png" alt="Logo CLB" style="max-height: 120px; max-width: 100%; object-fit: contain;" />
+                            </div>
+                            <div class="input-group">
+                                <input type="file" id="clubLogoInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewImage(this, 'previewClubLogo');" style="border-radius: 2px !important;" />
+                            </div>
+                            <div class="form-text text-muted small text-start mt-1">Định dạng PNG/JPG trong suốt, kích thước đề xuất 512x512px.</div>
+                        </div>
+
+                        <!-- Thông tin chi tiết -->
+                        <div class="col-12 col-md-8">
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small text-muted">Tên thương hiệu CLB (*):</label>
+                                    <input type="text" class="form-control bg-black text-light border-secondary fw-bold" value="BOLT BILLIARDS CLUB" style="border-radius: 2px !important;" />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small text-muted">Hotline đặt bàn / Zalo (*):</label>
+                                    <input type="text" class="form-control bg-black text-warning border-secondary fw-bold font-monospace" value="0362.870.986" style="border-radius: 2px !important;" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small text-muted">Địa chỉ cơ sở kinh doanh (*):</label>
+                                <input type="text" class="form-control bg-black text-light border-secondary" value="128 Nguyễn Ái Quốc, Phường Tân Tiến, TP. Biên Hòa, Tỉnh Đồng Nai" style="border-radius: 2px !important;" />
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small text-muted">Email liên hệ quản lý:</label>
+                                    <input type="email" class="form-control bg-black text-light border-secondary" value="contact@boltbilliards.vn" style="border-radius: 2px !important;" />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small text-muted">Khẩu hiệu / Slogan:</label>
+                                    <input type="text" class="form-control bg-black text-light border-secondary" value="Đẳng cấp cơ thủ - Nơi hội tụ đam mê Bida chuyên nghiệp" style="border-radius: 2px !important;" />
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label class="form-label small text-muted">Giờ mở cửa:</label>
+                                    <input type="text" class="form-control bg-black text-light border-secondary" value="08:00 Sáng" style="border-radius: 2px !important;" />
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small text-muted">Giờ đóng cửa:</label>
+                                    <input type="text" class="form-control bg-black text-light border-secondary" value="02:00 Đêm (Phục vụ xuyên đêm)" style="border-radius: 2px !important;" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 2: CẤU HÌNH MÁY IN HÓA ĐƠN K80                                        -->
+        <!-- ========================================================================= -->
+        <div class="tab-pane fade" id="tab-printer" role="tabpanel" aria-labelledby="tab-printer-btn">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
+                <div class="card-body p-4">
+                    <h5 class="card-title font-heading fw-bold text-white mb-4 fs-6 pb-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2">
+                        <i class="bi bi-printer text-success"></i> THIẾT LẬP MÁY IN NHIỆT KHỔ K80 / K58
+                    </h5>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label small text-muted">Tên máy in kết nối (*):</label>
+                                <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                                    <option value="xprinter" selected>Xprinter XP-Q800 (Khổ giấy 80mm - Cổng LAN/USB)</option>
+                                    <option value="epson">Epson TM-T82III (Khổ giấy 80mm - Cổng LAN)</option>
+                                    <option value="bixolon">Bixolon SRP-330II (Khổ giấy 80mm)</option>
+                                </select>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label small text-muted">Khổ giấy in bill:</label>
+                                    <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                                        <option value="80" selected>Khổ K80 (80mm - Chuẩn POS)</option>
+                                        <option value="58">Khổ K58 (58mm - Nhỏ gọn)</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small text-muted">Cổng kết nối:</label>
+                                    <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                                        <option value="lan" selected>Mạng LAN IP: 192.168.1.200</option>
+                                        <option value="usb">Cổng USB trực tiếp</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small text-muted">Lời chúc chân trang hóa đơn:</label>
+                                <textarea class="form-control bg-black text-light border-secondary" rows="2" style="border-radius: 2px !important;">CẢM ƠN QUÝ KHÁCH ĐÃ ĐẾN VỚI BOLT BILLIARDS!
+HẸN GẶP LẠI CƠ THỦ TRONG NHỮNG TRẬN CẦU ĐỈNH CAO!</textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="p-3 bg-black border border-secondary border-opacity-40 mb-3" style="border-radius: 2px !important;">
+                                <div class="fw-bold text-white small mb-3">TÙY CHỌN TỰ ĐỘNG:</div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="switchAutoCut" checked />
+                                    <label class="form-check-label text-light small" for="switchAutoCut">Tự động cắt giấy (Auto Cutter) sau khi kết thúc bill</label>
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="switchPrintQR" checked />
+                                    <label class="form-check-label text-light small" for="switchPrintQR">In kèm mã VietQR chuyển khoản trực tiếp ở chân hóa đơn</label>
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="switchCashDrawer" checked />
+                                    <label class="form-check-label text-light small" for="switchCashDrawer">Tự động kích bung ngăn kéo đựng tiền khi in hóa đơn</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="switchPrintLogo" checked />
+                                    <label class="form-check-label text-light small" for="switchPrintLogo">In logo thương hiệu BOLT BILLIARDS ở đầu hóa đơn</label>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-light btn-sm w-100" onclick="alert('Đã gửi gói tin ping kiểm tra kết nối máy in: Phản hồi 2ms (Tốt).');" style="border-radius: 2px !important;">
+                                    <i class="bi bi-activity"></i> Kiểm tra kết nối (Ping)
+                                </button>
+                                <button class="btn btn-bolt-neon btn-sm w-100" onclick="alert('Đã in hóa đơn thử nghiệm thành công!');" style="border-radius: 2px !important;">
+                                    <i class="bi bi-printer"></i> In thử nghiệm bill
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 3: CẤU HÌNH NGÂN HÀNG & VIETQR (CÓ CHỌN ẢNH MÃ QR TĨNH)               -->
+        <!-- ========================================================================= -->
+        <div class="tab-pane fade" id="tab-vietqr" role="tabpanel" aria-labelledby="tab-vietqr-btn">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
+                <div class="card-body p-4">
+                    <h5 class="card-title font-heading fw-bold text-white mb-4 fs-6 pb-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2">
+                        <i class="bi bi-qr-code text-info"></i> CẤU HÌNH CỔNG THANH TOÁN VIETQR BANKING
+                    </h5>
+
+                    <div class="row g-4">
+                        <!-- Tải ảnh mã QR tĩnh -->
+                        <div class="col-12 col-md-4 text-center">
+                            <label class="form-label small text-muted d-block text-start mb-2">Ảnh mã QR tĩnh quầy thu ngân (*):</label>
+                            <div class="p-3 bg-white text-center mb-3" style="border-radius: 2px !important; display: inline-block;">
+                                <img id="previewVietQrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=BOLT_BILLIARDS_POS_MBBANK_0347987360" alt="VietQR" style="width: 160px; height: 160px;" />
+                            </div>
+                            <div class="input-group">
+                                <input type="file" id="vietQrFileInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewImage(this, 'previewVietQrCode');" style="border-radius: 2px !important;" />
+                            </div>
+                            <div class="form-text text-muted small text-start mt-1">Hệ thống sẽ dùng ảnh này hiển thị trên màn hình phụ và in lên bill K80.</div>
+                        </div>
+
+                        <!-- Thông tin tài khoản nhận tiền -->
+                        <div class="col-12 col-md-8">
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small text-muted">Ngân hàng thụ hưởng (*):</label>
+                                    <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                                        <option value="mbbank" selected>MBBank - Ngân Hàng Quân Đội</option>
+                                        <option value="vcb">Vietcombank - Ngân Hàng Ngoại Thương VN</option>
+                                        <option value="tcb">Techcombank - Ngân Hàng Kỹ Thương VN</option>
+                                        <option value="acb">ACB - Ngân Hàng Á Châu</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small text-muted">Số tài khoản (*):</label>
+                                    <input type="text" class="form-control bg-black text-warning border-secondary fw-bold font-monospace fs-6" value="0347987360" style="border-radius: 2px !important;" />
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small text-muted">Chủ tài khoản thụ hưởng (*):</label>
+                                    <input type="text" class="form-control bg-black text-light border-secondary fw-bold text-uppercase" value="DAO NGOC GIANG" style="border-radius: 2px !important;" />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small text-muted">Cú pháp nội dung chuyển khoản:</label>
+                                    <input type="text" class="form-control bg-black text-info border-secondary font-monospace" value="BIDA [MA_HD] BAN [SO_BAN]" style="border-radius: 2px !important;" />
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info py-2 small mb-0" style="border-radius: 2px !important;">
+                                <i class="bi bi-info-circle me-1"></i> VietQR được liên kết trực tiếp với 28 hóa đơn thu ngân hôm nay. Khi khách chuyển khoản quét mã, số tiền và nội dung sẽ được điền tự động 100%.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 4: CA TRỰC & CHÍNH SÁCH GIÁ GIỜ CHƠI                                  -->
+        <!-- ========================================================================= -->
+        <div class="tab-pane fade" id="tab-shift" role="tabpanel" aria-labelledby="tab-shift-btn">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
+                <div class="card-body p-4">
+                    <h5 class="card-title font-heading fw-bold text-white mb-4 fs-6 pb-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2">
+                        <i class="bi bi-clock text-warning"></i> CẤU HÌNH CA LÀM VIỆC & QUY TẮC TÍNH TIỀN GIỜ
+                    </h5>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                            <div class="fw-bold text-white small mb-3">PHÂN CHIA CA LÀM VIỆC TRONG NGÀY:</div>
+                            <div class="p-3 bg-black border border-secondary border-opacity-40 mb-3" style="border-radius: 2px !important;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-light fw-bold">Ca Sáng:</span>
+                                    <span class="badge bg-dark border border-secondary text-info">08:00 - 16:00</span>
+                                </div>
+                                <div class="text-muted small">Thu ngân phụ trách: Lê Nhật Đăng • 2 nhân viên phục vụ</div>
+                            </div>
+
+                            <div class="p-3 bg-black border border-success border-opacity-50 mb-3" style="border-radius: 2px !important;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-light fw-bold" style="color: var(--primary-neon) !important;">Ca Chiều (Hiện tại):</span>
+                                    <span class="badge bg-success text-dark fw-bold">16:00 - 24:00</span>
+                                </div>
+                                <div class="text-muted small">Thu ngân phụ trách: Mai • 3 nhân viên phục vụ bàn</div>
+                            </div>
+
+                            <div class="p-3 bg-black border border-secondary border-opacity-40" style="border-radius: 2px !important;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-light fw-bold">Ca Đêm:</span>
+                                    <span class="badge bg-dark border border-secondary text-warning">00:00 - 08:00</span>
+                                </div>
+                                <div class="text-muted small">Trực bảo vệ & phục vụ bàn VIP xuyên đêm</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="fw-bold text-white small mb-3">CHÍNH SÁCH LÀM TRÒN VÀ CHIẾT KHẤU:</div>
+                            <div class="mb-3">
+                                <label class="form-label small text-muted">Quy tắc làm tròn phút chơi (*):</label>
+                                <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                                    <option value="15" selected>Làm tròn mỗi block 15 phút (Chuẩn POS)</option>
+                                    <option value="10">Làm tròn mỗi block 10 phút</option>
+                                    <option value="exact">Tính chính xác tuyệt đối theo từng phút</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small text-muted">Phụ thu cuối tuần / Ngày lễ tết:</label>
+                                <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                                    <option value="none">Không phụ thu (Đồng giá mọi ngày)</option>
+                                    <option value="10">Phụ thu +10% tiền giờ</option>
+                                    <option value="20" selected>Phụ thu +20% tiền giờ các ngày Tết Nguyên Đán</option>
+                                </select>
+                            </div>
+
+                            <div class="p-3 bg-black border border-secondary border-opacity-40" style="border-radius: 2px !important;">
+                                <div class="fw-bold text-white small mb-2">CHÍNH SÁCH HỘI VIÊN (ĐỒNG BỘ 156 HỘI VIÊN):</div>
+                                <ul class="list-unstyled small mb-0 text-muted">
+                                    <li>💎 <strong>VIP Kim Cương (14 cơ thủ):</strong> Giảm 15% tiền giờ + miễn phí 1 đồ uống/buổi.</li>
+                                    <li>⭐ <strong>VIP Vàng (38 cơ thủ):</strong> Giảm 10% tiền giờ chơi.</li>
+                                    <li>🛡️ <strong>VIP Bạc (42 cơ thủ):</strong> Giảm 5% tiền giờ chơi.</li>
+                                    <li>👤 <strong>Standard (62 cơ thủ):</strong> Tích lũy 10 điểm cho mỗi 100.000 đ chi tiêu.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function previewImage(input, previewId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById(previewId);
+                    if (img) img.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}
