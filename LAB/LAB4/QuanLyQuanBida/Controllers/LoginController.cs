@@ -33,8 +33,15 @@ namespace QuanLyQuanBida.Controllers
         }
 
         // ==========================================
-        // 1. GET: /Login/Login
+        // 1. GET: /Login hoặc /Login/Login
         // ==========================================
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Index(string? returnUrl = null)
+        {
+            return Login(returnUrl);
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login(string? returnUrl = null)
@@ -50,7 +57,7 @@ namespace QuanLyQuanBida.Controllers
                 ReturnUrl = returnUrl ?? Url.Content("~/Categories")
             };
 
-            return View(model);
+            return View("Login", model);
         }
 
         // ==========================================

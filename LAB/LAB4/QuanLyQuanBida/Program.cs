@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using QuanLyQuanBida.Data;
 
+// BOLT BILLIARDS MANAGEMENT SYSTEM - FPT POLYTECHNIC TÂY NGUYÊN (NET108)
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Cấu hình kết nối SQL Server và DbContext chuẩn kiến trúc ASP.NET Core MVC + Entity Framework Core
