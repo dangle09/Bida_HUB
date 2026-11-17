@@ -1,152 +1,179 @@
 {
   "_type": "Project",
-  "_id": "PROJ_da409d1ff985",
-  "name": "BoltBilliards_UseCase_System",
+  "_id": "PROJ_dc7520fd7202",
+  "name": "BoltBilliards_UseCase_14Tabs_Complete",
   "ownedElements": [
     {
       "_type": "UMLModel",
-      "_id": "MODEL_a7555ef0597b",
+      "_id": "MODEL_44401e6d11b9",
       "_parent": {
-        "$ref": "PROJ_da409d1ff985"
+        "$ref": "PROJ_dc7520fd7202"
       },
       "name": "Use Case Model",
       "ownedElements": [
         {
           "_type": "UMLActor",
-          "_id": "ACT_KH_be793b56",
+          "_id": "ACT_KH_9161f861",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
           "name": "Khách hàng"
         },
         {
           "_type": "UMLActor",
-          "_id": "ACT_TN_aea84c28",
+          "_id": "ACT_TN_874b3984",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
           "name": "Nhân viên thu ngân",
           "ownedElements": [
             {
               "_type": "UMLGeneralization",
-              "_id": "GEN_d2593b20",
+              "_id": "GEN_cf2f9988",
               "_parent": {
-                "$ref": "ACT_TN_aea84c28"
+                "$ref": "ACT_TN_874b3984"
               },
               "source": {
-                "$ref": "ACT_TN_aea84c28"
+                "$ref": "ACT_TN_874b3984"
               },
               "target": {
-                "$ref": "ACT_KH_be793b56"
+                "$ref": "ACT_KH_9161f861"
               }
             }
           ]
         },
         {
           "_type": "UMLActor",
-          "_id": "ACT_QT_2ecb8f98",
+          "_id": "ACT_QT_e9938c7e",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
           "name": "Quản trị viên"
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_0_e773c5d6",
+          "_id": "DIAG_0_904986b9",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "Use case tổng quát",
+          "name": "0. Use case tổng quát",
           "defaultDiagram": true
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_1_5a6afb2a",
+          "_id": "DIAG_1_68c3f684",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "UC - Vận hành POS & Thu ngân",
+          "name": "1. Cổng khách & Đặt bàn online",
           "defaultDiagram": false
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_2_6cbda60e",
+          "_id": "DIAG_2_bc97f672",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "UC - Quản lý bàn bida",
+          "name": "2. Tài khoản cá nhân",
           "defaultDiagram": false
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_3_d6be662d",
+          "_id": "DIAG_3_f9bc302c",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "UC - Quản lý thực đơn",
+          "name": "3. Vận hành POS & Hóa đơn",
           "defaultDiagram": false
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_4_7aa15414",
+          "_id": "DIAG_4_324ed7dd",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "UC - Quản lý kho hàng",
+          "name": "4. Quản lý danh mục hàng hóa",
           "defaultDiagram": false
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_5_f95e2b96",
+          "_id": "DIAG_5_886036c5",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "UC - Quản lý hội viên",
+          "name": "5. Quản lý thực đơn F&B",
           "defaultDiagram": false
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_6_ee76992a",
+          "_id": "DIAG_6_16774587",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "UC - Quản lý giải đấu",
+          "name": "6. Quản lý kho & nhập hàng",
           "defaultDiagram": false
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_7_248125ab",
+          "_id": "DIAG_7_137d542e",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "UC - Quản lý nhân sự",
+          "name": "7. Quản lý bàn bida & bảo trì",
           "defaultDiagram": false
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_8_9eb75e81",
+          "_id": "DIAG_8_1db89f87",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "UC - Quản lý bảng giá",
+          "name": "8. Quản lý bảng giá giờ chơi",
           "defaultDiagram": false
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_9_61e4ec23",
+          "_id": "DIAG_9_5093f19f",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "UC - Báo cáo & Thống kê",
+          "name": "9. Quản lý hội viên & tủ đồ",
           "defaultDiagram": false
         },
         {
           "_type": "UMLUseCaseDiagram",
-          "_id": "DIAG_10_e6fe59aa",
+          "_id": "DIAG_10_dedb48e0",
           "_parent": {
-            "$ref": "MODEL_a7555ef0597b"
+            "$ref": "MODEL_44401e6d11b9"
           },
-          "name": "UC - Tài khoản cá nhân",
+          "name": "10. Quản lý giải đấu bida",
+          "defaultDiagram": false
+        },
+        {
+          "_type": "UMLUseCaseDiagram",
+          "_id": "DIAG_11_07ea8b62",
+          "_parent": {
+            "$ref": "MODEL_44401e6d11b9"
+          },
+          "name": "11. Quản lý nhân sự & chấm công",
+          "defaultDiagram": false
+        },
+        {
+          "_type": "UMLUseCaseDiagram",
+          "_id": "DIAG_12_29a86d80",
+          "_parent": {
+            "$ref": "MODEL_44401e6d11b9"
+          },
+          "name": "12. Báo cáo doanh thu & Thu chi",
+          "defaultDiagram": false
+        },
+        {
+          "_type": "UMLUseCaseDiagram",
+          "_id": "DIAG_13_467d54e7",
+          "_parent": {
+            "$ref": "MODEL_44401e6d11b9"
+          },
+          "name": "13. Cài đặt hệ thống & AI Trợ lý",
           "defaultDiagram": false
         }
       ]
