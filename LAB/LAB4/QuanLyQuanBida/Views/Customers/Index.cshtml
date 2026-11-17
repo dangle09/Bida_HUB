@@ -28,13 +28,13 @@
                 <i class="bi bi-award-fill text-warning"></i>
                 HỘI VIÊN THÂN THIẾT, TÍCH ĐIỂM & GỬI CƠ
             </h2>
-            <div class="text-muted small">Quản lý cấp bậc VIP, tích lũy điểm thưởng và dịch vụ bảo quản cơ bida riêng</div>
+            <div class="text-muted small">Quản lý cấp bậc VIP, tích lũy điểm thưởng và dịch vụ bảo quản tủ đồ cơ bida riêng</div>
         </div>
         <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalGuiCo">
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalGuiCo" style="border-radius: 2px !important;">
                 <i class="bi bi-safe2 text-info"></i> Nhận gửi cơ bida
             </button>
-            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemHoiVien">
+            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemHoiVien" style="border-radius: 2px !important;">
                 <i class="bi bi-person-plus-fill"></i> Đăng Ký Hội Viên Mới
             </button>
         </div>
@@ -91,13 +91,13 @@
     <!-- TABS ĐIỀU HƯỚNG: DANH SÁCH HỘI VIÊN & TỦ ĐỒ CƠ GỬI -->
     <ul class="nav nav-pills nav-pills-bolt mb-3" id="customerTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="tab-hoivien-btn" data-bs-toggle="pill" data-bs-target="#tab-hoivien" type="button">
-                <i class="bi bi-card-heading me-1"></i> Danh Sách Hội Viên & Điểm Tích Lũy (156)
+            <button class="nav-link active" id="tab-hoivien-btn" data-bs-toggle="pill" data-bs-target="#tab-hoivien" type="button" role="tab" aria-controls="tab-hoivien" aria-selected="true">
+                <i class="bi bi-card-heading me-1"></i> Danh Sách Hội Viên & Điểm Tích Lũy (10 tiêu biểu)
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-coguibtn" data-bs-toggle="pill" data-bs-target="#tab-cogui" type="button">
-                <i class="bi bi-safe me-1"></i> Tủ Đồ Cá Nhân & Cơ Khách Gửi (18 Cây cơ)
+            <button class="nav-link" id="tab-coguibtn" data-bs-toggle="pill" data-bs-target="#tab-cogui" type="button" role="tab" aria-controls="tab-cogui" aria-selected="false">
+                <i class="bi bi-safe me-1"></i> Tủ Đồ Cá Nhân & Cơ Khách Gửi (6 Tủ đang sử dụng)
             </button>
         </li>
     </ul>
@@ -106,11 +106,11 @@
     <div class="tab-content" id="customerTabsContent">
         <!-- TAB 1: DANH SÁCH HỘI VIÊN -->
         <div class="tab-pane fade show active" id="tab-hoivien" role="tabpanel">
-            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px;">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
                 <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div class="d-flex align-items-center gap-2">
-                        <input type="text" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="Tìm theo tên hội viên, SĐT, mã thẻ..." style="width: 270px; border-radius: 2px;" />
-                        <select class="form-select form-select-sm bg-black text-light border-secondary" style="width: 170px; border-radius: 2px;">
+                        <input type="text" id="customerSearchInput" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="Tìm theo tên hội viên, SĐT, mã thẻ..." style="width: 280px; border-radius: 2px !important;" />
+                        <select id="customerTierFilter" class="form-select form-select-sm bg-black text-light border-secondary" style="width: 210px; border-radius: 2px !important;">
                             <option value="">Tất cả hạng thẻ</option>
                             <option value="diamond">VIP Kim Cương (-15%)</option>
                             <option value="gold">VIP Vàng (-10%)</option>
@@ -118,12 +118,12 @@
                             <option value="standard">Standard (Tiêu chuẩn)</option>
                         </select>
                     </div>
-                    <span class="text-muted small">Hội viên chi tiêu trên 100K = tích 10 điểm</span>
+                    <span class="text-muted small">Cơ chế: Tích 10 điểm cho mỗi 100K chi tiêu thực tế</span>
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.88rem;">
-                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.74rem;">
+                    <table class="table table-dark table-hover align-middle mb-0" id="customersTable" style="font-size: 0.88rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.74rem; letter-spacing: 0.5px;">
                             <tr>
                                 <th class="ps-3">MÃ THẺ</th>
                                 <th>HỌ VÀ TÊN CƠ THỦ</th>
@@ -137,60 +137,155 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- HỘI VIÊN 1 -->
-                            <tr>
+                            <!-- HỘI VIÊN 1: Đào Ngọc Giang -->
+                            <tr data-tier="diamond">
                                 <td class="ps-3"><strong class="text-info font-monospace">VIP-8888</strong></td>
                                 <td>
-                                    <div class="fw-bold text-white">Đào Ngọc Giang</div>
-                                    <div class="small text-muted">Cơ thủ thường trực CLB • 0347.987.360</div>
+                                    <div class="fw-bold text-white member-name">Đào Ngọc Giang</div>
+                                    <div class="small text-muted">Cơ thủ thường trực CLB • Tủ cơ #01</div>
                                 </td>
-                                <td>0347.987.360</td>
+                                <td class="member-phone">0347.987.360</td>
                                 <td><span class="badge bg-black border border-info text-info fw-bold" style="border-radius: 2px;">💎 VIP DIAMOND</span></td>
-                                <td class="text-center fw-bold" style="color: var(--primary-neon);">4.850 Pts</td>
+                                <td class="text-center fw-bold member-points" style="color: var(--primary-neon);">4.850 Pts</td>
                                 <td class="text-center text-success fw-bold">-15% Giờ & F&B</td>
                                 <td class="text-end fw-bold text-white">18.600.000 đ</td>
                                 <td class="small text-muted">01/01/2026</td>
                                 <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="border-radius: 2px;" title="Cộng điểm thưởng"><i class="bi bi-coin"></i></button>
-                                    <button class="btn btn-sm btn-outline-info p-1 px-2" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="Đào Ngọc Giang" data-card="VIP-8888" data-points="4850" title="Cộng điểm thưởng" style="border-radius: 2px !important;"><i class="bi bi-coin"></i></button>
+                                    <button class="btn btn-sm btn-outline-info p-1 px-2" title="Chỉnh sửa thông tin" style="border-radius: 2px !important;"><i class="bi bi-pencil-square"></i></button>
                                 </td>
                             </tr>
 
-                            <!-- HỘI VIÊN 2 -->
-                            <tr>
+                            <!-- HỘI VIÊN 2: Lê Nhật Đăng -->
+                            <tr data-tier="gold">
                                 <td class="ps-3"><strong class="text-warning font-monospace">VIP-1024</strong></td>
                                 <td>
-                                    <div class="fw-bold text-white">Lê Nhật Đăng</div>
-                                    <div class="small text-muted">Cơ thủ Carom 3 Băng</div>
+                                    <div class="fw-bold text-white member-name">Lê Nhật Đăng</div>
+                                    <div class="small text-muted">Cơ thủ Carom 3 Băng • Tủ cơ #02</div>
                                 </td>
-                                <td>0912.334.455</td>
+                                <td class="member-phone">0912.334.455</td>
                                 <td><span class="badge bg-black border border-warning text-warning fw-bold" style="border-radius: 2px;">⭐ VIP GOLD</span></td>
-                                <td class="text-center fw-bold" style="color: var(--primary-neon);">2.340 Pts</td>
+                                <td class="text-center fw-bold member-points" style="color: var(--primary-neon);">2.340 Pts</td>
                                 <td class="text-center text-success fw-bold">-10% Giờ chơi</td>
                                 <td class="text-end fw-bold text-white">9.450.000 đ</td>
                                 <td class="small text-muted">15/02/2026</td>
                                 <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="border-radius: 2px;"><i class="bi bi-coin"></i></button>
-                                    <button class="btn btn-sm btn-outline-info p-1 px-2" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="Lê Nhật Đăng" data-card="VIP-1024" data-points="2340" title="Cộng điểm thưởng" style="border-radius: 2px !important;"><i class="bi bi-coin"></i></button>
+                                    <button class="btn btn-sm btn-outline-info p-1 px-2" title="Chỉnh sửa thông tin" style="border-radius: 2px !important;"><i class="bi bi-pencil-square"></i></button>
                                 </td>
                             </tr>
 
-                            <!-- HỘI VIÊN 3 -->
-                            <tr>
+                            <!-- HỘI VIÊN 3: Hoàng Minh Tuấn -->
+                            <tr data-tier="gold">
+                                <td class="ps-3"><strong class="text-warning font-monospace">VIP-2048</strong></td>
+                                <td>
+                                    <div class="fw-bold text-white member-name">Hoàng Minh Tuấn</div>
+                                    <div class="small text-muted">Thành viên thường xuyên Tầng 1</div>
+                                </td>
+                                <td class="member-phone">0908.776.655</td>
+                                <td><span class="badge bg-black border border-warning text-warning fw-bold" style="border-radius: 2px;">⭐ VIP GOLD</span></td>
+                                <td class="text-center fw-bold member-points" style="color: var(--primary-neon);">2.120 Pts</td>
+                                <td class="text-center text-success fw-bold">-10% Giờ chơi</td>
+                                <td class="text-end fw-bold text-white">8.500.000 đ</td>
+                                <td class="small text-muted">12/03/2026</td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="Hoàng Minh Tuấn" data-card="VIP-2048" data-points="2120" title="Cộng điểm thưởng" style="border-radius: 2px !important;"><i class="bi bi-coin"></i></button>
+                                    <button class="btn btn-sm btn-outline-info p-1 px-2" title="Chỉnh sửa thông tin" style="border-radius: 2px !important;"><i class="bi bi-pencil-square"></i></button>
+                                </td>
+                            </tr>
+
+                            <!-- HỘI VIÊN 4: Phạm Trần Bạch Long -->
+                            <tr data-tier="silver">
                                 <td class="ps-3"><strong class="text-light font-monospace">VIP-0512</strong></td>
                                 <td>
-                                    <div class="fw-bold text-white">Phạm Trần Bạch Long</div>
-                                    <div class="small text-muted">Cơ thủ Pool 9-Ball</div>
+                                    <div class="fw-bold text-white member-name">Phạm Trần Bạch Long</div>
+                                    <div class="small text-muted">Cơ thủ Pool 9-Ball • Tủ cơ #03</div>
                                 </td>
-                                <td>0982.870.986</td>
+                                <td class="member-phone">0982.870.986</td>
                                 <td><span class="badge bg-black border border-secondary text-light fw-bold" style="border-radius: 2px;">🥈 VIP SILVER</span></td>
-                                <td class="text-center fw-bold" style="color: var(--primary-neon);">1.120 Pts</td>
+                                <td class="text-center fw-bold member-points" style="color: var(--primary-neon);">1.120 Pts</td>
                                 <td class="text-center text-success fw-bold">-5% Giờ chơi</td>
                                 <td class="text-end fw-bold text-white">4.200.000 đ</td>
                                 <td class="small text-muted">10/05/2026</td>
                                 <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="border-radius: 2px;"><i class="bi bi-coin"></i></button>
-                                    <button class="btn btn-sm btn-outline-info p-1 px-2" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="Phạm Trần Bạch Long" data-card="VIP-0512" data-points="1120" title="Cộng điểm thưởng" style="border-radius: 2px !important;"><i class="bi bi-coin"></i></button>
+                                    <button class="btn btn-sm btn-outline-info p-1 px-2" title="Chỉnh sửa thông tin" style="border-radius: 2px !important;"><i class="bi bi-pencil-square"></i></button>
+                                </td>
+                            </tr>
+
+                            <!-- HỘI VIÊN 5: Nguyễn Đình Trọng -->
+                            <tr data-tier="gold">
+                                <td class="ps-3"><strong class="text-warning font-monospace">VIP-1102</strong></td>
+                                <td>
+                                    <div class="fw-bold text-white member-name">Nguyễn Đình Trọng</div>
+                                    <div class="small text-muted">Cơ thủ 3 Băng Phòng VIP</div>
+                                </td>
+                                <td class="member-phone">0933.123.456</td>
+                                <td><span class="badge bg-black border border-warning text-warning fw-bold" style="border-radius: 2px;">⭐ VIP GOLD</span></td>
+                                <td class="text-center fw-bold member-points" style="color: var(--primary-neon);">1.890 Pts</td>
+                                <td class="text-center text-success fw-bold">-10% Giờ chơi</td>
+                                <td class="text-end fw-bold text-white">7.650.000 đ</td>
+                                <td class="small text-muted">20/04/2026</td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="Nguyễn Đình Trọng" data-card="VIP-1102" data-points="1890" title="Cộng điểm thưởng" style="border-radius: 2px !important;"><i class="bi bi-coin"></i></button>
+                                    <button class="btn btn-sm btn-outline-info p-1 px-2" title="Chỉnh sửa thông tin" style="border-radius: 2px !important;"><i class="bi bi-pencil-square"></i></button>
+                                </td>
+                            </tr>
+
+                            <!-- HỘI VIÊN 6: Bùi Đức Thắng -->
+                            <tr data-tier="silver">
+                                <td class="ps-3"><strong class="text-light font-monospace">VIP-0340</strong></td>
+                                <td>
+                                    <div class="fw-bold text-white member-name">Bùi Đức Thắng</div>
+                                    <div class="small text-muted">Cơ thủ trẻ tiềm năng CLB</div>
+                                </td>
+                                <td class="member-phone">0971.554.321</td>
+                                <td><span class="badge bg-black border border-secondary text-light fw-bold" style="border-radius: 2px;">🥈 VIP SILVER</span></td>
+                                <td class="text-center fw-bold member-points" style="color: var(--primary-neon);">980 Pts</td>
+                                <td class="text-center text-success fw-bold">-5% Giờ chơi</td>
+                                <td class="text-end fw-bold text-white">3.900.000 đ</td>
+                                <td class="small text-muted">05/06/2026</td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="Bùi Đức Thắng" data-card="VIP-0340" data-points="980" title="Cộng điểm thưởng" style="border-radius: 2px !important;"><i class="bi bi-coin"></i></button>
+                                    <button class="btn btn-sm btn-outline-info p-1 px-2" title="Chỉnh sửa thông tin" style="border-radius: 2px !important;"><i class="bi bi-pencil-square"></i></button>
+                                </td>
+                            </tr>
+
+                            <!-- HỘI VIÊN 7: Trần Quang Huy -->
+                            <tr data-tier="standard">
+                                <td class="ps-3"><strong class="text-secondary font-monospace">STD-0101</strong></td>
+                                <td>
+                                    <div class="fw-bold text-white member-name">Trần Quang Huy</div>
+                                    <div class="small text-muted">Hội viên mới tháng 11</div>
+                                </td>
+                                <td class="member-phone">0962.333.888</td>
+                                <td><span class="badge bg-dark text-muted border border-secondary" style="border-radius: 2px;">STANDARD</span></td>
+                                <td class="text-center fw-bold member-points text-light">320 Pts</td>
+                                <td class="text-center text-muted">Tích lũy</td>
+                                <td class="text-end fw-bold text-white">1.250.000 đ</td>
+                                <td class="small text-muted">02/11/2026</td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="Trần Quang Huy" data-card="STD-0101" data-points="320" title="Cộng điểm thưởng" style="border-radius: 2px !important;"><i class="bi bi-coin"></i></button>
+                                    <button class="btn btn-sm btn-outline-info p-1 px-2" title="Chỉnh sửa thông tin" style="border-radius: 2px !important;"><i class="bi bi-pencil-square"></i></button>
+                                </td>
+                            </tr>
+
+                            <!-- HỘI VIÊN 8: Chú Năm Carom -->
+                            <tr data-tier="gold">
+                                <td class="ps-3"><strong class="text-warning font-monospace">VIP-0888</strong></td>
+                                <td>
+                                    <div class="fw-bold text-white member-name">Nguyễn Văn Năm (Chú Năm)</div>
+                                    <div class="small text-muted">Cơ thủ kỳ cựu Tầng 2 Carom</div>
+                                </td>
+                                <td class="member-phone">0903.445.667</td>
+                                <td><span class="badge bg-black border border-warning text-warning fw-bold" style="border-radius: 2px;">⭐ VIP GOLD</span></td>
+                                <td class="text-center fw-bold member-points" style="color: var(--primary-neon);">2.850 Pts</td>
+                                <td class="text-center text-success fw-bold">-10% Giờ chơi</td>
+                                <td class="text-end fw-bold text-white">11.400.000 đ</td>
+                                <td class="small text-muted">10/01/2026</td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="Nguyễn Văn Năm" data-card="VIP-0888" data-points="2850" title="Cộng điểm thưởng" style="border-radius: 2px !important;"><i class="bi bi-coin"></i></button>
+                                    <button class="btn btn-sm btn-outline-info p-1 px-2" title="Chỉnh sửa thông tin" style="border-radius: 2px !important;"><i class="bi bi-pencil-square"></i></button>
                                 </td>
                             </tr>
                         </tbody>
@@ -201,7 +296,7 @@
 
         <!-- TAB 2: TỦ ĐỒ CÁ NHÂN & CƠ GỬI -->
         <div class="tab-pane fade" id="tab-cogui" role="tabpanel">
-            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px;">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
                 <div class="table-responsive">
                     <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.88rem;">
                         <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.74rem;">
@@ -222,13 +317,13 @@
                                 <td class="ps-3"><strong class="text-warning font-monospace fs-6">TỦ #01</strong></td>
                                 <td><strong class="text-white">Đào Ngọc Giang</strong></td>
                                 <td>0347.987.360</td>
-                                <td><span class="text-info fw-bold">Fury One Pro Carbon</span></td>
-                                <td>Ngọn Carbon chống cong</td>
-                                <td>Mới 99%, đầu tẩy Kamui Black M còn tốt</td>
+                                <td><span class="text-info fw-bold">Fury One Pro Series</span></td>
+                                <td>Ngọn Carbon công nghệ chống cong</td>
+                                <td>Mới 99%, đầu tẩy Kamui Black M còn rất tốt</td>
                                 <td>16/11/2026</td>
                                 <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG BẢO QUẢN</span></td>
                                 <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px;" onclick="alert('Đã xác nhận bàn giao cơ bida lại cho khách.');">Xuất tủ</button>
+                                    <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Đã xác nhận xuất tủ trả lại cơ cho anh Đào Ngọc Giang.');">Xuất tủ</button>
                                 </td>
                             </tr>
                             <tr>
@@ -236,12 +331,38 @@
                                 <td><strong class="text-white">Lê Nhật Đăng</strong></td>
                                 <td>0912.334.455</td>
                                 <td><span class="text-warning fw-bold">Mezz Cues Japan EC7</span></td>
-                                <td>Ngọn mộc Maple sấy tự nhiên</td>
-                                <td>Có dán bảo vệ ren Uniloc, nắp chụp đầy đủ</td>
+                                <td>Ngọn mộc Maple sấy tự nhiên cao cấp</td>
+                                <td>Có dán bảo vệ ren Uniloc, nắp chụp ren đầy đủ</td>
                                 <td>14/11/2026</td>
                                 <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG BẢO QUẢN</span></td>
                                 <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px;" onclick="alert('Đã xác nhận bàn giao cơ bida lại cho khách.');">Xuất tủ</button>
+                                    <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Đã xác nhận xuất tủ trả lại cơ cho anh Lê Nhật Đăng.');">Xuất tủ</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3"><strong class="text-warning font-monospace fs-6">TỦ #03</strong></td>
+                                <td><strong class="text-white">Phạm Trần Bạch Long</strong></td>
+                                <td>0982.870.986</td>
+                                <td><span class="text-info fw-bold">Predator Revo 12.4</span></td>
+                                <td class="text-light">Ngọn Carbon siêu nhẹ</td>
+                                <td>Chuôi bọc da thể thao, khúc nối carbon 20cm kèm theo</td>
+                                <td>15/11/2026</td>
+                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG BẢO QUẢN</span></td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Đã xác nhận xuất tủ trả lại cơ cho anh Bạch Long.');">Xuất tủ</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3"><strong class="text-warning font-monospace fs-6">TỦ #04</strong></td>
+                                <td><strong class="text-white">Hoàng Minh Tuấn</strong></td>
+                                <td>0908.776.655</td>
+                                <td><span class="text-light fw-bold">Cuetec Cynergy 15K</span></td>
+                                <td>Ngọn Carbon đa hướng</td>
+                                <td>Bao da 2x4 cứng cáp, kèm 2 cục lơ Kamui 0.98</td>
+                                <td>12/11/2026</td>
+                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG BẢO QUẢN</span></td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Đã xác nhận xuất tủ trả lại cơ cho anh Tuấn.');">Xuất tủ</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -255,10 +376,10 @@
 <!-- MODAL ĐĂNG KÝ HỘI VIÊN MỚI -->
 <div class="modal fade" id="modalThemHoiVien" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px;">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
             <div class="modal-header border-secondary border-opacity-25">
                 <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
-                    <i class="bi bi-person-plus-fill text-warning"></i> ĐĂNG KÝ HỘI VIÊN BOLT CLUB
+                    <i class="bi bi-person-plus-fill text-warning"></i> ĐĂNG KÝ THẺ HỘI VIÊN MỚI
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -266,32 +387,33 @@
                 <form>
                     <div class="mb-3">
                         <label class="form-label small text-muted">Họ và tên cơ thủ (*):</label>
-                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ví dụ: Nguyễn Văn A..." style="border-radius: 2px;" required />
+                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ví dụ: Nguyễn Văn An" style="border-radius: 2px !important;" required />
                     </div>
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label small text-muted">Số điện thoại (*):</label>
-                            <input type="tel" class="form-control bg-black text-light border-secondary" placeholder="0987xxxxxx" style="border-radius: 2px;" required />
+                            <input type="tel" class="form-control bg-black text-light border-secondary" placeholder="0909123456" style="border-radius: 2px !important;" required />
                         </div>
                         <div class="col-6">
-                            <label class="form-label small text-muted">Hạng thẻ ban đầu:</label>
-                            <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px;">
-                                <option value="silver">VIP Bạc (Giảm 5%)</option>
-                                <option value="gold">VIP Vàng (Giảm 10%)</option>
-                                <option value="diamond">VIP Kim Cương (Giảm 15%)</option>
+                            <label class="form-label small text-muted">Hạng thẻ đăng ký:</label>
+                            <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                                <option value="standard">Standard (Đồng)</option>
+                                <option value="silver">VIP Bạc (Tích lũy 100đ)</option>
+                                <option value="gold">VIP Vàng (Tích lũy 500đ)</option>
+                                <option value="diamond">VIP Kim Cương (Tích lũy 1000đ)</option>
                             </select>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small text-muted">Điểm thưởng tặng kèm kích hoạt:</label>
-                        <input type="number" class="form-control bg-black text-light border-secondary" value="100" style="border-radius: 2px;" />
+                        <label class="form-label small text-muted">Ghi chú hoặc mã giới thiệu:</label>
+                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Nhập bạn bè giới thiệu..." style="border-radius: 2px !important;" />
                     </div>
                 </form>
             </div>
             <div class="modal-footer border-secondary border-opacity-25">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px;">Đóng</button>
-                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã kích hoạt thẻ hội viên mới thành công!');" style="border-radius: 2px;">
-                    <i class="bi bi-check-lg"></i> Cấp Thẻ Hội Viên
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã kích hoạt thẻ hội viên thành công! Khách đã có thể tích điểm.');" style="border-radius: 2px !important;">
+                    <i class="bi bi-check-lg"></i> Kích hoạt thẻ
                 </button>
             </div>
         </div>
@@ -301,7 +423,7 @@
 <!-- MODAL NHẬN GỬI CƠ BIDA -->
 <div class="modal fade" id="modalGuiCo" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px;">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
             <div class="modal-header border-secondary border-opacity-25">
                 <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
                     <i class="bi bi-safe2 text-info"></i> TIẾP NHẬN BẢO QUẢN CƠ BIDA
@@ -310,37 +432,114 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div class="mb-3">
-                        <label class="form-label small text-muted">Chọn Tủ đồ cất giữ (*):</label>
-                        <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px;">
-                            <option value="3">Tủ #03 (Trống)</option>
-                            <option value="4">Tủ #04 (Trống)</option>
-                            <option value="5">Tủ #05 (Trống)</option>
-                            <option value="6">Tủ #06 (Trống)</option>
-                        </select>
-                    </div>
                     <div class="row g-2 mb-3">
                         <div class="col-6">
-                            <label class="form-label small text-muted">Họ tên chủ gậy:</label>
-                            <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Tên khách hàng..." style="border-radius: 2px;" />
+                            <label class="form-label small text-muted">Số tủ bảo quản (*):</label>
+                            <input type="text" class="form-control bg-black text-warning border-secondary fw-bold" value="TỦ #05" readonly style="border-radius: 2px !important;" />
                         </div>
                         <div class="col-6">
-                            <label class="form-label small text-muted">Hãng cơ / Model:</label>
-                            <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ví dụ: Fury One..." style="border-radius: 2px;" />
+                            <label class="form-label small text-muted">Số điện thoại hội viên:</label>
+                            <input type="text" class="form-control bg-black text-light border-secondary" placeholder="09xxxxxxxx" style="border-radius: 2px !important;" />
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small text-muted">Tình trạng trầy xước & phụ kiện đi kèm:</label>
-                        <textarea class="form-control bg-black text-light border-secondary" rows="2" placeholder="Ví dụ: Cơ thẳng, có bịt ren, kèm bao da 2x2..." style="border-radius: 2px;"></textarea>
+                        <label class="form-label small text-muted">Tên hãng cơ & Model:</label>
+                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ví dụ: Predator SP2, Fury..." style="border-radius: 2px !important;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Tình trạng kiểm tra ban đầu:</label>
+                        <textarea class="form-control bg-black text-light border-secondary" rows="2" placeholder="Ngọn thẳng, không xước, đầu tẩy còn tốt..." style="border-radius: 2px !important;"></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer border-secondary border-opacity-25">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px;">Đóng</button>
-                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã tiếp nhận và khóa tủ đồ cơ bida thành công!');" style="border-radius: 2px;">
-                    <i class="bi bi-key-fill"></i> Khóa Tủ & Bàn Giao Thẻ
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Hủy</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã nhập tủ bảo quản cơ thành công! Gửi tin nhắn SMS xác nhận cho khách.');" style="border-radius: 2px !important;">
+                    <i class="bi bi-shield-check"></i> Xác nhận cất tủ
                 </button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- MODAL CỘNG ĐIỂM THƯỞNG -->
+<div class="modal fade" id="modalCongDiem" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-coin text-warning"></i> CẬP NHẬT ĐIỂM THƯỞNG HỘI VIÊN
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="p-3 bg-black border border-secondary border-opacity-50 mb-3" style="border-radius: 2px !important;">
+                    <div class="fw-bold text-white fs-6" id="pointMemberName">Tên hội viên</div>
+                    <div class="small text-info font-monospace" id="pointMemberCard">Mã thẻ</div>
+                    <div class="small text-warning mt-1">Điểm hiện tại: <strong id="pointMemberCurrent">0 Pts</strong></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Số điểm cộng / trừ:</label>
+                    <input type="number" class="form-control bg-black text-warning border-secondary fw-bold" value="50" style="border-radius: 2px !important;" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Lý do điều chỉnh:</label>
+                    <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Tặng điểm sinh nhật, giải đấu..." style="border-radius: 2px !important;" />
+                </div>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Hủy</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã cập nhật điểm thưởng hội viên thành công!');" style="border-radius: 2px !important;">
+                    <i class="bi bi-check-lg"></i> Xác nhận cộng điểm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var searchInput = document.getElementById('customerSearchInput');
+            var tierFilter = document.getElementById('customerTierFilter');
+            var tableRows = document.querySelectorAll('#customersTable tbody tr');
+
+            function filterCustomers() {
+                var query = (searchInput.value || '').trim().toLowerCase();
+                var selectedTier = (tierFilter.value || '').trim();
+
+                tableRows.forEach(function (row) {
+                    var tier = row.getAttribute('data-tier') || '';
+                    var text = row.textContent.toLowerCase();
+
+                    var matchesQuery = !query || text.includes(query);
+                    var matchesTier = !selectedTier || tier === selectedTier;
+
+                    if (matchesQuery && matchesTier) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            if (searchInput) searchInput.addEventListener('input', filterCustomers);
+            if (tierFilter) tierFilter.addEventListener('change', filterCustomers);
+
+            document.querySelectorAll('.btn-add-points').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var name = this.getAttribute('data-name');
+                    var card = this.getAttribute('data-card');
+                    var points = this.getAttribute('data-points');
+
+                    document.getElementById('pointMemberName').textContent = name;
+                    document.getElementById('pointMemberCard').textContent = card;
+                    document.getElementById('pointMemberCurrent').textContent = points + ' Pts';
+
+                    var modal = new bootstrap.Modal(document.getElementById('modalCongDiem'));
+                    modal.show();
+                });
+            });
+        });
+    </script>
+}

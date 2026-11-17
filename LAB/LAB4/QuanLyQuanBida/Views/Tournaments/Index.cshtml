@@ -31,11 +31,11 @@
             <div class="text-muted small">Tổ chức giải thi đấu định kỳ, bốc thăm bảng đấu và vinh danh nhà vô địch Bolt Cup</div>
         </div>
         <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="alert('Đã bốc thăm ngẫu nhiên các cặp đấu vòng trong.');">
-                <i class="bi bi-shuffle text-warning"></i> Bốc Thăm Cặp Đấu
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalCapNhatTySo" style="border-radius: 2px !important;">
+                <i class="bi bi-pencil text-warning"></i> Cập Nhật Tỷ Số
             </button>
-            <button class="btn btn-bolt-neon btn-sm" onclick="alert('Mở form tạo mùa giải thi đấu mới.');">
-                <i class="bi bi-plus-circle-fill"></i> Tạo Mùa Giải Mới
+            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalDangKyCoThu" style="border-radius: 2px !important;">
+                <i class="bi bi-plus-circle-fill"></i> Đăng Ký Cơ Thủ Mới
             </button>
         </div>
     </div>
@@ -49,7 +49,7 @@
                 </div>
                 <div>
                     <p class="kpi-label">Giải đấu đang diễn ra</p>
-                    <div class="kpi-value text-danger">1 <small class="fs-6 text-white fw-normal">Vòng Tứ Kết</small></div>
+                    <div class="kpi-value text-danger">1 <small class="fs-6 text-white fw-normal">Chung Kết</small></div>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
                     <i class="bi bi-person-lines-fill"></i>
                 </div>
                 <div>
-                    <p class="kpi-label">Cơ thủ đăng ký</p>
+                    <p class="kpi-label">Cơ thủ tham gia</p>
                     <div class="kpi-value" style="color: #60a5fa;">32/32 <small class="fs-6 text-muted fw-normal">Đầy bảng</small></div>
                 </div>
             </div>
@@ -82,14 +82,14 @@
                 </div>
                 <div>
                     <p class="kpi-label">Chung kết dự kiến</p>
-                    <div class="kpi-value text-warning">20/11 <small class="fs-6 text-muted fw-normal">20:00 Trực tiếp</small></div>
+                    <div class="kpi-value text-warning">20:00 <small class="fs-6 text-muted fw-normal">Livestream</small></div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- BANNER GIẢI ĐẤU ĐANG DIỄN RA -->
-    <div class="card bg-dark border-secondary border-opacity-50 mb-4" style="border-radius: 2px;">
+    <div class="card bg-dark border-secondary border-opacity-50 mb-4" style="border-radius: 2px !important;">
         <div class="card-body p-4 position-relative overflow-hidden">
             <div class="row align-items-center">
                 <div class="col-lg-8">
@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                    <button class="btn btn-bolt-neon btn-sm px-3 py-2" onclick="alert('Đã cập nhật bảng điểm trực tiếp.');">
+                    <button class="btn btn-bolt-neon btn-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#modalCapNhatTySo" style="border-radius: 2px !important;">
                         <i class="bi bi-broadcast"></i> Cập Nhật Tỷ Số Live
                     </button>
                 </div>
@@ -116,7 +116,7 @@
     </div>
 
     <!-- SƠ ĐỒ NHÁNH ĐẤU BRACKET (TỨ KẾT ➔ BÁN KẾT ➔ CHUNG KẾT) -->
-    <div class="card bg-dark border-secondary border-opacity-50 mb-4" style="border-radius: 2px;">
+    <div class="card bg-dark border-secondary border-opacity-50 mb-4" style="border-radius: 2px !important;">
         <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3">
             <h5 class="card-title font-heading fw-bold text-white mb-0 fs-6 d-flex align-items-center gap-2">
                 <i class="bi bi-diagram-3-fill text-info"></i> SƠ ĐỒ NHÁNH ĐẤU VÒNG KNOCK-OUT (CHẠM 9 THẮNG)
@@ -224,6 +224,93 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ĐĂNG KÝ CƠ THỦ MỚI -->
+<div class="modal fade" id="modalDangKyCoThu" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-person-plus-fill text-warning"></i> ĐĂNG KÝ CƠ THỦ THAM GIA MÙA GIẢI
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Họ và tên cơ thủ (*):</label>
+                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ví dụ: Hoàng Minh Đức" style="border-radius: 2px !important;" required />
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Số điện thoại (*):</label>
+                            <input type="tel" class="form-control bg-black text-light border-secondary" placeholder="09xxxxxxxx" style="border-radius: 2px !important;" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Hạng hạt giống:</label>
+                            <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                                <option value="seed">Hạt giống bảng đấu</option>
+                                <option value="normal" selected>Cơ thủ tự do</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Lệ phí thi đấu:</label>
+                        <input type="text" class="form-control bg-black text-success border-secondary fw-bold" value="200.000 VNĐ (Đã bao gồm nước uống)" readonly style="border-radius: 2px !important;" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã thêm cơ thủ vào danh sách thi đấu giải Bolt Open!');" style="border-radius: 2px !important;">
+                    <i class="bi bi-check-lg"></i> Xác nhận ghi danh
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CẬP NHẬT TỶ SỐ TRẬN ĐẤU -->
+<div class="modal fade" id="modalCapNhatTySo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-trophy text-warning"></i> CẬP NHẬT TỶ SỐ LIVE
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Chọn trận đấu:</label>
+                        <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
+                            <option value="final">Trận Chung Kết: Đào Ngọc Giang vs Trương Đăng Khoa</option>
+                            <option value="sf1">Bán Kết 1: Đào Ngọc Giang vs Lê Nhật Đăng (Đã kết thúc)</option>
+                            <option value="sf2">Bán Kết 2: Trương Đăng Khoa vs Phạm Trần Bạch Long (Đã kết thúc)</option>
+                        </select>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Điểm Đào Ngọc Giang:</label>
+                            <input type="number" class="form-control bg-black text-warning border-secondary fw-bold fs-5 text-center" value="9" min="0" max="9" style="border-radius: 2px !important;" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Điểm Trương Đăng Khoa:</label>
+                            <input type="number" class="form-control bg-black text-light border-secondary fw-bold fs-5 text-center" value="6" min="0" max="9" style="border-radius: 2px !important;" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã cập nhật tỷ số trực tiếp lên bảng điện tử!');" style="border-radius: 2px !important;">
+                    <i class="bi bi-check-lg"></i> Cập nhật tỷ số
+                </button>
             </div>
         </div>
     </div>
