@@ -1,0 +1,290 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - QUẢN LÝ HÀNG HÓA: QUẢN LÝ BÀN & GIÁ
+   - Tên file: Views/Tables/Index.cshtml
+   - Vai trò: Quản lý danh sách bàn bida, linh kiện nỉ/bi và cấu hình bảng giá theo khung giờ
+   - Layout: Views/Shared/_AdminLayout.cshtml
+   - CSS: wwwroot/css/admin-pos.css (Chuẩn bo góc 2px radius toàn trang)
+   =================================================================================== *@
+@{
+    ViewData["Title"] = "Quản lý Bàn & Giá - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <span class="text-secondary">Trang chủ</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-secondary">Quản lý hàng hóa</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Quản lý Bàn & Giá</span>
+    </div>
+
+    <!-- Header Trang & Tác vụ nhanh -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-gear-wide-connected" style="color: #c084fc;"></i>
+                QUẢN LÝ BÀN BIDA & BIỂU PHÍ THEO KHUNG GIỜ
+            </h2>
+            <div class="text-muted small">Cấu hình thông số kỹ thuật bàn thi đấu quốc tế và thiết lập giá giờ tự động</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="alert('Đã đồng bộ biểu phí giờ chơi sang hệ thống máy trạm POS.');">
+                <i class="bi bi-cloud-arrow-up"></i> Đồng bộ biểu phí
+            </button>
+            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemBan">
+                <i class="bi bi-plus-circle-fill"></i> Thêm Bàn Mới
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 THẺ THỐNG KÊ KPI BÀN BIDA -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tổng số bàn thi đấu</p>
+                    <div class="kpi-value text-white">20 <small class="fs-6 text-muted fw-normal">Bàn</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
+                    <i class="bi bi-circle"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Bàn Pool 9-Ball (Lỗ)</p>
+                    <div class="kpi-value" style="color: #60a5fa;">10 <small class="fs-6 text-muted fw-normal">Aileex Crown</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
+                    <i class="bi bi-disc"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Bàn Carom Phăng</p>
+                    <div class="kpi-value" style="color: #eab308;">6 <small class="fs-6 text-muted fw-normal">Gabriels</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #c084fc; background: rgba(192, 132, 252, 0.1);">
+                    <i class="bi bi-star-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Phòng VIP 3 Băng</p>
+                    <div class="kpi-value" style="color: #c084fc;">4 <small class="fs-6 text-muted fw-normal">Min Table</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABS ĐIỀU HƯỚNG: DANH SÁCH BÀN & BẢNG GIÁ GIỜ -->
+    <ul class="nav nav-pills nav-pills-bolt mb-3" id="tableSettingTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-dsban-btn" data-bs-toggle="pill" data-bs-target="#tab-dsban" type="button">
+                <i class="bi bi-list-columns me-1"></i> Danh Sách Thông Số 20 Bàn (20)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-banggia-btn" data-bs-toggle="pill" data-bs-target="#tab-banggia" type="button">
+                <i class="bi bi-clock-history me-1"></i> Biểu Phí Theo Khung Giờ (Time Slots)
+            </button>
+        </li>
+    </ul>
+
+    <!-- NỘI DUNG TABS -->
+    <div class="tab-content" id="tableSettingTabsContent">
+        <!-- TAB 1: DANH SÁCH BÀN -->
+        <div class="tab-pane fade show active" id="tab-dsban" role="tabpanel">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px;">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.88rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.74rem;">
+                            <tr>
+                                <th class="ps-3">SỐ BÀN</th>
+                                <th>TÊN BÀN</th>
+                                <th>KHU VỰC</th>
+                                <th>CHỦNG LOẠI</th>
+                                <th>THƯƠNG HIỆU</th>
+                                <th>VẢI NỈ & BI</th>
+                                <th>BẢO TRÌ GẦN NHẤT</th>
+                                <th class="text-end">ĐƠN GIÁ BẢN ĐỒ</th>
+                                <th class="text-center">TÌNH TRẠNG</th>
+                                <th class="text-center pe-3">THAO TÁC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- BÀN 01 -->
+                            <tr>
+                                <td class="ps-3"><strong class="text-white font-monospace">#01</strong></td>
+                                <td><span class="fw-bold text-white">BÀN 01</span></td>
+                                <td><span class="badge bg-black border border-secondary text-secondary">Tầng 1 - Sàn Lỗ</span></td>
+                                <td>Bida Lỗ (Pool 9FT)</td>
+                                <td><strong class="text-info">Aileex Crown 9020</strong></td>
+                                <td>Nỉ Simonis 860 / Bi Aramith Pro Cup</td>
+                                <td class="small text-muted">01/11/2026 (Thay nỉ mới)</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">60.000 đ/h</td>
+                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">HOÀN HẢO</span></td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px;"><i class="bi bi-tools"></i></button>
+                                </td>
+                            </tr>
+
+                            <!-- BÀN 11 -->
+                            <tr>
+                                <td class="ps-3"><strong class="text-white font-monospace">#11</strong></td>
+                                <td><span class="fw-bold text-white">BÀN 11</span></td>
+                                <td><span class="badge bg-black border border-secondary text-secondary">Tầng 2 - Sàn Phăng</span></td>
+                                <td>Carom Phăng (Libre)</td>
+                                <td><strong class="text-warning">Gabriels Rafale France</strong></td>
+                                <td>Nỉ Iwan Simonis / Bi Super Aramith</td>
+                                <td class="small text-muted">28/10/2026 (Cân đá mặt phẳng)</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">50.000 đ/h</td>
+                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">HOÀN HẢO</span></td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px;"><i class="bi bi-tools"></i></button>
+                                </td>
+                            </tr>
+
+                            <!-- BÀN 19 -->
+                            <tr>
+                                <td class="ps-3"><strong class="text-white font-monospace">#19</strong></td>
+                                <td><span class="fw-bold text-white">BÀN 19 (VIP)</span></td>
+                                <td><span class="badge bg-black border border-primary text-info">Phòng VIP Máy Lạnh</span></td>
+                                <td>Carom 3 Băng Chuẩn Quốc Tế</td>
+                                <td><strong class="text-primary">Min Table Korea Stadium</strong></td>
+                                <td>Hệ thống sưởi nhiệt điện trở / Vải Simonis 300</td>
+                                <td class="small text-muted">05/11/2026 (Kiểm định nhiệt độ)</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">90.000 đ/h</td>
+                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">HOÀN HẢO</span></td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px;"><i class="bi bi-tools"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: BIỂU PHÍ THEO KHUNG GIỜ -->
+        <div class="tab-pane fade" id="tab-banggia" role="tabpanel">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px;">
+                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-white font-heading">CẤU HÌNH BIỂU PHÍ GIỜ CHƠI TỰ ĐỘNG THEO CA & PHÒNG</span>
+                    <button class="btn btn-sm btn-bolt-outline" onclick="alert('Đã lưu cấu hình bảng giá giờ chơi mới!');" style="border-radius: 2px;">
+                        <i class="bi bi-save"></i> Lưu cài đặt
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="p-3 bg-black border border-secondary border-opacity-50" style="border-radius: 2px;">
+                                <div class="fw-bold text-info fs-6 font-heading mb-2">KHUNG GIỜ THƯỜNG (08:00 - 14:00)</div>
+                                <div class="small text-muted mb-3">Áp dụng cho học sinh, sinh viên và khách tập luyện buổi sáng</div>
+                                <div class="mb-2">
+                                    <label class="small text-secondary">Đơn giá áp dụng:</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control bg-dark text-light border-secondary" value="50000" style="border-radius: 2px;" />
+                                        <span class="input-group-text bg-secondary text-dark fw-bold">VNĐ/Giờ</span>
+                                    </div>
+                                </div>
+                                <div class="small text-success"><i class="bi bi-check2"></i> Đang kích hoạt tự động theo đồng hồ hệ thống</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="p-3 bg-black border border-warning border-opacity-50" style="border-radius: 2px;">
+                                <div class="fw-bold text-warning fs-6 font-heading mb-2">KHUNG GIỜ VÀNG (14:00 - 22:00)</div>
+                                <div class="small text-muted mb-3">Thời gian cao điểm sau giờ làm việc, phục vụ cơ thủ giao lưu</div>
+                                <div class="mb-2">
+                                    <label class="small text-secondary">Đơn giá áp dụng:</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control bg-dark text-light border-secondary" value="70000" style="border-radius: 2px;" />
+                                        <span class="input-group-text bg-secondary text-dark fw-bold">VNĐ/Giờ</span>
+                                    </div>
+                                </div>
+                                <div class="small text-warning"><i class="bi bi-lightning-charge"></i> Khung giờ cao điểm đông khách nhất</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="p-3 bg-black border border-secondary border-opacity-50" style="border-radius: 2px;">
+                                <div class="fw-bold text-white fs-6 font-heading mb-2">KHUNG GIỜ ĐÊM (22:00 - 08:00)</div>
+                                <div class="small text-muted mb-3">Chính sách ưu đãi cho anh em cơ thủ cày đêm xuyên sáng</div>
+                                <div class="mb-2">
+                                    <label class="small text-secondary">Đơn giá áp dụng:</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control bg-dark text-light border-secondary" value="60000" style="border-radius: 2px;" />
+                                        <span class="input-group-text bg-secondary text-dark fw-bold">VNĐ/Giờ</span>
+                                    </div>
+                                </div>
+                                <div class="small text-muted"><i class="bi bi-moon-stars"></i> Mở cửa xuyên đêm 24/7 phục vụ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL THÊM BÀN BIDA MỚI -->
+<div class="modal fade" id="modalThemBan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-plus-circle-fill text-warning"></i> THÊM BÀN BIDA VÀO SƠ ĐỒ
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Số thứ tự bàn (*):</label>
+                            <input type="number" class="form-control bg-black text-light border-secondary" placeholder="21" style="border-radius: 2px;" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Tên hiển thị:</label>
+                            <input type="text" class="form-control bg-black text-light border-secondary" placeholder="BÀN 21" style="border-radius: 2px;" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Khu vực bố trí:</label>
+                        <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px;">
+                            <option value="1">Tầng 1 - Sàn Bàn Lỗ Pool</option>
+                            <option value="2">Tầng 2 - Sàn Bàn Phăng Carom</option>
+                            <option value="3">Phòng VIP Máy Lạnh Riêng Biệt</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Chủng loại & Hãng bàn:</label>
+                        <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px;">
+                            <option value="1">Bida Lỗ (Pool 9FT) - Aileex Crown 9020</option>
+                            <option value="2">Bida Phăng (Libre) - Gabriels Rafale</option>
+                            <option value="3">Bida 3 Băng - Min Table Korea</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã thêm bàn mới vào hệ thống thành công!');" style="border-radius: 2px;">
+                    <i class="bi bi-check-lg"></i> Xác nhận Lưu bàn
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

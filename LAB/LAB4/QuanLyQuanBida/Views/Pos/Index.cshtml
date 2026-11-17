@@ -1,0 +1,575 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - VẬN HÀNH: SƠ ĐỒ BÀN (POS)
+   - Tên file: Views/Pos/Index.cshtml
+   - Vai trò: Giao diện sơ đồ bàn bida thời gian thực, điều hành mở bàn, thêm món và thanh toán
+   - Layout: Views/Shared/_AdminLayout.cshtml
+   - CSS: wwwroot/css/admin-pos.css (Chuẩn viền bo 2px radius, màu đen than - neon)
+   =================================================================================== *@
+@{
+    ViewData["Title"] = "Sơ đồ bàn (POS) - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <span class="text-secondary">Trang chủ</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-secondary">Vận hành & Bán hàng</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Sơ đồ bàn (POS)</span>
+    </div>
+
+    <!-- Header Trang & Tác vụ nhanh -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-grid-3x3-gap-fill text-warning"></i>
+                SƠ ĐỒ BÀN & ĐIỀU HÀNH POS
+            </h2>
+            <div class="text-muted small">Cập nhật trạng thái 20 bàn bida theo thời gian thực • Chi nhánh Đồng Nai</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="location.reload();">
+                <i class="bi bi-arrow-clockwise"></i> Làm mới (F5)
+            </button>
+            <button class="btn btn-bolt-outline btn-sm" data-bs-toggle="modal" data-bs-target="#modalChuyenCa">
+                <i class="bi bi-person-badge"></i> Chuyển ca trực
+            </button>
+            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalMoBan">
+                <i class="bi bi-plus-circle-fill"></i> Mở Bàn Nhanh
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 THẺ THỐNG KÊ KPI NHANH -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
+                    <i class="bi bi-collection-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tổng quy mô quán</p>
+                    <div class="kpi-value text-white">20 <small class="fs-6 text-muted fw-normal">Bàn</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
+                    <i class="bi bi-play-circle-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Bàn đang chơi</p>
+                    <div class="kpi-value" style="color: #eab308;">14 <small class="fs-6 text-warning fw-normal">(70%)</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Bàn trống sẵn sàng</p>
+                    <div class="kpi-value" style="color: var(--primary-neon);">5 <small class="fs-6 text-muted fw-normal">Bàn</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tạm tính ca chiều</p>
+                    <div class="kpi-value text-white">4.850K <small class="fs-6 text-muted fw-normal">VNĐ</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BỘ LỌC KHU VỰC BÀN -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <ul class="nav nav-pills nav-pills-bolt" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pill-all-tab" data-bs-toggle="pill" data-bs-target="#pill-all" type="button">
+                    Tất cả bàn (20)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pill-tang1-tab" data-bs-toggle="pill" data-bs-target="#pill-tang1" type="button">
+                    Tầng 1 - Bàn Lỗ Pool (10)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pill-tang2-tab" data-bs-toggle="pill" data-bs-target="#pill-tang2" type="button">
+                    Tầng 2 - Carom Phăng (6)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pill-vip-tab" data-bs-toggle="pill" data-bs-target="#pill-vip" type="button">
+                    Phòng VIP Máy Lạnh (4)
+                </button>
+            </li>
+        </ul>
+
+        <!-- Chú thích trạng thái -->
+        <div class="d-flex align-items-center gap-3 small text-muted">
+            <span class="d-flex align-items-center gap-1"><span class="badge bg-warning p-1"></span> Đang chơi (14)</span>
+            <span class="d-flex align-items-center gap-1"><span class="badge bg-success p-1"></span> Trống (5)</span>
+            <span class="d-flex align-items-center gap-1"><span class="badge bg-info p-1"></span> Đặt trước (1)</span>
+        </div>
+    </div>
+
+    <!-- NỘI DUNG LƯỚI BÀN POS -->
+    <div class="tab-content" id="pills-tabContent">
+        <!-- TAB TẤT CẢ 20 BÀN -->
+        <div class="tab-pane fade show active" id="pill-all" role="tabpanel">
+            <div class="row g-3">
+                <!-- BÀN 01 (ĐANG CHƠI) -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="pos-table-card occupied">
+                        <div>
+                            <div class="pos-table-header">
+                                <div class="pos-table-number">
+                                    <i class="bi bi-circle-fill text-warning" style="font-size: 0.6rem;"></i>
+                                    <span>BÀN 01</span>
+                                    <span class="badge bg-dark border border-secondary text-secondary small fw-normal ms-1" style="font-size: 0.65rem;">Pool 9FT</span>
+                                </div>
+                                <span class="badge bg-warning text-dark fw-bold px-2 py-1" style="border-radius: 2px;">ĐANG CHƠI</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-baseline mb-2">
+                                <span class="small text-muted">Thời gian chơi:</span>
+                                <div class="pos-table-timer"><i class="bi bi-clock-history"></i> 01:25:40</div>
+                            </div>
+                            <div class="small text-secondary mb-1">
+                                <i class="bi bi-person me-1 text-info"></i> Khách: <strong class="text-light">Hoàng Minh Tuấn</strong> (VIP Gold)
+                            </div>
+                            <div class="small text-secondary mb-2">
+                                <i class="bi bi-cup-straw me-1 text-warning"></i> F&B: <strong>2 Redbull, 1 Mì xào</strong> (79.000đ)
+                            </div>
+                            <div class="p-2 mb-2 bg-dark bg-opacity-50 border border-secondary border-opacity-25 d-flex justify-content-between align-items-center" style="border-radius: 2px;">
+                                <span class="small text-muted">Tạm tính:</span>
+                                <span class="fw-bold" style="color: var(--primary-neon);">164.000 đ</span>
+                            </div>
+                        </div>
+                        <div class="pos-table-actions">
+                            <button class="btn btn-dark btn-sm border-secondary text-info d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modalThemMon" style="border-radius: 2px;">
+                                <i class="bi bi-plus-lg"></i> Gọi món
+                            </button>
+                            <button class="btn btn-dark btn-sm border-secondary text-warning d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modalChuyenBan" style="border-radius: 2px;">
+                                <i class="bi bi-arrow-left-right"></i> Đổi bàn
+                            </button>
+                            <button class="btn btn-bolt-neon btn-sm col-span-2 w-100 mt-1 d-flex align-items-center justify-content-center gap-1" style="grid-column: span 2;" data-bs-toggle="modal" data-bs-target="#modalThanhToan">
+                                <i class="bi bi-receipt-cutoff"></i> Thanh toán POS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BÀN 02 (ĐANG CHƠI) -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="pos-table-card occupied">
+                        <div>
+                            <div class="pos-table-header">
+                                <div class="pos-table-number">
+                                    <i class="bi bi-circle-fill text-warning" style="font-size: 0.6rem;"></i>
+                                    <span>BÀN 02</span>
+                                    <span class="badge bg-dark border border-secondary text-secondary small fw-normal ms-1" style="font-size: 0.65rem;">Pool 9FT</span>
+                                </div>
+                                <span class="badge bg-warning text-dark fw-bold px-2 py-1" style="border-radius: 2px;">ĐANG CHƠI</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-baseline mb-2">
+                                <span class="small text-muted">Thời gian chơi:</span>
+                                <div class="pos-table-timer"><i class="bi bi-clock-history"></i> 00:45:15</div>
+                            </div>
+                            <div class="small text-secondary mb-1">
+                                <i class="bi bi-person me-1 text-info"></i> Khách: <strong class="text-light">Cơ thủ Giang & Bạn</strong>
+                            </div>
+                            <div class="small text-secondary mb-2">
+                                <i class="bi bi-cup-straw me-1 text-warning"></i> F&B: <strong>2 Cà phê muối, 1 Khô bò</strong> (81.000đ)
+                            </div>
+                            <div class="p-2 mb-2 bg-dark bg-opacity-50 border border-secondary border-opacity-25 d-flex justify-content-between align-items-center" style="border-radius: 2px;">
+                                <span class="small text-muted">Tạm tính:</span>
+                                <span class="fw-bold" style="color: var(--primary-neon);">126.000 đ</span>
+                            </div>
+                        </div>
+                        <div class="pos-table-actions">
+                            <button class="btn btn-dark btn-sm border-secondary text-info d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modalThemMon" style="border-radius: 2px;">
+                                <i class="bi bi-plus-lg"></i> Gọi món
+                            </button>
+                            <button class="btn btn-dark btn-sm border-secondary text-warning d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modalChuyenBan" style="border-radius: 2px;">
+                                <i class="bi bi-arrow-left-right"></i> Đổi bàn
+                            </button>
+                            <button class="btn btn-bolt-neon btn-sm col-span-2 w-100 mt-1 d-flex align-items-center justify-content-center gap-1" style="grid-column: span 2;" data-bs-toggle="modal" data-bs-target="#modalThanhToan">
+                                <i class="bi bi-receipt-cutoff"></i> Thanh toán POS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BÀN 03 (ĐANG CHƠI) -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="pos-table-card occupied">
+                        <div>
+                            <div class="pos-table-header">
+                                <div class="pos-table-number">
+                                    <i class="bi bi-circle-fill text-warning" style="font-size: 0.6rem;"></i>
+                                    <span>BÀN 03</span>
+                                    <span class="badge bg-dark border border-secondary text-secondary small fw-normal ms-1" style="font-size: 0.65rem;">Pool 9FT</span>
+                                </div>
+                                <span class="badge bg-warning text-dark fw-bold px-2 py-1" style="border-radius: 2px;">ĐANG CHƠI</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-baseline mb-2">
+                                <span class="small text-muted">Thời gian chơi:</span>
+                                <div class="pos-table-timer"><i class="bi bi-clock-history"></i> 02:10:00</div>
+                            </div>
+                            <div class="small text-secondary mb-1">
+                                <i class="bi bi-person me-1 text-info"></i> Khách: <strong class="text-light">Khách vãng lai</strong>
+                            </div>
+                            <div class="small text-secondary mb-2">
+                                <i class="bi bi-cup-straw me-1 text-warning"></i> F&B: <strong>4 Trà đào, 2 Bánh mì</strong> (172.000đ)
+                            </div>
+                            <div class="p-2 mb-2 bg-dark bg-opacity-50 border border-secondary border-opacity-25 d-flex justify-content-between align-items-center" style="border-radius: 2px;">
+                                <span class="small text-muted">Tạm tính:</span>
+                                <span class="fw-bold" style="color: var(--primary-neon);">302.000 đ</span>
+                            </div>
+                        </div>
+                        <div class="pos-table-actions">
+                            <button class="btn btn-dark btn-sm border-secondary text-info d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modalThemMon" style="border-radius: 2px;">
+                                <i class="bi bi-plus-lg"></i> Gọi món
+                            </button>
+                            <button class="btn btn-dark btn-sm border-secondary text-warning d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modalChuyenBan" style="border-radius: 2px;">
+                                <i class="bi bi-arrow-left-right"></i> Đổi bàn
+                            </button>
+                            <button class="btn btn-bolt-neon btn-sm col-span-2 w-100 mt-1 d-flex align-items-center justify-content-center gap-1" style="grid-column: span 2;" data-bs-toggle="modal" data-bs-target="#modalThanhToan">
+                                <i class="bi bi-receipt-cutoff"></i> Thanh toán POS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BÀN 04 (BÀN TRỐNG) -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="pos-table-card vacant">
+                        <div>
+                            <div class="pos-table-header">
+                                <div class="pos-table-number">
+                                    <i class="bi bi-circle-fill" style="color: var(--primary-neon); font-size: 0.6rem;"></i>
+                                    <span>BÀN 04</span>
+                                    <span class="badge bg-dark border border-secondary text-secondary small fw-normal ms-1" style="font-size: 0.65rem;">Pool 9FT</span>
+                                </div>
+                                <span class="badge text-dark fw-bold px-2 py-1" style="background-color: var(--primary-neon); border-radius: 2px;">BÀN TRỐNG</span>
+                            </div>
+                            <div class="text-center py-3 my-1">
+                                <i class="bi bi-check-circle" style="font-size: 2.2rem; color: var(--primary-neon); opacity: 0.8;"></i>
+                                <div class="text-white fw-bold mt-2 font-heading">SẴN SÀNG ĐÓN KHÁCH</div>
+                                <div class="text-muted small">Đơn giá: 60.000 đ/giờ • Nỉ Simonis</div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-bolt-neon btn-sm w-100 py-2 d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#modalMoBan" style="border-radius: 2px;">
+                                <i class="bi bi-play-fill fs-6"></i> BẮT ĐẦU TÍNH GIỜ (MỞ BÀN)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BÀN 05 (ĐANG CHƠI) -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="pos-table-card occupied">
+                        <div>
+                            <div class="pos-table-header">
+                                <div class="pos-table-number">
+                                    <i class="bi bi-circle-fill text-warning" style="font-size: 0.6rem;"></i>
+                                    <span>BÀN 05</span>
+                                    <span class="badge bg-dark border border-secondary text-secondary small fw-normal ms-1" style="font-size: 0.65rem;">Pool 9FT</span>
+                                </div>
+                                <span class="badge bg-warning text-dark fw-bold px-2 py-1" style="border-radius: 2px;">ĐANG CHƠI</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-baseline mb-2">
+                                <span class="small text-muted">Thời gian chơi:</span>
+                                <div class="pos-table-timer"><i class="bi bi-clock-history"></i> 00:32:10</div>
+                            </div>
+                            <div class="small text-secondary mb-1">
+                                <i class="bi bi-person me-1 text-info"></i> Khách: <strong class="text-light">Nguyễn Thành Nam</strong>
+                            </div>
+                            <div class="small text-secondary mb-2">
+                                <i class="bi bi-cup-straw me-1 text-warning"></i> F&B: <strong>1 Cà phê muối</strong> (28.000đ)
+                            </div>
+                            <div class="p-2 mb-2 bg-dark bg-opacity-50 border border-secondary border-opacity-25 d-flex justify-content-between align-items-center" style="border-radius: 2px;">
+                                <span class="small text-muted">Tạm tính:</span>
+                                <span class="fw-bold" style="color: var(--primary-neon);">60.000 đ</span>
+                            </div>
+                        </div>
+                        <div class="pos-table-actions">
+                            <button class="btn btn-dark btn-sm border-secondary text-info d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modalThemMon" style="border-radius: 2px;">
+                                <i class="bi bi-plus-lg"></i> Gọi món
+                            </button>
+                            <button class="btn btn-dark btn-sm border-secondary text-warning d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modalChuyenBan" style="border-radius: 2px;">
+                                <i class="bi bi-arrow-left-right"></i> Đổi bàn
+                            </button>
+                            <button class="btn btn-bolt-neon btn-sm col-span-2 w-100 mt-1 d-flex align-items-center justify-content-center gap-1" style="grid-column: span 2;" data-bs-toggle="modal" data-bs-target="#modalThanhToan">
+                                <i class="bi bi-receipt-cutoff"></i> Thanh toán POS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BÀN 06 (BÀN TRỐNG) -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="pos-table-card vacant">
+                        <div>
+                            <div class="pos-table-header">
+                                <div class="pos-table-number">
+                                    <i class="bi bi-circle-fill" style="color: var(--primary-neon); font-size: 0.6rem;"></i>
+                                    <span>BÀN 06</span>
+                                    <span class="badge bg-dark border border-secondary text-secondary small fw-normal ms-1" style="font-size: 0.65rem;">Pool 9FT</span>
+                                </div>
+                                <span class="badge text-dark fw-bold px-2 py-1" style="background-color: var(--primary-neon); border-radius: 2px;">BÀN TRỐNG</span>
+                            </div>
+                            <div class="text-center py-3 my-1">
+                                <i class="bi bi-check-circle" style="font-size: 2.2rem; color: var(--primary-neon); opacity: 0.8;"></i>
+                                <div class="text-white fw-bold mt-2 font-heading">SẴN SÀNG ĐÓN KHÁCH</div>
+                                <div class="text-muted small">Đơn giá: 60.000 đ/giờ • Nỉ Simonis</div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-bolt-neon btn-sm w-100 py-2 d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#modalMoBan" style="border-radius: 2px;">
+                                <i class="bi bi-play-fill fs-6"></i> BẮT ĐẦU TÍNH GIỜ (MỞ BÀN)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BÀN 19 (VIP 3 BĂNG - ĐANG CHƠI) -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="pos-table-card occupied" style="border-color: rgba(192, 132, 252, 0.5);">
+                        <div>
+                            <div class="pos-table-header">
+                                <div class="pos-table-number">
+                                    <i class="bi bi-star-fill text-warning" style="font-size: 0.75rem;"></i>
+                                    <span>BÀN 19 (VIP)</span>
+                                    <span class="badge bg-dark border border-secondary text-info small fw-normal ms-1" style="font-size: 0.65rem;">Min 3 Băng</span>
+                                </div>
+                                <span class="badge bg-warning text-dark fw-bold px-2 py-1" style="border-radius: 2px;">VIP ĐANG CHƠI</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-baseline mb-2">
+                                <span class="small text-muted">Thời gian chơi:</span>
+                                <div class="pos-table-timer"><i class="bi bi-clock-history"></i> 01:50:30</div>
+                            </div>
+                            <div class="small text-secondary mb-1">
+                                <i class="bi bi-person me-1 text-info"></i> Khách: <strong class="text-light">Lê Nhật Đăng</strong> (VIP Diamond)
+                            </div>
+                            <div class="small text-secondary mb-2">
+                                <i class="bi bi-cup-straw me-1 text-warning"></i> F&B: <strong>3 Heineken, 1 Dĩa Cơm chiên</strong> (120.000đ)
+                            </div>
+                            <div class="p-2 mb-2 bg-dark bg-opacity-50 border border-secondary border-opacity-25 d-flex justify-content-between align-items-center" style="border-radius: 2px;">
+                                <span class="small text-muted">Tạm tính:</span>
+                                <span class="fw-bold" style="color: var(--primary-neon);">285.000 đ</span>
+                            </div>
+                        </div>
+                        <div class="pos-table-actions">
+                            <button class="btn btn-dark btn-sm border-secondary text-info d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modalThemMon" style="border-radius: 2px;">
+                                <i class="bi bi-plus-lg"></i> Gọi món
+                            </button>
+                            <button class="btn btn-dark btn-sm border-secondary text-warning d-flex align-items-center justify-content-center gap-1" data-bs-toggle="modal" data-bs-target="#modalChuyenBan" style="border-radius: 2px;">
+                                <i class="bi bi-arrow-left-right"></i> Đổi bàn
+                            </button>
+                            <button class="btn btn-bolt-neon btn-sm col-span-2 w-100 mt-1 d-flex align-items-center justify-content-center gap-1" style="grid-column: span 2;" data-bs-toggle="modal" data-bs-target="#modalThanhToan">
+                                <i class="bi bi-receipt-cutoff"></i> Thanh toán POS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BÀN 20 (PHÒNG VIP - ĐẶT TRƯỚC) -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="pos-table-card reserved">
+                        <div>
+                            <div class="pos-table-header">
+                                <div class="pos-table-number">
+                                    <i class="bi bi-clock-fill text-info" style="font-size: 0.65rem;"></i>
+                                    <span>BÀN 20 (VIP)</span>
+                                    <span class="badge bg-dark border border-secondary text-info small fw-normal ms-1" style="font-size: 0.65rem;">Phòng Lạnh</span>
+                                </div>
+                                <span class="badge bg-info text-dark fw-bold px-2 py-1" style="border-radius: 2px;">ĐẶT TRƯỚC 18:30</span>
+                            </div>
+                            <div class="text-center py-3 my-1">
+                                <i class="bi bi-calendar-check" style="font-size: 2.2rem; color: #38bdf8; opacity: 0.85;"></i>
+                                <div class="text-white fw-bold mt-2 font-heading">KHÁCH ĐÃ HẸN GIỜ ĐẾN</div>
+                                <div class="text-light small mt-1">Khách: <strong>Anh Long (0362.870.986)</strong></div>
+                                <div class="text-muted small">Yêu cầu chuẩn bị 2 cơ nặng 530g</div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-info text-dark fw-bold btn-sm w-100 py-2 d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#modalMoBan" style="border-radius: 2px;">
+                                <i class="bi bi-person-check-fill"></i> KHÁCH ĐÃ ĐẾN (CHECK-IN MỞ BÀN)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL 1: MỞ BÀN MỚI                                                       -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="modalMoBan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-play-circle-fill text-warning"></i> MỞ BÀN BIDA & TÍNH GIỜ
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Chọn bàn bida:</label>
+                        <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px;">
+                            <option value="4">Bàn 04 (Tầng 1 - Pool 9FT - 60.000đ/h)</option>
+                            <option value="6">Bàn 06 (Tầng 1 - Pool 9FT - 60.000đ/h)</option>
+                            <option value="15">Bàn 15 (Tầng 2 - Carom Phăng - 50.000đ/h)</option>
+                            <option value="20">Bàn 20 (Phòng VIP Máy Lạnh - 90.000đ/h)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Khách hàng / Số điện thoại:</label>
+                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Nhập SĐT hoặc tên cơ thủ..." style="border-radius: 2px;" value="Khách vãng lai" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Ghi chú hoặc yêu cầu cơ bida:</label>
+                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ví dụ: Lấy 2 cơ Fury ngọn carbon..." style="border-radius: 2px;" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã mở bàn thành công! Đồng hồ bắt đầu tính giờ.');" style="border-radius: 2px;">
+                    <i class="bi bi-check-lg"></i> Xác nhận Bắt đầu tính giờ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL 2: THÊM MÓN & DỊCH VỤ                                              -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="modalThemMon" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-cup-straw text-info"></i> THÊM MÓN ĂN & NƯỚC UỐNG
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Đang chọn cho:</label>
+                    <div class="fw-bold text-white fs-6 font-heading">BÀN 01 (Khách: Hoàng Minh Tuấn)</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Chọn món F&B hoặc phụ kiện:</label>
+                    <select class="form-select bg-black text-light border-secondary mb-2" style="border-radius: 2px;">
+                        <option value="1">Cà phê muối Đào Ngọc Giang - 28.000 đ</option>
+                        <option value="2">Trà đào cam sả - 32.000 đ</option>
+                        <option value="3">Redbull Thái ướp lạnh - 22.000 đ</option>
+                        <option value="4">Mì trứng xúc xích bò - 35.000 đ</option>
+                        <option value="5">Bánh mì chảo đặc biệt - 38.000 đ</option>
+                        <option value="6">Bia Heineken lon - 25.000 đ</option>
+                        <option value="7">Găng tay bida co giãn - 35.000 đ</option>
+                    </select>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label class="form-label small text-muted">Số lượng:</label>
+                        <input type="number" class="form-control bg-black text-light border-secondary" value="1" min="1" max="20" style="border-radius: 2px;" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small text-muted">Đơn giá:</label>
+                        <input type="text" class="form-control bg-black text-muted border-secondary" value="28.000 đ" readonly style="border-radius: 2px;" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã thêm món vào hóa đơn bàn thành công!');" style="border-radius: 2px;">
+                    <i class="bi bi-cart-plus-fill"></i> Thêm vào hóa đơn
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL 3: THANH TOÁN POS & HÓA ĐƠN                                        -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="modalThanhToan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-receipt-cutoff" style="color: var(--primary-neon);"></i> THANH TOÁN HÓA ĐƠN POS
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Mô phỏng hóa đơn giấy in nhiệt 80mm -->
+                <div class="pos-receipt-paper text-dark p-3">
+                    <div class="text-center pb-2 border-bottom border-dark">
+                        <div class="fw-bold fs-5">BOLT BILLIARDS</div>
+                        <div style="font-size: 0.75rem;">Đ/C: 128 Nguyễn Ái Quốc, Biên Hòa, Đồng Nai</div>
+                        <div style="font-size: 0.75rem;">Hotline: 0362.870.986</div>
+                        <div class="fw-bold mt-1">PHIẾU TÍNH TIỀN (BÀN 01)</div>
+                    </div>
+                    <div class="d-flex justify-content-between small py-1 border-bottom border-dark">
+                        <span>Giờ vào: 14:15</span>
+                        <span>Giờ ra: 15:40 (1h 25p)</span>
+                    </div>
+                    <div class="py-2 border-bottom border-dark small">
+                        <div class="d-flex justify-content-between">
+                            <span>Tiền giờ chơi (85 phút):</span>
+                            <strong>85.000 đ</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>2 x Redbull Thái (22K):</span>
+                            <span>44.000 đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>1 x Mì xúc xích bò (35K):</span>
+                            <span>35.000 đ</span>
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <div class="d-flex justify-content-between fw-bold fs-6">
+                            <span>TỔNG THANH TOÁN:</span>
+                            <span class="text-danger">164.000 đ</span>
+                        </div>
+                        <div class="text-center mt-3">
+                            <i class="bi bi-qr-code fs-1"></i>
+                            <div style="font-size: 0.7rem;">Quét VietQR qua app ngân hàng / MoMo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px;">Hủy bỏ</button>
+                <button type="button" class="btn btn-success btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã in hóa đơn và hoàn tất thanh toán tiền mặt!');" style="border-radius: 2px;">
+                    <i class="bi bi-cash"></i> Tiền mặt
+                </button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Xác nhận nhận tiền chuyển khoản thành công! Bàn đã chuyển sang trạng thái trống.');" style="border-radius: 2px;">
+                    <i class="bi bi-qr-code-scan"></i> Chuyển khoản QR
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

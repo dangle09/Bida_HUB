@@ -1,0 +1,395 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - QUẢN TRỊ: NHÂN SỰ & PHÂN CA
+   - Tên file: Views/Staff/Index.cshtml
+   - Vai trò: Quản lý danh sách nhân sự, phân bổ ca trực theo tuần và bảng tính lương
+   - Layout: Views/Shared/_AdminLayout.cshtml
+   - CSS: wwwroot/css/admin-pos.css (Chuẩn bo góc 2px radius toàn trang)
+   =================================================================================== *@
+@{
+    ViewData["Title"] = "Nhân sự & Phân ca - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <span class="text-secondary">Trang chủ</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-secondary">Quản trị & Báo cáo</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Nhân sự & Phân ca</span>
+    </div>
+
+    <!-- Header Trang & Tác vụ nhanh -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-people-fill text-primary"></i>
+                HỒ SƠ NHÂN SỰ, PHÂN CA & BẢNG LƯƠNG
+            </h2>
+            <div class="text-muted small">Quản lý đội ngũ nhân viên, sắp xếp lịch trực 3 ca (24/7) và tính lương ca làm</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="alert('Đã đồng bộ dữ liệu chấm công từ máy vân tay/ca trực.');">
+                <i class="bi bi-fingerprint text-info"></i> Chấm Công Máy
+            </button>
+            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemNhanVien">
+                <i class="bi bi-person-plus-fill"></i> Thêm Nhân Viên
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 THẺ THỐNG KÊ KPI NHÂN SỰ -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tổng số nhân sự</p>
+                    <div class="kpi-value text-white">12 <small class="fs-6 text-muted fw-normal">Nhân viên</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
+                    <i class="bi bi-person-check-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Đang trong ca trực</p>
+                    <div class="kpi-value" style="color: var(--primary-neon);">4 <small class="fs-6 text-muted fw-normal">Có mặt</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Ca trực hiện tại</p>
+                    <div class="kpi-value text-warning fs-5 mt-2">Ca Chiều <small class="fs-6 text-muted fw-normal">16h - 24h</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
+                    <i class="bi bi-wallet-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Quỹ lương tạm tính</p>
+                    <div class="kpi-value text-white">38.500K <small class="fs-6 text-muted fw-normal">VNĐ</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABS ĐIỀU HƯỚNG: NHÂN VIÊN, LỊCH TRỰC, CHẤM CÔNG -->
+    <ul class="nav nav-pills nav-pills-bolt mb-3" id="staffTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-dsnhanvien-btn" data-bs-toggle="pill" data-bs-target="#tab-dsnhanvien" type="button">
+                <i class="bi bi-person-lines-fill me-1"></i> Danh Sách Nhân Sự (12)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-lichca-btn" data-bs-toggle="pill" data-bs-target="#tab-lichca" type="button">
+                <i class="bi bi-calendar-week me-1"></i> Lịch Phân Công Trực Ca Trong Tuần
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-chamcong-btn" data-bs-toggle="pill" data-bs-target="#tab-chamcong" type="button">
+                <i class="bi bi-calculator me-1"></i> Bảng Lương & Chấm Công Tháng 11
+            </button>
+        </li>
+    </ul>
+
+    <!-- NỘI DUNG TABS -->
+    <div class="tab-content" id="staffTabsContent">
+        <!-- TAB 1: DANH SÁCH NHÂN VIÊN -->
+        <div class="tab-pane fade show active" id="tab-dsnhanvien" role="tabpanel">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px;">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.88rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.74rem;">
+                            <tr>
+                                <th class="ps-3">MÃ NV</th>
+                                <th>HỌ VÀ TÊN</th>
+                                <th>VAI TRÒ / CHỨC VỤ</th>
+                                <th>SỐ ĐIỆN THOẠI</th>
+                                <th>CA LÀM VIỆC CHÍNH</th>
+                                <th class="text-end">LƯƠNG CƠ BẢN/H</th>
+                                <th class="text-center">TÌNH TRẠNG</th>
+                                <th class="text-center pe-3">THAO TÁC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- NV 1 -->
+                            <tr>
+                                <td class="ps-3"><strong class="text-white font-monospace">NV-01</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar-badge" style="width: 32px; height: 32px; font-size: 0.8rem; background: var(--primary-neon); color: #000;">G</div>
+                                        <div>
+                                            <div class="fw-bold text-white">Đào Ngọc Giang</div>
+                                            <div class="small text-muted">admin@bms.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-danger text-light" style="border-radius: 2px;">👑 ADMIN / CHỦ QUÁN</span></td>
+                                <td>0347.987.360</td>
+                                <td>Toàn quyền điều hành</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">Quản trị</td>
+                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG HOẠT ĐỘNG</span></td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                                </td>
+                            </tr>
+
+                            <!-- NV 2 -->
+                            <tr>
+                                <td class="ps-3"><strong class="text-white font-monospace">NV-02</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar-badge" style="width: 32px; height: 32px; font-size: 0.8rem; background: #60a5fa; color: #000;">Đ</div>
+                                        <div>
+                                            <div class="fw-bold text-white">Lê Nhật Đăng</div>
+                                            <div class="small text-muted">manager@boltbilliards.vn</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-warning text-dark fw-bold" style="border-radius: 2px;">⭐ QUẢN LÝ CƠ SỞ</span></td>
+                                <td>0912.334.455</td>
+                                <td>Ca Chiều (16h - 24h)</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">35.000 đ/h</td>
+                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG TRỰC CA</span></td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                                </td>
+                            </tr>
+
+                            <!-- NV 3 -->
+                            <tr>
+                                <td class="ps-3"><strong class="text-white font-monospace">NV-03</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar-badge" style="width: 32px; height: 32px; font-size: 0.8rem; background: #38bdf8; color: #000;">M</div>
+                                        <div>
+                                            <div class="fw-bold text-white">Trần Thị Mai</div>
+                                            <div class="small text-muted">cashier@boltbilliards.vn</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-info text-dark fw-bold" style="border-radius: 2px;">👤 THU NGÂN POS</span></td>
+                                <td>0977.889.900</td>
+                                <td>Ca Chiều (16h - 24h)</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">28.000 đ/h</td>
+                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG TRỰC CA</span></td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                                </td>
+                            </tr>
+
+                            <!-- NV 4 -->
+                            <tr>
+                                <td class="ps-3"><strong class="text-white font-monospace">NV-04</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar-badge" style="width: 32px; height: 32px; font-size: 0.8rem; background: #94a3b8; color: #000;">L</div>
+                                        <div>
+                                            <div class="fw-bold text-white">Phạm Trần Bạch Long</div>
+                                            <div class="small text-muted">long@boltbilliards.vn</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-secondary text-light" style="border-radius: 2px;">KỸ THUẬT BÀN & BI</span></td>
+                                <td>0982.870.986</td>
+                                <td>Ca Sáng (08h - 16h)</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">27.000 đ/h</td>
+                                <td class="text-center"><span class="badge bg-secondary text-light" style="border-radius: 2px;">HẾT CA</span></td>
+                                <td class="text-center pe-3">
+                                    <button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: LỊCH PHÂN CÔNG TRỰC CA -->
+        <div class="tab-pane fade" id="tab-lichca" role="tabpanel">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px;">
+                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-white font-heading">MA TRẬN LỊCH TRỰC 3 CA (ÁP DỤNG TUẦN NÀY)</span>
+                    <button class="btn btn-sm btn-bolt-outline" onclick="alert('Đã cập nhật lịch trực tuần mới.');" style="border-radius: 2px;">
+                        <i class="bi bi-save"></i> Cập nhật lịch tuần
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-dark align-middle mb-0 text-center" style="font-size: 0.85rem; border-color: rgba(255,255,255,0.08);">
+                        <thead class="bg-black text-secondary">
+                            <tr>
+                                <th style="width: 140px;">CA TRỰC</th>
+                                <th>THỨ 2</th>
+                                <th>THỨ 3</th>
+                                <th>THỨ 4</th>
+                                <th>THỨ 5</th>
+                                <th>THỨ 6</th>
+                                <th>THỨ 7</th>
+                                <th>CHỦ NHẬT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold text-info bg-black text-start ps-3">
+                                    CA SÁNG<br /><small class="text-muted fw-normal">08:00 - 16:00</small>
+                                </td>
+                                <td>Long, Khoa</td>
+                                <td>Long, Khoa</td>
+                                <td>Long, Khoa</td>
+                                <td>Long, Khoa</td>
+                                <td>Long, Khoa</td>
+                                <td>Long, Nam, Đức</td>
+                                <td>Long, Nam, Đức</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-warning bg-black text-start ps-3">
+                                    CA CHIỀU<br /><small class="text-muted fw-normal">16:00 - 24:00</small>
+                                </td>
+                                <td class="table-warning bg-opacity-10 fw-bold text-warning">Đăng, Mai, Tuấn</td>
+                                <td class="table-warning bg-opacity-10 fw-bold text-warning">Đăng, Mai, Tuấn</td>
+                                <td class="table-warning bg-opacity-10 fw-bold text-warning">Đăng, Mai, Tuấn</td>
+                                <td class="table-warning bg-opacity-10 fw-bold text-warning">Đăng, Mai, Tuấn</td>
+                                <td class="table-warning bg-opacity-10 fw-bold text-warning">Đăng, Mai, Tuấn</td>
+                                <td class="table-warning bg-opacity-10 fw-bold text-warning">Đăng, Mai, Tuấn, Giang</td>
+                                <td class="table-warning bg-opacity-10 fw-bold text-warning">Đăng, Mai, Tuấn, Giang</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-white bg-black text-start ps-3">
+                                    CA ĐÊM<br /><small class="text-muted fw-normal">00:00 - 08:00</small>
+                                </td>
+                                <td>Huy, Hưng</td>
+                                <td>Huy, Hưng</td>
+                                <td>Huy, Hưng</td>
+                                <td>Huy, Hưng</td>
+                                <td>Huy, Hưng</td>
+                                <td>Huy, Hưng, Quân</td>
+                                <td>Huy, Hưng, Quân</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: BẢNG LƯƠNG & CHẤM CÔNG -->
+        <div class="tab-pane fade" id="tab-chamcong" role="tabpanel">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px;">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.88rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.74rem;">
+                            <tr>
+                                <th class="ps-3">HỌ VÀ TÊN</th>
+                                <th>CHỨC VỤ</th>
+                                <th class="text-center">SỐ GIỜ ĐÃ LÀM</th>
+                                <th class="text-end">LƯƠNG THEO GIỜ</th>
+                                <th class="text-end">THƯỞNG DOANH SỐ</th>
+                                <th class="text-end">TỔNG TẠM TÍNH</th>
+                                <th class="text-center pe-3">TRẠNG THÁI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ps-3 fw-bold text-white">Lê Nhật Đăng</td>
+                                <td>Quản lý cơ sở</td>
+                                <td class="text-center text-info fw-bold">128 giờ</td>
+                                <td class="text-end">35.000 đ</td>
+                                <td class="text-end text-success">+ 1.500.000 đ</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">5.980.000 đ</td>
+                                <td class="text-center pe-3"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐÃ ĐỐI SOÁT</span></td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3 fw-bold text-white">Trần Thị Mai</td>
+                                <td>Thu ngân POS</td>
+                                <td class="text-center text-info fw-bold">136 giờ</td>
+                                <td class="text-end">28.000 đ</td>
+                                <td class="text-end text-success">+ 800.000 đ</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">4.608.000 đ</td>
+                                <td class="text-center pe-3"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐÃ ĐỐI SOÁT</span></td>
+                            </tr>
+                            <tr>
+                                <td class="ps-3 fw-bold text-white">Phạm Trần Bạch Long</td>
+                                <td>Kỹ thuật viên bàn</td>
+                                <td class="text-center text-info fw-bold">120 giờ</td>
+                                <td class="text-end">27.000 đ</td>
+                                <td class="text-end text-success">+ 500.000 đ</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">3.740.000 đ</td>
+                                <td class="text-center pe-3"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐÃ ĐỐI SOÁT</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL THÊM NHÂN VIÊN MỚI -->
+<div class="modal fade" id="modalThemNhanVien" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-person-plus-fill text-warning"></i> TIẾP NHẬN HỒ SƠ NHÂN SỰ
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Họ và tên nhân viên (*):</label>
+                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ví dụ: Hoàng Văn B..." style="border-radius: 2px;" required />
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Số điện thoại (*):</label>
+                            <input type="tel" class="form-control bg-black text-light border-secondary" placeholder="09xxxxxxx" style="border-radius: 2px;" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Vị trí đảm nhiệm:</label>
+                            <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px;">
+                                <option value="cashier">Thu ngân POS</option>
+                                <option value="waiter">Phục vụ sàn bida</option>
+                                <option value="tech">Kỹ thuật viên bàn & gậy</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Mức lương theo giờ (VNĐ):</label>
+                            <input type="number" class="form-control bg-black text-light border-secondary" value="28000" style="border-radius: 2px;" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Ca trực cố định:</label>
+                            <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px;">
+                                <option value="1">Ca Sáng (08:00 - 16:00)</option>
+                                <option value="2">Ca Chiều (16:00 - 24:00)</option>
+                                <option value="3">Ca Đêm (00:00 - 08:00)</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã lưu hồ sơ nhân sự mới thành công!');" style="border-radius: 2px;">
+                    <i class="bi bi-check-lg"></i> Lưu Hồ Sơ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

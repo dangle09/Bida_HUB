@@ -1,8 +1,11 @@
-/* BOLT BILLIARDS - ADMIN POS DASHBOARD THEME
-   Đồng bộ 100% với Web vãng lai: Đen obsidian (#07090e), Xám Slate (#0e131d), Neon Lime (#a6ff00)
-   Bố cục chuẩn Wireframe: Topbar 60px cố định, Sidebar 260px cố định cuộn dọc, Footer StatusBar 35px
-   Quy tắc bo góc: 2px radius toàn trang
-*/
+/* ===================================================================================
+   BOLT BILLIARDS - ADMIN POS DASHBOARD THEME (FILE CSS CỦA WEB QUẢN LÝ)
+   - Sử dụng cho: Web Quản Lý (Admin Dashboard & Thu ngân POS)
+   - Layout đi kèm: Views/Shared/_AdminLayout.cshtml
+   - Màu sắc đồng bộ với Web Vãng Lai: Đen Obsidian (#07090e), Xám Slate (#0d121c), Xanh Neon (#a6ff00)
+   - Bố cục chuẩn Wireframe: Topbar 60px cố định, Sidebar 260px cố định, Footer StatusBar 35px
+   - Quy tắc bo góc: 2px radius toàn trang
+   =================================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -445,4 +448,210 @@ body.bida-body {
         margin-left: 0;
         padding: 1.25rem 1rem;
     }
+}
+
+/* ========================================================= */
+/* CSS BỔ SUNG CHO CÁC MODULE QUẢN LÝ POS (CHUẨN 2PX RADIUS)  */
+/* ========================================================= */
+
+/* Thẻ thống kê KPI */
+.kpi-stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 2px !important;
+    padding: 1.15rem;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-stat-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.kpi-stat-card .kpi-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px !important;
+    font-size: 1.4rem;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.kpi-stat-card .kpi-value {
+    font-family: var(--font-heading);
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: #ffffff;
+    margin-top: 0.4rem;
+}
+
+.kpi-stat-card .kpi-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0;
+}
+
+/* Thẻ Bàn Bida POS */
+.pos-table-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 2px !important;
+    padding: 1.1rem;
+    position: relative;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 230px;
+}
+
+.pos-table-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.pos-table-card.occupied {
+    border-color: rgba(234, 179, 8, 0.4);
+    background: linear-gradient(180deg, rgba(234, 179, 8, 0.05) 0%, #0d121c 100%);
+}
+
+.pos-table-card.occupied:hover {
+    border-color: #eab308;
+    box-shadow: 0 0 18px rgba(234, 179, 8, 0.25);
+}
+
+.pos-table-card.vacant {
+    border-color: rgba(166, 255, 0, 0.25);
+    background: linear-gradient(180deg, rgba(166, 255, 0, 0.04) 0%, #0d121c 100%);
+}
+
+.pos-table-card.vacant:hover {
+    border-color: var(--primary-neon);
+    box-shadow: 0 0 18px rgba(166, 255, 0, 0.25);
+}
+
+.pos-table-card.reserved {
+    border-color: rgba(96, 165, 250, 0.35);
+    background: linear-gradient(180deg, rgba(96, 165, 250, 0.05) 0%, #0d121c 100%);
+}
+
+.pos-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.pos-table-number {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pos-table-timer {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #eab308;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+}
+
+.pos-table-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 0.8rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Nav Pills kiểu Bolt Minimal */
+.nav-pills-bolt {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: 2px !important;
+    gap: 4px;
+}
+
+.nav-pills-bolt .nav-link {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+    border-radius: 2px !important;
+    padding: 6px 14px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.nav-pills-bolt .nav-link.active,
+.nav-pills-bolt .nav-link:hover {
+    color: #000000 !important;
+    background-color: var(--primary-neon) !important;
+    border-color: var(--primary-neon) !important;
+}
+
+/* Bracket Giải đấu */
+.bracket-node {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 2px !important;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.bracket-node:hover {
+    border-color: var(--primary-neon);
+}
+
+.bracket-player {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    padding: 4px 0;
+}
+
+.bracket-player.winner {
+    color: var(--primary-neon);
+    font-weight: 700;
+}
+
+.bracket-score {
+    font-weight: 800;
+    font-family: var(--font-heading);
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px !important;
+}
+
+/* Bill In nhiệt POS */
+.pos-receipt-paper {
+    background: #ffffff;
+    color: #111827;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 2px !important;
+    padding: 1.5rem;
+    max-width: 380px;
+    margin: 0 auto;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
 }

@@ -1,0 +1,306 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - VẬN HÀNH: THỰC ĐƠN & DỊCH VỤ F&B
+   - Tên file: Views/Menu/Index.cshtml
+   - Vai trò: Giao diện quản lý thực đơn đồ uống, thức ăn nhẹ và phụ kiện bida
+   - Layout: Views/Shared/_AdminLayout.cshtml
+   - CSS: wwwroot/css/admin-pos.css (Chuẩn bo góc 2px radius toàn trang)
+   =================================================================================== *@
+@{
+    ViewData["Title"] = "Thực đơn & Dịch vụ - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <span class="text-secondary">Trang chủ</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-secondary">Vận hành & Bán hàng</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Thực đơn & Dịch vụ</span>
+    </div>
+
+    <!-- Header Trang & Tác vụ nhanh -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-cup-straw text-info"></i>
+                THỰC ĐƠN ĐỒ UỐNG, MÓN ĂN & PHỤ KIỆN
+            </h2>
+            <div class="text-muted small">Quản lý giá bán, định lượng và trạng thái phục vụ cho quầy Bar & Thu ngân</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="alert('Đã đồng bộ thực đơn với ứng dụng khách hàng.');">
+                <i class="bi bi-arrow-repeat"></i> Đồng bộ menu
+            </button>
+            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemMonMoi">
+                <i class="bi bi-plus-circle-fill"></i> Thêm Món Mới
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 THẺ KPI THỐNG KÊ -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
+                    <i class="bi bi-card-checklist"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tổng thực đơn</p>
+                    <div class="kpi-value text-white">20 <small class="fs-6 text-muted fw-normal">Sản phẩm</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
+                    <i class="bi bi-cup-hot-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Nước uống & Cà phê</p>
+                    <div class="kpi-value" style="color: #60a5fa;">10 <small class="fs-6 text-muted fw-normal">Món</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
+                    <i class="bi bi-egg-fried"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Ẩm thực F&B ăn vặt</p>
+                    <div class="kpi-value" style="color: #eab308;">6 <small class="fs-6 text-muted fw-normal">Món</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #c084fc; background: rgba(192, 132, 252, 0.1);">
+                    <i class="bi bi-tools"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Dụng cụ & Cơ thủ</p>
+                    <div class="kpi-value" style="color: #c084fc;">4 <small class="fs-6 text-muted fw-normal">Vật phẩm</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BẢNG DANH SÁCH MÓN ĂN & DỊCH VỤ -->
+    <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px;">
+        <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <input type="text" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="Tìm tên món, mã hàng..." style="width: 250px; border-radius: 2px;" />
+                <select class="form-select form-select-sm bg-black text-light border-secondary" style="width: 170px; border-radius: 2px;">
+                    <option value="">Tất cả danh mục</option>
+                    <option value="1">Nước giải khát & Cà phê</option>
+                    <option value="2">Ẩm thực & Đồ ăn nhanh</option>
+                    <option value="3">Bia các loại ướp lạnh</option>
+                    <option value="5">Dụng cụ & Phụ kiện cơ thủ</option>
+                </select>
+            </div>
+            <div class="text-muted small">
+                Hiển thị <strong>20 / 20</strong> mặt hàng phục vụ
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.88rem;">
+                <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    <tr>
+                        <th class="ps-3" style="width: 60px;">#ID</th>
+                        <th style="width: 80px;">ẢNH</th>
+                        <th>MÃ MÓN</th>
+                        <th>TÊN MÓN ĂN / DỊCH VỤ</th>
+                        <th>NHÓM DANH MỤC</th>
+                        <th>ĐVT</th>
+                        <th class="text-end">GIÁ BÁN</th>
+                        <th class="text-center">TỒN KHO</th>
+                        <th class="text-center">TRẠNG THÁI</th>
+                        <th class="text-center pe-3" style="width: 130px;">THAO TÁC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- MÓN 1 -->
+                    <tr>
+                        <td class="ps-3 text-secondary font-monospace">#01</td>
+                        <td>
+                            <div class="thumb-category-wrap">
+                                <img src="~/images/fnb/fnb-1-caphe-muoi.png" class="thumb-category-img" alt="Cà phê muối" />
+                            </div>
+                        </td>
+                        <td><span class="badge bg-black border border-info text-info">CP_MUOI</span></td>
+                        <td>
+                            <div class="fw-bold text-white">Cà phê muối Đào Ngọc Giang</div>
+                            <div class="small text-muted">Cà phê Robusta thơm đậm đà kết hợp lớp kem béo mặn nhẹ</div>
+                        </td>
+                        <td><span class="badge bg-dark text-light border border-secondary">Nước Giải Khát</span></td>
+                        <td>Ly</td>
+                        <td class="text-end fw-bold" style="color: var(--primary-neon);">28.000 đ</td>
+                        <td class="text-center text-success fw-bold">Sẵn sàng</td>
+                        <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG BÁN</span></td>
+                        <td class="text-center pe-3">
+                            <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="border-radius: 2px;" title="Chỉnh sửa"><i class="bi bi-pencil-square"></i></button>
+                            <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px;" title="Ngừng bán"><i class="bi bi-slash-circle"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- MÓN 2 -->
+                    <tr>
+                        <td class="ps-3 text-secondary font-monospace">#02</td>
+                        <td>
+                            <div class="thumb-category-wrap">
+                                <img src="~/images/fnb/fnb-2-tra-dao.jpg" class="thumb-category-img" alt="Trà đào" />
+                            </div>
+                        </td>
+                        <td><span class="badge bg-black border border-info text-info">TRA_DAO</span></td>
+                        <td>
+                            <div class="fw-bold text-white">Trà đào cam sả thanh nhiệt</div>
+                            <div class="small text-muted">Trà ướp hương sả tự nhiên, miếng đào giòn ngọt giải khát</div>
+                        </td>
+                        <td><span class="badge bg-dark text-light border border-secondary">Nước Giải Khát</span></td>
+                        <td>Ly lớn</td>
+                        <td class="text-end fw-bold" style="color: var(--primary-neon);">32.000 đ</td>
+                        <td class="text-center text-success fw-bold">Sẵn sàng</td>
+                        <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG BÁN</span></td>
+                        <td class="text-center pe-3">
+                            <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                            <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px;"><i class="bi bi-slash-circle"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- MÓN 3 -->
+                    <tr>
+                        <td class="ps-3 text-secondary font-monospace">#03</td>
+                        <td>
+                            <div class="thumb-category-wrap">
+                                <img src="~/images/fnb/fnb-3-redbull.jpg" class="thumb-category-img" alt="Redbull" />
+                            </div>
+                        </td>
+                        <td><span class="badge bg-black border border-info text-info">REDBULL</span></td>
+                        <td>
+                            <div class="fw-bold text-white">Redbull Thái ướp lạnh</div>
+                            <div class="small text-muted">Bổ sung năng lượng và tăng cường tập trung cho cơ thủ</div>
+                        </td>
+                        <td><span class="badge bg-dark text-light border border-secondary">Nước Giải Khát</span></td>
+                        <td>Lon</td>
+                        <td class="text-end fw-bold" style="color: var(--primary-neon);">22.000 đ</td>
+                        <td class="text-center text-warning fw-bold">Còn 4 lon</td>
+                        <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG BÁN</span></td>
+                        <td class="text-center pe-3">
+                            <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                            <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px;"><i class="bi bi-slash-circle"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- MÓN 4 -->
+                    <tr>
+                        <td class="ps-3 text-secondary font-monospace">#04</td>
+                        <td>
+                            <div class="thumb-category-wrap">
+                                <img src="~/images/fnb/fnb-4-mi-xuc-xich.jpg" class="thumb-category-img" alt="Mì xúc xích" />
+                            </div>
+                        </td>
+                        <td><span class="badge bg-black border border-warning text-warning">MI_XUCXICH</span></td>
+                        <td>
+                            <div class="fw-bold text-white">Mì trứng xúc xích bò nóng sốt</div>
+                            <div class="small text-muted">Mì ăn liền xào giòn hoặc nước, kèm trứng ốp la và xúc xích</div>
+                        </td>
+                        <td><span class="badge bg-dark text-light border border-secondary">Ẩm Thực F&B</span></td>
+                        <td>Tô</td>
+                        <td class="text-end fw-bold" style="color: var(--primary-neon);">35.000 đ</td>
+                        <td class="text-center text-success fw-bold">Sẵn sàng</td>
+                        <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG BÁN</span></td>
+                        <td class="text-center pe-3">
+                            <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                            <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px;"><i class="bi bi-slash-circle"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- MÓN 5 -->
+                    <tr>
+                        <td class="ps-3 text-secondary font-monospace">#05</td>
+                        <td>
+                            <div class="thumb-category-wrap">
+                                <img src="~/images/shop/shop-1-co-fury.jpg" class="thumb-category-img" alt="Cơ Fury" />
+                            </div>
+                        </td>
+                        <td><span class="badge bg-black border border-primary text-primary">CO_FURY</span></td>
+                        <td>
+                            <div class="fw-bold text-white">Cơ bida Fury One Series</div>
+                            <div class="small text-muted">Ngọn công nghệ chống cong vênh, tay cầm bọc da êm ái</div>
+                        </td>
+                        <td><span class="badge bg-dark text-light border border-secondary">Dụng Cụ Phụ Kiện</span></td>
+                        <td>Cây</td>
+                        <td class="text-end fw-bold" style="color: var(--primary-neon);">1.850.000 đ</td>
+                        <td class="text-center text-light fw-bold">Còn 3 cây</td>
+                        <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐANG BÁN</span></td>
+                        <td class="text-center pe-3">
+                            <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="border-radius: 2px;"><i class="bi bi-pencil-square"></i></button>
+                            <button class="btn btn-sm btn-outline-danger p-1 px-2" style="border-radius: 2px;"><i class="bi bi-slash-circle"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL THÊM MÓN MỚI -->
+<div class="modal fade" id="modalThemMonMoi" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-plus-circle-fill text-warning"></i> THÊM MÓN MỚI VÀO MENU
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Tên món ăn / đồ uống / phụ kiện (*):</label>
+                        <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ví dụ: Sinh tố bơ Đắk Lắk..." style="border-radius: 2px;" required />
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Mã món (*):</label>
+                            <input type="text" class="form-control bg-black text-light border-secondary" placeholder="ST_BO" style="border-radius: 2px;" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Đơn vị tính:</label>
+                            <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ly / Lon / Cây..." style="border-radius: 2px;" value="Ly" />
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Giá bán niêm yết (*):</label>
+                            <input type="number" class="form-control bg-black text-light border-secondary" placeholder="35000" style="border-radius: 2px;" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Nhóm danh mục:</label>
+                            <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px;">
+                                <option value="1">Nước Giải Khát & Cà Phê</option>
+                                <option value="2">Ẩm Thực F&B Ăn Vặt</option>
+                                <option value="3">Bia Các Loại</option>
+                                <option value="5">Dụng Cụ & Phụ Kiện Cơ Thủ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Ảnh minh họa:</label>
+                        <input type="file" class="form-control bg-black text-light border-secondary" style="border-radius: 2px;" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã thêm món mới vào thực đơn thành công!');" style="border-radius: 2px;">
+                    <i class="bi bi-check-lg"></i> Lưu vào menu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

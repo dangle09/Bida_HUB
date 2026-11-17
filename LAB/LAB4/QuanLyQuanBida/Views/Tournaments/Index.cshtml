@@ -1,0 +1,230 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - HỘI VIÊN & GIẢI ĐẤU: GIẢI ĐẤU GIAO LƯU
+   - Tên file: Views/Tournaments/Index.cshtml
+   - Vai trò: Quản lý các giải thi đấu bida, bốc thăm nhánh đấu và cập nhật tỷ số trận đấu
+   - Layout: Views/Shared/_AdminLayout.cshtml
+   - CSS: wwwroot/css/admin-pos.css (Chuẩn bo góc 2px radius toàn trang)
+   =================================================================================== *@
+@{
+    ViewData["Title"] = "Giải đấu giao lưu - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <span class="text-secondary">Trang chủ</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-secondary">Hội viên & Giải đấu</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Giải đấu giao lưu</span>
+    </div>
+
+    <!-- Header Trang & Tác vụ nhanh -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-trophy-fill text-danger"></i>
+                GIẢI ĐẤU BIDA GIAO LƯU & NHÁNH ĐẤU
+            </h2>
+            <div class="text-muted small">Tổ chức giải thi đấu định kỳ, bốc thăm bảng đấu và vinh danh nhà vô địch Bolt Cup</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="alert('Đã bốc thăm ngẫu nhiên các cặp đấu vòng trong.');">
+                <i class="bi bi-shuffle text-warning"></i> Bốc Thăm Cặp Đấu
+            </button>
+            <button class="btn btn-bolt-neon btn-sm" onclick="alert('Mở form tạo mùa giải thi đấu mới.');">
+                <i class="bi bi-plus-circle-fill"></i> Tạo Mùa Giải Mới
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 THẺ THỐNG KÊ KPI GIẢI ĐẤU -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                    <i class="bi bi-fire"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Giải đấu đang diễn ra</p>
+                    <div class="kpi-value text-danger">1 <small class="fs-6 text-white fw-normal">Vòng Tứ Kết</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
+                    <i class="bi bi-trophy"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Giải nhất mùa giải</p>
+                    <div class="kpi-value text-white">15.000K <small class="fs-6 text-muted fw-normal">+ Cúp Vàng</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
+                    <i class="bi bi-person-lines-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Cơ thủ đăng ký</p>
+                    <div class="kpi-value" style="color: #60a5fa;">32/32 <small class="fs-6 text-muted fw-normal">Đầy bảng</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
+                    <i class="bi bi-calendar2-event-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Chung kết dự kiến</p>
+                    <div class="kpi-value text-warning">20/11 <small class="fs-6 text-muted fw-normal">20:00 Trực tiếp</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BANNER GIẢI ĐẤU ĐANG DIỄN RA -->
+    <div class="card bg-dark border-secondary border-opacity-50 mb-4" style="border-radius: 2px;">
+        <div class="card-body p-4 position-relative overflow-hidden">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <span class="badge text-dark fw-bold px-2 py-1 mb-2" style="background-color: var(--primary-neon); border-radius: 2px;">
+                        🔥 GIẢI ĐẤU ĐANG DIỄN RA CHÍNH THỨC
+                    </span>
+                    <h3 class="h4 fw-bold text-white font-heading mb-2">BOLT OPEN BILLIARDS CHAMPIONSHIP 2026</h3>
+                    <p class="text-muted small mb-3">
+                        Quy tụ 32 tay cơ hàng đầu khu vực Đồng Nai & TP.HCM tranh tài thể thức <strong>Pool 9-Ball</strong> (Chạm 9 ván thắng). Dàn bàn thi đấu Aileex Crown 9020 vải nỉ Simonis Pro.
+                    </p>
+                    <div class="d-flex flex-wrap gap-4 text-secondary small">
+                        <div><i class="bi bi-geo-alt text-warning me-1"></i> Bàn thi đấu: <strong>Bàn 01 - 04 (Tầng 1)</strong></div>
+                        <div><i class="bi bi-cash text-success me-1"></i> Lệ phí: <strong>200.000 đ / cơ thủ</strong></div>
+                        <div><i class="bi bi-shield-check text-info me-1"></i> Trọng tài chính: <strong>Lê Nhật Đăng</strong></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <button class="btn btn-bolt-neon btn-sm px-3 py-2" onclick="alert('Đã cập nhật bảng điểm trực tiếp.');">
+                        <i class="bi bi-broadcast"></i> Cập Nhật Tỷ Số Live
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SƠ ĐỒ NHÁNH ĐẤU BRACKET (TỨ KẾT ➔ BÁN KẾT ➔ CHUNG KẾT) -->
+    <div class="card bg-dark border-secondary border-opacity-50 mb-4" style="border-radius: 2px;">
+        <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3">
+            <h5 class="card-title font-heading fw-bold text-white mb-0 fs-6 d-flex align-items-center gap-2">
+                <i class="bi bi-diagram-3-fill text-info"></i> SƠ ĐỒ NHÁNH ĐẤU VÒNG KNOCK-OUT (CHẠM 9 THẮNG)
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <!-- VÒNG TỨ KẾT -->
+                <div class="col-12 col-md-4">
+                    <div class="text-uppercase small fw-bold text-secondary mb-2 text-center pb-1 border-bottom border-secondary border-opacity-25">
+                        VÒNG TỨ KẾT (4 TRẬN)
+                    </div>
+                    <!-- Trận 1 -->
+                    <div class="bracket-node">
+                        <div class="bracket-player winner">
+                            <span>1. Đào Ngọc Giang</span>
+                            <span class="bracket-score text-dark" style="background-color: var(--primary-neon);">9</span>
+                        </div>
+                        <div class="bracket-player text-muted">
+                            <span>8. Nguyễn Văn Nam</span>
+                            <span class="bracket-score">5</span>
+                        </div>
+                    </div>
+                    <!-- Trận 2 -->
+                    <div class="bracket-node">
+                        <div class="bracket-player winner">
+                            <span>4. Lê Nhật Đăng</span>
+                            <span class="bracket-score text-dark" style="background-color: var(--primary-neon);">9</span>
+                        </div>
+                        <div class="bracket-player text-muted">
+                            <span>5. Trần Hoàng Tuấn</span>
+                            <span class="bracket-score">7</span>
+                        </div>
+                    </div>
+                    <!-- Trận 3 -->
+                    <div class="bracket-node">
+                        <div class="bracket-player winner">
+                            <span>3. Phạm Trần Bạch Long</span>
+                            <span class="bracket-score text-dark" style="background-color: var(--primary-neon);">9</span>
+                        </div>
+                        <div class="bracket-player text-muted">
+                            <span>6. Vũ Đình Khang</span>
+                            <span class="bracket-score">6</span>
+                        </div>
+                    </div>
+                    <!-- Trận 4 -->
+                    <div class="bracket-node">
+                        <div class="bracket-player winner">
+                            <span>2. Trương Đăng Khoa</span>
+                            <span class="bracket-score text-dark" style="background-color: var(--primary-neon);">9</span>
+                        </div>
+                        <div class="bracket-player text-muted">
+                            <span>7. Hoàng Minh Đức</span>
+                            <span class="bracket-score">8</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VÒNG BÁN KẾT -->
+                <div class="col-12 col-md-4 d-flex flex-column justify-content-around">
+                    <div class="text-uppercase small fw-bold text-info mb-2 text-center pb-1 border-bottom border-secondary border-opacity-25">
+                        VÒNG BÁN KẾT (2 TRẬN)
+                    </div>
+                    <!-- Bán kết 1 -->
+                    <div class="bracket-node border-info" style="margin: 2rem 0;">
+                        <div class="bracket-player winner">
+                            <span class="text-white fw-bold">Đào Ngọc Giang</span>
+                            <span class="bracket-score text-dark" style="background-color: var(--primary-neon);">9</span>
+                        </div>
+                        <div class="bracket-player text-muted">
+                            <span>Lê Nhật Đăng</span>
+                            <span class="bracket-score">7</span>
+                        </div>
+                    </div>
+                    <!-- Bán kết 2 -->
+                    <div class="bracket-node border-info" style="margin: 2rem 0;">
+                        <div class="bracket-player winner">
+                            <span class="text-white fw-bold">Trương Đăng Khoa</span>
+                            <span class="bracket-score text-dark" style="background-color: var(--primary-neon);">9</span>
+                        </div>
+                        <div class="bracket-player text-muted">
+                            <span>Phạm Trần Bạch Long</span>
+                            <span class="bracket-score">8</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRẬN CHUNG KẾT TRANH CÚP -->
+                <div class="col-12 col-md-4 d-flex flex-column justify-content-center">
+                    <div class="text-uppercase small fw-bold text-warning mb-2 text-center pb-1 border-bottom border-secondary border-opacity-25">
+                        🏆 TRẬN CHUNG KẾT VÔ ĐỊCH
+                    </div>
+                    <div class="bracket-node border-warning p-3 shadow" style="background: linear-gradient(180deg, rgba(234, 179, 8, 0.1) 0%, #0d121c 100%);">
+                        <div class="text-center text-warning fw-bold small mb-2">BOLT ARENA • BÀN 01 (LIVESTREAM)</div>
+                        <div class="bracket-player py-2 border-bottom border-secondary border-opacity-25">
+                            <span class="fw-bold text-white fs-6">Đào Ngọc Giang (Hạt giống 1)</span>
+                            <span class="badge bg-warning text-dark fw-bold fs-6">VS</span>
+                        </div>
+                        <div class="bracket-player py-2">
+                            <span class="fw-bold text-white fs-6">Trương Đăng Khoa (Hạt giống 2)</span>
+                            <span class="badge bg-dark border border-secondary text-muted">Chưa đấu</span>
+                        </div>
+                        <div class="text-center mt-3 pt-2 border-top border-secondary border-opacity-25">
+                            <span class="text-muted small">Thời gian: <strong>Hôm nay 20:00</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

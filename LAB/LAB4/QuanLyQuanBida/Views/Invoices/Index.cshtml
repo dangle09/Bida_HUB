@@ -1,0 +1,280 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - VẬN HÀNH: HÓA ĐƠN & THU NGÂN
+   - Tên file: Views/Invoices/Index.cshtml
+   - Vai trò: Giao diện quản lý hóa đơn, lịch sử giao dịch và doanh thu thu ngân
+   - Layout: Views/Shared/_AdminLayout.cshtml
+   - CSS: wwwroot/css/admin-pos.css (Chuẩn bo góc 2px radius toàn trang)
+   =================================================================================== *@
+@{
+    ViewData["Title"] = "Hóa đơn & Thu ngân - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <span class="text-secondary">Trang chủ</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-secondary">Vận hành & Bán hàng</span>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Hóa đơn & Thu ngân</span>
+    </div>
+
+    <!-- Header Trang & Tác vụ nhanh -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-receipt text-success"></i>
+                HÓA ĐƠN & GIAO DỊCH THU NGÂN POS
+            </h2>
+            <div class="text-muted small">Kiểm soát dòng tiền, in lại hóa đơn và đối soát ca trực thời gian thực</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="alert('Đã xuất file báo cáo Excel ca trực.');">
+                <i class="bi bi-file-earmark-excel text-success"></i> Xuất Excel
+            </button>
+            <button class="btn btn-bolt-neon btn-sm" onclick="alert('Đang tổng hợp bàn giao két tiền cho ca kế tiếp.');">
+                <i class="bi bi-printer"></i> In Bàn Giao Ca
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 THẺ THỐNG KÊ KPI DOANH THU -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tổng doanh thu ca</p>
+                    <div class="kpi-value text-white">8.450K <small class="fs-6 text-muted fw-normal">VNĐ</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
+                    <i class="bi bi-check2-circle"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Hóa đơn hoàn tất</p>
+                    <div class="kpi-value" style="color: #60a5fa;">28 <small class="fs-6 text-muted fw-normal">Bill</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tiền mặt tại két</p>
+                    <div class="kpi-value" style="color: #eab308;">3.200K <small class="fs-6 text-warning fw-normal">(38%)</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
+                    <i class="bi bi-qr-code"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Chuyển khoản VietQR</p>
+                    <div class="kpi-value text-white">5.250K <small class="fs-6 text-muted fw-normal">(62%)</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BẢNG LỊCH SỬ HÓA ĐƠN -->
+    <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px;">
+        <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <input type="text" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="Mã hóa đơn, tên khách, số bàn..." style="width: 240px; border-radius: 2px;" />
+                <select class="form-select form-select-sm bg-black text-light border-secondary" style="width: 150px; border-radius: 2px;">
+                    <option value="">Tất cả ca trực</option>
+                    <option value="1">Ca Sáng (08:00 - 16:00)</option>
+                    <option value="2" selected>Ca Chiều (16:00 - 24:00)</option>
+                    <option value="3">Ca Đêm (00:00 - 08:00)</option>
+                </select>
+                <select class="form-select form-select-sm bg-black text-light border-secondary" style="width: 150px; border-radius: 2px;">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="paid" selected>Đã thanh toán</option>
+                    <option value="pending">Chờ thanh toán</option>
+                    <option value="cancelled">Đã hủy</option>
+                </select>
+            </div>
+            <div class="text-muted small">
+                Hôm nay, <strong>17/11/2026</strong> • Phiên thu ngân Ca Chiều
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.86rem;">
+                <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.74rem; letter-spacing: 0.5px;">
+                    <tr>
+                        <th class="ps-3">MÃ HĐ</th>
+                        <th>SỐ BÀN</th>
+                        <th>KHÁCH HÀNG</th>
+                        <th>GIỜ VÀO - RA</th>
+                        <th>THỜI LƯỢNG</th>
+                        <th class="text-end">TIỀN GIỜ</th>
+                        <th class="text-end">TIỀN F&B</th>
+                        <th class="text-end">GIẢM GIÁ</th>
+                        <th class="text-end">TỔNG TIỀN</th>
+                        <th class="text-center">PHƯƠNG THỨC</th>
+                        <th>THU NGÂN</th>
+                        <th class="text-center">TRẠNG THÁI</th>
+                        <th class="text-center pe-3">IN BILL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- BILL 1 -->
+                    <tr>
+                        <td class="ps-3"><strong class="text-white font-monospace">HD261117-028</strong></td>
+                        <td><span class="badge bg-black border border-warning text-warning">BÀN 08</span></td>
+                        <td><span class="text-light fw-semibold">Nguyễn Hữu Thắng</span> (VIP Bạc)</td>
+                        <td class="small text-muted">15:10 - 17:00</td>
+                        <td>1 giờ 50 phút</td>
+                        <td class="text-end">110.000 đ</td>
+                        <td class="text-end">85.000 đ</td>
+                        <td class="text-end text-success">- 10.000 đ</td>
+                        <td class="text-end fw-bold" style="color: var(--primary-neon);">185.000 đ</td>
+                        <td class="text-center"><span class="badge bg-dark text-info border border-info">Chuyển khoản</span></td>
+                        <td>Mai (Thu ngân)</td>
+                        <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐÃ TT</span></td>
+                        <td class="text-center pe-3">
+                            <button class="btn btn-sm btn-outline-light p-1 px-2" data-bs-toggle="modal" data-bs-target="#modalBillDetail" style="border-radius: 2px;"><i class="bi bi-printer"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- BILL 2 -->
+                    <tr>
+                        <td class="ps-3"><strong class="text-white font-monospace">HD261117-027</strong></td>
+                        <td><span class="badge bg-black border border-primary text-info">BÀN 18 (VIP)</span></td>
+                        <td><span class="text-light fw-semibold">Phạm Trần Bạch Long</span></td>
+                        <td class="small text-muted">14:00 - 16:45</td>
+                        <td>2 giờ 45 phút</td>
+                        <td class="text-end">247.500 đ</td>
+                        <td class="text-end">165.000 đ</td>
+                        <td class="text-end text-success">- 20.000 đ</td>
+                        <td class="text-end fw-bold" style="color: var(--primary-neon);">392.500 đ</td>
+                        <td class="text-center"><span class="badge bg-dark text-warning border border-warning">Tiền mặt</span></td>
+                        <td>Mai (Thu ngân)</td>
+                        <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐÃ TT</span></td>
+                        <td class="text-center pe-3">
+                            <button class="btn btn-sm btn-outline-light p-1 px-2" data-bs-toggle="modal" data-bs-target="#modalBillDetail" style="border-radius: 2px;"><i class="bi bi-printer"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- BILL 3 -->
+                    <tr>
+                        <td class="ps-3"><strong class="text-white font-monospace">HD261117-026</strong></td>
+                        <td><span class="badge bg-black border border-warning text-warning">BÀN 03</span></td>
+                        <td><span class="text-light fw-semibold">Khách vãng lai</span></td>
+                        <td class="small text-muted">14:30 - 16:15</td>
+                        <td>1 giờ 45 phút</td>
+                        <td class="text-end">105.000 đ</td>
+                        <td class="text-end">44.000 đ</td>
+                        <td class="text-end text-muted">0 đ</td>
+                        <td class="text-end fw-bold" style="color: var(--primary-neon);">149.000 đ</td>
+                        <td class="text-center"><span class="badge bg-dark text-info border border-info">Chuyển khoản</span></td>
+                        <td>Mai (Thu ngân)</td>
+                        <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐÃ TT</span></td>
+                        <td class="text-center pe-3">
+                            <button class="btn btn-sm btn-outline-light p-1 px-2" data-bs-toggle="modal" data-bs-target="#modalBillDetail" style="border-radius: 2px;"><i class="bi bi-printer"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- BILL 4 -->
+                    <tr>
+                        <td class="ps-3"><strong class="text-white font-monospace">HD261117-025</strong></td>
+                        <td><span class="badge bg-black border border-warning text-warning">BÀN 11</span></td>
+                        <td><span class="text-light fw-semibold">Trần Đình Quang</span> (VIP Vàng)</td>
+                        <td class="small text-muted">13:00 - 15:30</td>
+                        <td>2 giờ 30 phút</td>
+                        <td class="text-end">125.000 đ</td>
+                        <td class="text-end">92.000 đ</td>
+                        <td class="text-end text-success">- 21.000 đ</td>
+                        <td class="text-end fw-bold" style="color: var(--primary-neon);">196.000 đ</td>
+                        <td class="text-center"><span class="badge bg-dark text-info border border-info">Chuyển khoản</span></td>
+                        <td>Mai (Thu ngân)</td>
+                        <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐÃ TT</span></td>
+                        <td class="text-center pe-3">
+                            <button class="btn btn-sm btn-outline-light p-1 px-2" data-bs-toggle="modal" data-bs-target="#modalBillDetail" style="border-radius: 2px;"><i class="bi bi-printer"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL XEM TRƯỚC HÓA ĐƠN IN NHIỆT -->
+<div class="modal fade" id="modalBillDetail" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px;">
+            <div class="modal-header border-secondary border-opacity-25">
+                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-receipt text-warning"></i> CHI TIẾT HÓA ĐƠN POS
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="pos-receipt-paper text-dark p-3">
+                    <div class="text-center pb-2 border-bottom border-dark">
+                        <div class="fw-bold fs-5 font-heading">BOLT BILLIARDS</div>
+                        <div style="font-size: 0.75rem;">128 Nguyễn Ái Quốc, Biên Hòa, Đồng Nai</div>
+                        <div style="font-size: 0.75rem;">Hotline: 0362.870.986</div>
+                        <div class="fw-bold mt-2">HÓA ĐƠN THANH TOÁN</div>
+                        <div style="font-size: 0.75rem;">Mã HĐ: HD261117-028 • Thu ngân: Mai</div>
+                    </div>
+                    <div class="d-flex justify-content-between small py-1 border-bottom border-dark">
+                        <span>Bàn: <strong>BÀN 08 (Pool 9FT)</strong></span>
+                        <span>Khách: Nguyễn Hữu Thắng</span>
+                    </div>
+                    <div class="d-flex justify-content-between small py-1 border-bottom border-dark">
+                        <span>Giờ vào: 15:10</span>
+                        <span>Giờ ra: 17:00 (1h 50p)</span>
+                    </div>
+                    <div class="py-2 border-bottom border-dark small">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Tiền giờ (110 phút x 1.000đ):</span>
+                            <span>110.000 đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>2 x Cà phê muối Đào Ngọc Giang:</span>
+                            <span>56.000 đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>1 x Khô bò lá chanh:</span>
+                            <span>29.000 đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-success">
+                            <span>Ưu đãi Hội viên VIP Bạc (5%):</span>
+                            <span>- 10.000 đ</span>
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <div class="d-flex justify-content-between fw-bold fs-6">
+                            <span>TỔNG CỘNG:</span>
+                            <span class="text-danger">185.000 đ</span>
+                        </div>
+                        <div class="text-center small mt-3 text-muted">
+                            <div>Phương thức: Chuyển khoản VietQR</div>
+                            <div>Cảm ơn Quý khách & Hẹn gặp lại!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary border-opacity-25">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px;">Đóng</button>
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="window.print();" style="border-radius: 2px;">
+                    <i class="bi bi-printer-fill"></i> In Hóa Đơn (Ctrl+P)
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
