@@ -276,6 +276,20 @@
             </div>
             <div class="modal-body">
                 <form>
+                    <!-- UPLOAD ẢNH BÀN BIDA -->
+                    <div class="mb-3 text-center">
+                        <label class="form-label small text-muted d-block text-start">Ảnh thực tế bàn bida (*):</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 56px; height: 56px; border-radius: 2px; background: #1e293b; border: 1px dashed #64748b; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <img id="previewNewTableImg" src="" alt="" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
+                                <i id="iconNewTableImg" class="bi bi-camera text-secondary fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1 text-start">
+                                <input type="file" id="newTableImgInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewTableImg(this, 'previewNewTableImg', 'iconNewTableImg');" style="border-radius: 2px !important;" />
+                                <div class="form-text text-muted small" style="font-size: 0.72rem;">Ảnh chụp góc bàn và mặt nỉ để khách tham khảo.</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label small text-muted">Số thứ tự bàn (*):</label>
@@ -332,6 +346,19 @@
             </div>
             <div class="modal-body">
                 <form>
+                    <!-- UPLOAD ẢNH BÀN KHI BẢO TRÌ -->
+                    <div class="mb-3 text-center">
+                        <label class="form-label small text-muted d-block text-start">Ảnh hiện trạng bàn bida:</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 56px; height: 56px; border-radius: 2px; background: #000; border: 1px solid #334155; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <img id="previewEditTableImg" src="/images/hero/hero-table.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;" />
+                            </div>
+                            <div class="flex-grow-1 text-start">
+                                <input type="file" id="editTableImgInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewTableImg(this, 'previewEditTableImg');" style="border-radius: 2px !important;" />
+                                <div class="form-text text-muted small" style="font-size: 0.72rem;">Cập nhật ảnh sau khi bảo trì hoặc thay nỉ mới.</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label small text-muted">Hãng sản xuất / Model:</label>
                         <input type="text" id="modalEditTableBrand" class="form-control bg-black text-info border-secondary fw-bold" readonly style="border-radius: 2px !important;" />
@@ -367,6 +394,24 @@
 
 @section Scripts {
     <script>
+        function previewTableImg(input, previewImgId, hideIconId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById(previewImgId);
+                    if (img) {
+                        img.src = e.target.result;
+                        img.style.display = 'block';
+                    }
+                    if (hideIconId) {
+                        var icon = document.getElementById(hideIconId);
+                        if (icon) icon.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             var searchInput = document.getElementById('tableSearchInput');
             var areaFilter = document.getElementById('tableAreaFilter');

@@ -2,12 +2,43 @@
    WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - QUẢN LÝ HÀNG HÓA: KHO & NHẬP HÀNG
    - Tên file: Views/Inventory/Index.cshtml
    - Vai trò: Quản lý hàng tồn kho thực tế, định mức cảnh báo và lịch sử phiếu nhập hàng
+   - Đồng bộ 100% với Thực đơn & Dịch vụ: Đủ 24 mặt hàng (20 món menu + 4 vật tư kho)
    - Layout: Views/Shared/_AdminLayout.cshtml
    - CSS: wwwroot/css/admin-pos.css (Chuẩn bo góc 2px radius toàn trang)
    =================================================================================== *@
 @{
     ViewData["Title"] = "Kho & Nhập hàng - BOLT BILLIARDS";
     Layout = "_AdminLayout";
+
+    // Danh sách 24 mặt hàng tồn kho thực tế đồng bộ 100% với menu và vật tư vận hành CLB
+    var inventoryItems = new[]
+    {
+        new { Sku = "SKU-RB01", Img = "/images/fnb/fnb-3-redbull.jpg", Name = "Nước tăng lực Redbull Thái", Unit = "Lon", Stock = 4, Safe = 10, Cost = 15000, Price = 22000, Status = "danger", StatusText = "SẮP HẾT HÀNG", Note = "Tồn kho dưới mức an toàn 10 lon" },
+        new { Sku = "SKU-HN02", Img = "/images/fnb/fnb-9-heineken.jpg", Name = "Bia Heineken lon 330ml ướp lạnh", Unit = "Lon", Stock = 6, Safe = 12, Cost = 18500, Price = 25000, Status = "warning", StatusText = "CẦN BỔ SUNG", Note = "Bia bán chạy ca chiều tối" },
+        new { Sku = "SKU-CF03", Img = "/images/shop/shop-1-co-fury.jpg", Name = "Cơ Bida Fury One Series (Ngọn Carbon)", Unit = "Cây", Stock = 3, Safe = 5, Cost = 1350000, Price = 1850000, Status = "danger", StatusText = "SẮP HẾT HÀNG", Note = "Chỉ còn 3 cây trong tủ kính" },
+        new { Sku = "SKU-KB04", Img = "/images/fnb/fnb-10-kho-bo.jpg", Name = "Khô bò sợi lá chanh đóng gói 500g", Unit = "Gói", Stock = 2, Safe = 5, Cost = 120000, Price = 180000, Status = "danger", StatusText = "SẮP HẾT HÀNG", Note = "Chỉ còn 2 gói phục vụ quầy Bar" },
+        new { Sku = "SKU-LM05", Img = "/images/shop/shop-3-lo-master.jpg", Name = "Lơ xanh Master USA chính hãng", Unit = "Viên", Stock = 45, Safe = 20, Cost = 12000, Price = 20000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Sẵn sàng cấp cho 20 bàn" },
+        new { Sku = "SKU-CP06", Img = "/images/fnb/fnb-1-ca-phe-muoi.jpg", Name = "Cốt Cà phê Robusta Đắk Lắk (Pha phin)", Unit = "Kg", Stock = 15, Safe = 5, Cost = 160000, Price = 28000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Nguyên liệu pha cà phê muối & đen đá" },
+        new { Sku = "SKU-TD07", Img = "/images/fnb/fnb-2-tra-dao.jpg", Name = "Đào ngâm đóng hộp Kronos (Hi Lạp)", Unit = "Hộp", Stock = 18, Safe = 6, Cost = 45000, Price = 32000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Nguyên liệu pha trà đào cam sả" },
+        new { Sku = "SKU-ST08", Img = "/images/fnb/fnb-4-sting.jpg", Name = "Nước ngọt Sting dâu lon đỏ", Unit = "Lon", Stock = 36, Safe = 15, Cost = 10000, Price = 16000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Tồn kho dồi dào" },
+        new { Sku = "SKU-CD09", Img = "/images/fnb/fnb-5-ca-phe-den.jpg", Name = "Sữa đặc có đường Phương Nam", Unit = "Lon", Stock = 24, Safe = 8, Cost = 19000, Price = 22000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Pha chế cà phê sữa & trà" },
+        new { Sku = "SKU-TC10", Img = "/images/fnb/fnb-6-tra-chanh.jpg", Name = "Trà lài khô ướp hoa tươi", Unit = "Kg", Stock = 8, Safe = 3, Cost = 95000, Price = 20000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Nguyên liệu pha trà chanh & trà đá" },
+        new { Sku = "SKU-MX11", Img = "/images/fnb/fnb-7-mi-xao.jpg", Name = "Mì gói ăn liền Hảo Hảo (Tôm chua cay)", Unit = "Gói", Stock = 52, Safe = 20, Cost = 4500, Price = 35000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Chế biến mì trứng xúc xích" },
+        new { Sku = "SKU-XX12", Img = "/images/fnb/fnb-8-xuc-xich.jpg", Name = "Xúc xích Đức xông khói Vissan", Unit = "Cây", Stock = 40, Safe = 15, Cost = 8000, Price = 20000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Món ăn nhanh cơ thủ" },
+        new { Sku = "SKU-BM13", Img = "/images/fnb/fnb-11-banh-mi.jpg", Name = "Bánh mì que giòn Ba Lan", Unit = "Ổ", Stock = 25, Safe = 10, Cost = 6000, Price = 25000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Nhập mới mỗi ngày" },
+        new { Sku = "SKU-TG14", Img = "/images/fnb/fnb-12-tiger.jpg", Name = "Bia Tiger Crystal lon bạc 330ml", Unit = "Lon", Stock = 28, Safe = 12, Cost = 17500, Price = 24000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Ướp lạnh tủ mát quầy thu ngân" },
+        new { Sku = "SKU-SS15", Img = "/images/fnb/fnb-13-saigon-special.jpg", Name = "Bia Sài Gòn Special lon xanh", Unit = "Lon", Stock = 22, Safe = 10, Cost = 16000, Price = 22000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Hàng sẵn sàng phục vụ" },
+        new { Sku = "SKU-AQ16", Img = "/images/fnb/fnb-14-aquafina.jpg", Name = "Nước khoáng tinh khiết Aquafina 500ml", Unit = "Chai", Stock = 48, Safe = 20, Cost = 5000, Price = 12000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Tồn kho đầy đủ" },
+        new { Sku = "SKU-CW17", Img = "/images/shop/shop-2-co-cuetec.jpg", Name = "Cơ Bida Cuetec Avid Chroma Series", Unit = "Cây", Stock = 4, Safe = 3, Cost = 3800000, Price = 5200000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Dòng cơ cao cấp cho hội viên VIP" },
+        new { Sku = "SKU-GT18", Img = "/images/shop/shop-4-gang-tay.jpg", Name = "Găng tay bida chuyên dụng Kamui Co-Axial", Unit = "Cái", Stock = 32, Safe = 15, Cost = 85000, Price = 150000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Chống trơn trượt mồ hôi tay" },
+        new { Sku = "SKU-KT19", Img = "/images/shop/shop-5-kamui-tip.jpg", Name = "Đầu tẩy bida Kamui Black Clear (Nhật Bản)", Unit = "Cái", Stock = 18, Safe = 10, Cost = 260000, Price = 380000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Phục vụ dịch vụ thay đầu cơ tại chỗ" },
+        new { Sku = "SKU-CT20", Img = "/images/shop/shop-6-chuot-co.jpg", Name = "Dụng cụ bo đầu cơ & gọt tẩy đa năng", Unit = "Cái", Stock = 12, Safe = 5, Cost = 75000, Price = 120000, Status = "success", StatusText = "ĐỦ HÀNG", Note = "Phụ kiện cơ thủ bỏ túi" },
+        // 4 VẬT TƯ TIÊU HAO BẢO TRÌ BÀN CLB
+        new { Sku = "SKU-VT21", Img = "/images/hero/hero-table.jpg", Name = "Vải nỉ bọc bàn Simonis 860 Pro Tournament", Unit = "Bộ", Stock = 2, Safe = 2, Cost = 4800000, Price = 0, Status = "warning", StatusText = "VẬT TƯ KHO", Note = "Dự phòng bảo trì cho Bàn 04 và Bàn 08" },
+        new { Sku = "SKU-VT22", Img = "/images/hero/hero-billiards.jpg", Name = "Bộ bóng thi đấu Aramith Tournament Pro Cup", Unit = "Bộ", Stock = 3, Safe = 2, Cost = 5600000, Price = 0, Status = "success", StatusText = "VẬT TƯ KHO", Note = "Bộ bi thi đấu dự phòng đạt chuẩn quốc tế" },
+        new { Sku = "SKU-VT23", Img = "/images/fnb/fnb-1-ca-phe-muoi.jpg", Name = "Hạt Robusta thô nguyên chất Đắk Lắk", Unit = "Bao", Stock = 4, Safe = 2, Cost = 950000, Price = 0, Status = "success", StatusText = "VẬT TƯ KHO", Note = "Kho hạt thô rang xay hàng tuần" },
+        new { Sku = "SKU-VT24", Img = "/images/shop/shop-3-lo-master.jpg", Name = "Nước xịt lau bóng bi & làm sạch nỉ Aramith", Unit = "Chai", Stock = 8, Safe = 4, Cost = 185000, Price = 0, Status = "success", StatusText = "VẬT TƯ KHO", Note = "Hóa chất vệ sinh bàn định kỳ mỗi ca trực" }
+    };
 }
 
 <div class="container-fluid px-0">
@@ -28,10 +59,10 @@
                 <i class="bi bi-box-seam" style="color: #60a5fa;"></i>
                 QUẢN LÝ KHO & LỊCH SỬ NHẬP HÀNG
             </h2>
-            <div class="text-muted small">Kiểm soát tồn kho nguyên liệu F&B, cơ bida, dụng cụ phụ kiện và lập phiếu nhập</div>
+            <div class="text-muted small">Kiểm soát tồn kho thực tế 24 mặt hàng, định mức cảnh báo và chứng từ nhập kho VAT</div>
         </div>
         <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="alert('Bắt đầu quy trình kiểm kê kho định kỳ.');" style="border-radius: 2px !important;">
+            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="alert('Đã đồng bộ kiểm kê tồn kho với số lượng bán trên 28 hóa đơn.');" style="border-radius: 2px !important;">
                 <i class="bi bi-clipboard-check"></i> Kiểm Kê Kho
             </button>
             <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalNhapHang" style="border-radius: 2px !important;">
@@ -40,7 +71,7 @@
         </div>
     </div>
 
-    <!-- 4 THẺ THỐNG KÊ KPI KHO -->
+    <!-- 4 THẺ THỐNG KÊ KPI KHO (ĐỒNG BỘ 100% VỚI 24 MẶT HÀNG) -->
     <div class="row g-3 mb-4">
         <div class="col-6 col-xl-3">
             <div class="kpi-stat-card d-flex align-items-center gap-3">
@@ -49,7 +80,7 @@
                 </div>
                 <div>
                     <p class="kpi-label">Tổng mặt hàng kho</p>
-                    <div class="kpi-value text-white">20 <small class="fs-6 text-muted fw-normal">Mục</small></div>
+                    <div class="kpi-value text-white">24 <small class="fs-6 text-muted fw-normal">Mục</small></div>
                 </div>
             </div>
         </div>
@@ -88,41 +119,43 @@
         </div>
     </div>
 
-    <!-- TABS ĐIỀU HƯỚNG: TỒN KHO & LỊCH SỬ NHẬP -->
+    <!-- TABS ĐIỀU HƯỚNG: TỒN KHO 24 MẶT HÀNG & LỊCH SỬ PHIẾU NHẬP -->
     <ul class="nav nav-pills nav-pills-bolt mb-3" id="inventoryTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="tab-tonkho-btn" data-bs-toggle="pill" data-bs-target="#tab-tonkho" type="button" role="tab" aria-controls="tab-tonkho" aria-selected="true">
-                <i class="bi bi-archive me-1"></i> Danh Mục Tồn Kho Thực Tế (20)
+                <i class="bi bi-archive me-1"></i> Danh Mục Tồn Kho Thực Tế (24 Mặt hàng)
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab-phieunhap-btn" data-bs-toggle="pill" data-bs-target="#tab-phieunhap" type="button" role="tab" aria-controls="tab-phieunhap" aria-selected="false">
-                <i class="bi bi-file-earmark-text me-1"></i> Lịch Sử Phiếu Nhập Hàng (6 Phiếu)
+                <i class="bi bi-file-earmark-text me-1"></i> Lịch Sử Phiếu Nhập Hàng (4 Phiếu gần nhất)
             </button>
         </li>
     </ul>
 
     <!-- NỘI DUNG TABS -->
     <div class="tab-content" id="inventoryTabsContent">
-        <!-- TAB 1: DANH MỤC TỒN KHO -->
+        <!-- ========================================================================= -->
+        <!-- TAB 1: DANH MỤC ĐẦY ĐỦ 24 MẶT HÀNG TỒN KHO THỰC TẾ                        -->
+        <!-- ========================================================================= -->
         <div class="tab-pane fade show active" id="tab-tonkho" role="tabpanel">
             <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
                 <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div class="d-flex align-items-center gap-2">
-                        <input type="text" id="inventorySearchInput" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="Tìm kiếm theo tên sản phẩm, mã SKU..." style="width: 270px; border-radius: 2px !important;" />
+                        <input type="text" id="inventorySearchInput" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="Tìm tên hàng, mã SKU..." style="width: 250px; border-radius: 2px !important;" />
                         <select id="inventoryFilterStatus" class="form-select form-select-sm bg-black text-light border-secondary" style="width: 200px; border-radius: 2px !important;">
-                            <option value="">Tất cả trạng thái (20)</option>
+                            <option value="">Tất cả tình trạng (24)</option>
                             <option value="danger">Sắp hết hàng (3)</option>
-                            <option value="warning">Cần bổ sung (2)</option>
-                            <option value="success">Đủ tồn kho (15)</option>
+                            <option value="warning">Cần bổ sung / Vật tư (3)</option>
+                            <option value="success">Đủ hàng (18)</option>
                         </select>
                     </div>
-                    <span class="text-muted small">Cập nhật kiểm kê lần cuối: <strong>Hôm nay 08:00</strong></span>
+                    <span class="text-muted small">Cập nhật kiểm kê lần cuối: <strong>Hôm nay 16:30</strong> (24/24 mục)</span>
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-dark table-hover align-middle mb-0" id="inventoryTable" style="font-size: 0.88rem;">
-                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.74rem; letter-spacing: 0.5px;">
+                    <table class="table table-dark table-hover align-middle mb-0" id="inventoryTable" style="font-size: 0.86rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem; letter-spacing: 0.5px;">
                             <tr>
                                 <th class="ps-3">MÃ SKU</th>
                                 <th>ẢNH</th>
@@ -137,242 +170,55 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- HÀNG 1: Redbull (Cảnh báo đỏ) -->
-                            <tr data-status="danger">
-                                <td class="ps-3"><strong class="text-danger font-monospace">SKU-RB01</strong></td>
-                                <td>
-                                    <div class="thumb-category-wrap">
-                                        <img src="~/images/fnb/fnb-3-redbull.jpg" class="thumb-category-img" alt="Redbull" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-white">Nước tăng lực Redbull Thái</div>
-                                    <div class="small text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Tồn kho dưới mức tối thiểu 10 lon</div>
-                                </td>
-                                <td>Lon</td>
-                                <td class="text-center text-danger fw-bold fs-6">4</td>
-                                <td class="text-center text-secondary">10</td>
-                                <td class="text-end">15.000 đ</td>
-                                <td class="text-end fw-bold" style="color: var(--primary-neon);">22.000 đ</td>
-                                <td class="text-center"><span class="badge bg-danger text-light" style="border-radius: 2px;">SẮP HẾT HÀNG</span></td>
-                                <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-bolt-neon p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang"><i class="bi bi-cart-plus"></i> Nhập ngay</button>
-                                </td>
-                            </tr>
-
-                            <!-- HÀNG 2: Heineken (Cần bổ sung) -->
-                            <tr data-status="warning">
-                                <td class="ps-3"><strong class="text-warning font-monospace">SKU-HN02</strong></td>
-                                <td>
-                                    <div class="thumb-category-wrap">
-                                        <img src="~/images/fnb/fnb-9-heineken.jpg" class="thumb-category-img" alt="Heineken" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-white">Bia Heineken lon 330ml ướp lạnh</div>
-                                    <div class="small text-muted">Nhập từ Công ty TNHH Heineken Việt Nam</div>
-                                </td>
-                                <td>Lon</td>
-                                <td class="text-center text-warning fw-bold fs-6">6</td>
-                                <td class="text-center text-secondary">12</td>
-                                <td class="text-end">18.500 đ</td>
-                                <td class="text-end fw-bold" style="color: var(--primary-neon);">25.000 đ</td>
-                                <td class="text-center"><span class="badge bg-warning text-dark" style="border-radius: 2px;">CẦN BỔ SUNG</span></td>
-                                <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-info p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang"><i class="bi bi-cart-plus"></i></button>
-                                </td>
-                            </tr>
-
-                            <!-- HÀNG 3: Cơ Fury One -->
-                            <tr data-status="danger">
-                                <td class="ps-3"><strong class="text-danger font-monospace">SKU-CF03</strong></td>
-                                <td>
-                                    <div class="thumb-category-wrap">
-                                        <img src="~/images/shop/shop-1-co-fury.jpg" class="thumb-category-img" alt="Cơ Fury" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-white">Cơ Bida Fury One Series (Ngọn Carbon)</div>
-                                    <div class="small text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Chỉ còn 3 cây trong tủ trưng bày</div>
-                                </td>
-                                <td>Cây</td>
-                                <td class="text-center text-danger fw-bold fs-6">3</td>
-                                <td class="text-center text-secondary">5</td>
-                                <td class="text-end">1.350.000 đ</td>
-                                <td class="text-end fw-bold" style="color: var(--primary-neon);">1.850.000 đ</td>
-                                <td class="text-center"><span class="badge bg-danger text-light" style="border-radius: 2px;">SẮP HẾT HÀNG</span></td>
-                                <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-bolt-neon p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang"><i class="bi bi-cart-plus"></i> Nhập ngay</button>
-                                </td>
-                            </tr>
-
-                            <!-- HÀNG 4: Lơ Master USA -->
-                            <tr data-status="success">
-                                <td class="ps-3"><strong class="text-light font-monospace">SKU-LM04</strong></td>
-                                <td>
-                                    <div class="thumb-category-wrap">
-                                        <img src="~/images/shop/shop-3-lo-master.jpg" class="thumb-category-img" alt="Lơ Master" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-white">Lơ xanh Master USA chính hãng</div>
-                                    <div class="small text-muted">Phục vụ cho các bàn bida lỗ và bán lẻ</div>
-                                </td>
-                                <td>Hộp (12v)</td>
-                                <td class="text-center text-success fw-bold fs-6">15</td>
-                                <td class="text-center text-secondary">5</td>
-                                <td class="text-end">65.000 đ</td>
-                                <td class="text-end fw-bold" style="color: var(--primary-neon);">90.000 đ</td>
-                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐỦ TỒN KHO</span></td>
-                                <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-info p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang"><i class="bi bi-cart-plus"></i></button>
-                                </td>
-                            </tr>
-
-                            <!-- HÀNG 5: Cà phê Robusta rang mộc -->
-                            <tr data-status="success">
-                                <td class="ps-3"><strong class="text-light font-monospace">SKU-CP05</strong></td>
-                                <td>
-                                    <div class="thumb-category-wrap">
-                                        <img src="~/images/fnb/fnb-1-caphe-muoi.png" class="thumb-category-img" alt="Hạt cà phê" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-white">Hạt Cà phê Robusta Buôn Ma Thuột</div>
-                                    <div class="small text-muted">Bảo quản kho mát kín khí, pha chế quầy Bar</div>
-                                </td>
-                                <td>Kg</td>
-                                <td class="text-center text-success fw-bold fs-6">12</td>
-                                <td class="text-center text-secondary">4</td>
-                                <td class="text-end">140.000 đ</td>
-                                <td class="text-end fw-bold" style="color: var(--primary-neon);">Phục vụ F&B</td>
-                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐỦ TỒN KHO</span></td>
-                                <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-info p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang"><i class="bi bi-cart-plus"></i></button>
-                                </td>
-                            </tr>
-
-                            <!-- HÀNG 6: Găng tay Predator -->
-                            <tr data-status="success">
-                                <td class="ps-3"><strong class="text-light font-monospace">SKU-GT06</strong></td>
-                                <td>
-                                    <div class="thumb-category-wrap">
-                                        <img src="~/images/shop/shop-2-gang-tay.jpg" class="thumb-category-img" alt="Găng tay" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-white">Găng tay bida Predator 3 ngón cao cấp</div>
-                                    <div class="small text-muted">Nhập từ nhà phân phối phụ kiện bida Sài Gòn</div>
-                                </td>
-                                <td>Đôi</td>
-                                <td class="text-center text-success fw-bold fs-6">12</td>
-                                <td class="text-center text-secondary">5</td>
-                                <td class="text-end">45.000 đ</td>
-                                <td class="text-end fw-bold" style="color: var(--primary-neon);">65.000 đ</td>
-                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐỦ TỒN KHO</span></td>
-                                <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-info p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang"><i class="bi bi-cart-plus"></i></button>
-                                </td>
-                            </tr>
-
-                            <!-- HÀNG 7: Đầu tẩy Kamui Black -->
-                            <tr data-status="warning">
-                                <td class="ps-3"><strong class="text-warning font-monospace">SKU-DT07</strong></td>
-                                <td>
-                                    <div class="thumb-category-wrap">
-                                        <img src="~/images/shop/shop-6-dau-tay-kamui.jpg" class="thumb-category-img" alt="Đầu tẩy" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-white">Đầu tẩy gậy Kamui Black M Nhật Bản</div>
-                                    <div class="small text-muted">Chính hãng nhập khẩu trực tiếp từ Tokyo</div>
-                                </td>
-                                <td>Viên</td>
-                                <td class="text-center text-warning fw-bold fs-6">8</td>
-                                <td class="text-center text-secondary">10</td>
-                                <td class="text-end">240.000 đ</td>
-                                <td class="text-end fw-bold" style="color: var(--primary-neon);">320.000 đ</td>
-                                <td class="text-center"><span class="badge bg-warning text-dark" style="border-radius: 2px;">CẦN BỔ SUNG</span></td>
-                                <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-info p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang"><i class="bi bi-cart-plus"></i></button>
-                                </td>
-                            </tr>
-
-                            <!-- HÀNG 8: Bia Tiger Crystal -->
-                            <tr data-status="success">
-                                <td class="ps-3"><strong class="text-light font-monospace">SKU-TC08</strong></td>
-                                <td>
-                                    <div class="thumb-category-wrap">
-                                        <img src="~/images/fnb/fnb-9-heineken.jpg" class="thumb-category-img" alt="Tiger Crystal" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-white">Bia Tiger Crystal bạc mát lạnh lon cao</div>
-                                    <div class="small text-muted">Thùng 24 lon bảo quản trong tủ mát</div>
-                                </td>
-                                <td>Lon</td>
-                                <td class="text-center text-success fw-bold fs-6">24</td>
-                                <td class="text-center text-secondary">10</td>
-                                <td class="text-end">17.500 đ</td>
-                                <td class="text-end fw-bold" style="color: var(--primary-neon);">24.000 đ</td>
-                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐỦ TỒN KHO</span></td>
-                                <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-info p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang"><i class="bi bi-cart-plus"></i></button>
-                                </td>
-                            </tr>
-
-                            <!-- HÀNG 9: Sting dâu lon -->
-                            <tr data-status="success">
-                                <td class="ps-3"><strong class="text-light font-monospace">SKU-ST09</strong></td>
-                                <td>
-                                    <div class="thumb-category-wrap">
-                                        <img src="~/images/fnb/fnb-3-redbull.jpg" class="thumb-category-img" alt="Sting" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-white">Nước tăng lực Sting dâu lon 320ml</div>
-                                    <div class="small text-muted">Nhà cung cấp PepsiCo Việt Nam</div>
-                                </td>
-                                <td>Lon</td>
-                                <td class="text-center text-success fw-bold fs-6">36</td>
-                                <td class="text-center text-secondary">15</td>
-                                <td class="text-end">12.000 đ</td>
-                                <td class="text-end fw-bold" style="color: var(--primary-neon);">18.000 đ</td>
-                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐỦ TỒN KHO</span></td>
-                                <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-outline-info p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang"><i class="bi bi-cart-plus"></i></button>
-                                </td>
-                            </tr>
-
-                            <!-- HÀNG 10: Khô bò lá chanh -->
-                            <tr data-status="danger">
-                                <td class="ps-3"><strong class="text-danger font-monospace">SKU-KB10</strong></td>
-                                <td>
-                                    <div class="thumb-category-wrap">
-                                        <img src="~/images/fnb/fnb-10-kho-bo.jpg" class="thumb-category-img" alt="Khô bò" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-white">Khô bò sợi lá chanh đóng gói 500g</div>
-                                    <div class="small text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Chỉ còn 2 gói trong kho thực phẩm</div>
-                                </td>
-                                <td>Gói</td>
-                                <td class="text-center text-danger fw-bold fs-6">2</td>
-                                <td class="text-center text-secondary">5</td>
-                                <td class="text-end">180.000 đ</td>
-                                <td class="text-end fw-bold" style="color: var(--primary-neon);">Phục vụ F&B</td>
-                                <td class="text-center"><span class="badge bg-danger text-light" style="border-radius: 2px;">SẮP HẾT HÀNG</span></td>
-                                <td class="text-center pe-3">
-                                    <button class="btn btn-sm btn-bolt-neon p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang"><i class="bi bi-cart-plus"></i> Nhập ngay</button>
-                                </td>
-                            </tr>
+                            @foreach (var item in inventoryItems)
+                            {
+                                <tr data-status="@item.Status">
+                                    <td class="ps-3"><strong class="font-monospace @(item.Status == "danger" ? "text-danger" : item.Status == "warning" ? "text-warning" : "text-light")">@item.Sku</strong></td>
+                                    <td>
+                                        <div class="thumb-category-wrap" style="width: 40px; height: 40px; border-radius: 2px; overflow: hidden; background: #000; border: 1px solid #334155;">
+                                            <img src="@item.Img" class="thumb-category-img w-100 h-100 object-fit-cover" alt="@item.Name" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-white">@item.Name</div>
+                                        <div class="small @(item.Status == "danger" ? "text-danger" : "text-muted")" style="font-size: 0.74rem;">
+                                            @if (item.Status == "danger")
+                                            {
+                                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                            }
+                                            @item.Note
+                                        </div>
+                                    </td>
+                                    <td>@item.Unit</td>
+                                    <td class="text-center fw-bold fs-6 @(item.Status == "danger" ? "text-danger" : item.Status == "warning" ? "text-warning" : "text-white")">
+                                        @item.Stock
+                                    </td>
+                                    <td class="text-center text-secondary">@item.Safe</td>
+                                    <td class="text-end">@item.Cost.ToString("N0") đ</td>
+                                    <td class="text-end fw-bold" style="color: var(--primary-neon);">
+                                        @(item.Price > 0 ? $"{item.Price:N0} đ" : "Vật tư nội bộ")
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge @(item.Status == "danger" ? "bg-danger text-light" : item.Status == "warning" ? "bg-warning text-dark" : "bg-dark border border-secondary text-success")" style="border-radius: 2px; font-size: 0.72rem;">
+                                            @item.StatusText
+                                        </span>
+                                    </td>
+                                    <td class="text-center pe-3">
+                                        <button class="btn btn-sm @(item.Status == "danger" ? "btn-bolt-neon" : "btn-outline-info") p-1 px-2" style="border-radius: 2px !important;" data-bs-toggle="modal" data-bs-target="#modalNhapHang" title="Nhập hàng bổ sung">
+                                            <i class="bi bi-cart-plus"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 2: LỊCH SỬ PHIẾU NHẬP HÀNG -->
+        <!-- ========================================================================= -->
+        <!-- TAB 2: LỊCH SỬ PHIẾU NHẬP HÀNG                                            -->
+        <!-- ========================================================================= -->
         <div class="tab-pane fade" id="tab-phieunhap" role="tabpanel">
             <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
                 <div class="table-responsive">
@@ -407,7 +253,7 @@
                                 <td><span class="text-warning fw-bold">Nhà phân phối Phụ kiện Bida Sài Gòn (Fury VN)</span></td>
                                 <td>10/11/2026 14:15</td>
                                 <td>Lê Nhật Đăng (Manager)</td>
-                                <td>Nhập 5 cây cơ Fury One, 20 hộp lơ Master USA, 30 đôi găng tay</td>
+                                <td>Nhập 5 cây cơ Fury One, 20 hộp lơ Master USA, 30 đôi găng tay Kamui</td>
                                 <td class="text-end fw-bold" style="color: var(--primary-neon);">11.200.000 đ</td>
                                 <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">ĐÃ NHẬP KHO</span></td>
                                 <td class="text-center pe-3">
@@ -446,7 +292,9 @@
     </div>
 </div>
 
-<!-- MODAL TẠO PHIẾU NHẬP HÀNG -->
+<!-- ========================================================================= -->
+<!-- MODAL TẠO PHIẾU NHẬP HÀNG (CÓ CHỌN VÀ PREVIEW ẢNH HÓA ĐƠN VAT)             -->
+<!-- ========================================================================= -->
 <div class="modal fade" id="modalNhapHang" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
@@ -468,7 +316,7 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small text-muted">Sản phẩm cần nhập:</label>
+                        <label class="form-label small text-muted">Sản phẩm cần nhập (*):</label>
                         <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
                             <option value="rb">Nước tăng lực Redbull Thái (Đang thiếu - Còn 4 lon)</option>
                             <option value="cf">Cơ Bida Fury One Series (Đang thiếu - Còn 3 cây)</option>
@@ -480,13 +328,29 @@
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label small text-muted">Số lượng nhập:</label>
-                            <input type="number" class="form-control bg-black text-light border-secondary" value="24" style="border-radius: 2px !important;" />
+                            <input type="number" class="form-control bg-black text-light border-secondary fw-bold" value="24" style="border-radius: 2px !important;" />
                         </div>
                         <div class="col-6">
                             <label class="form-label small text-muted">Đơn giá nhập (VNĐ):</label>
-                            <input type="number" class="form-control bg-black text-light border-secondary" value="15000" style="border-radius: 2px !important;" />
+                            <input type="number" class="form-control bg-black text-warning border-secondary fw-bold" value="15000" style="border-radius: 2px !important;" />
                         </div>
                     </div>
+
+                    <!-- UPLOAD ẢNH CHỨNG TỪ / HÓA ĐƠN VAT GIAO HÀNG -->
+                    <div class="mb-3">
+                        <label class="form-label small text-muted d-block">Ảnh hóa đơn VAT / Phiếu giao nhận hàng:</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 64px; height: 64px; border-radius: 2px; background: #1e293b; border: 1px dashed #64748b; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <img id="previewInvoiceImg" src="" alt="" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
+                                <i id="iconDefaultInvoice" class="bi bi-file-earmark-image text-secondary fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <input type="file" id="inventoryInvoiceInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewInvoiceFile(this);" style="border-radius: 2px !important;" />
+                                <div class="form-text text-muted small" style="font-size: 0.72rem;">Chụp ảnh phiếu giao hàng của tài xế để đối soát chứng từ.</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label small text-muted">Ghi chú phiếu nhập:</label>
                         <textarea class="form-control bg-black text-light border-secondary" rows="2" placeholder="Ghi chú số hóa đơn VAT, hạn sử dụng..." style="border-radius: 2px !important;"></textarea>
@@ -495,7 +359,7 @@
             </div>
             <div class="modal-footer border-secondary border-opacity-25">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
-                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã tạo phiếu nhập kho thành công! Hàng tồn kho đã được cập nhật.');" style="border-radius: 2px !important;">
+                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã tạo phiếu nhập kho thành công! Hàng tồn kho và chứng từ ảnh đã được cập nhật.');" style="border-radius: 2px !important;">
                     <i class="bi bi-check-lg"></i> Xác nhận Nhập kho
                 </button>
             </div>
@@ -505,6 +369,24 @@
 
 @section Scripts {
     <script>
+        function previewInvoiceFile(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById('previewInvoiceImg');
+                    var icon = document.getElementById('iconDefaultInvoice');
+                    if (img) {
+                        img.src = e.target.result;
+                        img.style.display = 'block';
+                    }
+                    if (icon) {
+                        icon.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             var searchInput = document.getElementById('inventorySearchInput');
             var statusFilter = document.getElementById('inventoryFilterStatus');

@@ -621,6 +621,20 @@
             </div>
             <div class="modal-body">
                 <form id="formThemMonMoi">
+                    <!-- UPLOAD ẢNH MÓN ĂN / ĐỒ UỐNG / PHỤ KIỆN -->
+                    <div class="mb-3 text-center">
+                        <label class="form-label small text-muted d-block text-start">Ảnh đại diện sản phẩm (*):</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 56px; height: 56px; border-radius: 2px; background: #1e293b; border: 1px dashed #64748b; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <img id="previewNewItemImg" src="" alt="" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
+                                <i id="iconNewItemImg" class="bi bi-camera text-secondary fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1 text-start">
+                                <input type="file" id="newItemImgInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewItemImg(this, 'previewNewItemImg', 'iconNewItemImg');" style="border-radius: 2px !important;" />
+                                <div class="form-text text-muted small" style="font-size: 0.72rem;">Tải ảnh món để hiển thị trên POS và web khách vãng lai.</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label small text-muted">Tên món ăn / đồ uống / phụ kiện (*):</label>
                         <input type="text" class="form-control bg-black text-light border-secondary" placeholder="Ví dụ: Sinh tố bơ Đắk Lắk..." style="border-radius: 2px !important;" required />
@@ -680,6 +694,19 @@
             <div class="modal-body">
                 <form id="formSuaMon">
                     <input type="hidden" id="editItemCode" />
+                    <!-- THAY ĐỔI ẢNH MÓN -->
+                    <div class="mb-3 text-center">
+                        <label class="form-label small text-muted d-block text-start">Ảnh đại diện sản phẩm:</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 56px; height: 56px; border-radius: 2px; background: #000; border: 1px solid #334155; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <img id="previewEditItemImg" src="/images/fnb/fnb-1-ca-phe-muoi.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;" />
+                            </div>
+                            <div class="flex-grow-1 text-start">
+                                <input type="file" id="editItemImgInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewItemImg(this, 'previewEditItemImg');" style="border-radius: 2px !important;" />
+                                <div class="form-text text-muted small" style="font-size: 0.72rem;">Chọn ảnh mới để thay thế ảnh hiện tại.</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label small text-muted">Tên món ăn / dịch vụ (*):</label>
                         <input type="text" id="editItemName" class="form-control bg-black text-light border-secondary fw-bold" style="border-radius: 2px !important;" required />
@@ -770,6 +797,24 @@
 
 @section Scripts {
     <script>
+        function previewItemImg(input, previewImgId, hideIconId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById(previewImgId);
+                    if (img) {
+                        img.src = e.target.result;
+                        img.style.display = 'block';
+                    }
+                    if (hideIconId) {
+                        var icon = document.getElementById(hideIconId);
+                        if (icon) icon.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             var searchInput = document.getElementById('menuSearchInput');
             var categoryFilter = document.getElementById('menuCategoryFilter');
