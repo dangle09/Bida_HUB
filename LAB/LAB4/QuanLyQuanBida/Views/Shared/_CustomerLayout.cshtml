@@ -8,7 +8,7 @@
    - URL truy cập: http://localhost:PORT/ hoặc /Home/Index
    =================================================================================== *@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -80,7 +80,7 @@
                     
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <a asp-controller="Categories" asp-action="Index" class="btn btn-bolt-outline-sm" title="Vào trang Quản lý">
+                        <a asp-controller="Pos" asp-action="Index" class="btn btn-bolt-outline-sm" title="Vào trang Quản lý POS">
                             <i class="bi bi-speedometer2"></i> Quản lý
                         </a>
                         <form asp-controller="Login" asp-action="Logout" method="post" class="d-inline m-0 p-0">

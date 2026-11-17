@@ -9,7 +9,7 @@ namespace QuanLyQuanBida.Controllers
     // - Quản lý View: Views/Staff/Index.cshtml
     // - Layout: Views/Shared/_AdminLayout.cshtml
     // ===================================================================================
-    [Authorize]
+    [Authorize(Policy = "AdminOnly")]
     public class StaffController : Controller
     {
         public IActionResult Index()

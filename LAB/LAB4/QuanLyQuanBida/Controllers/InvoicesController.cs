@@ -9,7 +9,7 @@ namespace QuanLyQuanBida.Controllers
     // - Quản lý View: Views/Invoices/Index.cshtml
     // - Layout: Views/Shared/_AdminLayout.cshtml
     // ===================================================================================
-    [Authorize]
+    [Authorize(Policy = "ManagementAccess")]
     public class InvoicesController : Controller
     {
         public IActionResult Index()

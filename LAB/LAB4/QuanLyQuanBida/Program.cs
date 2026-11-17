@@ -50,6 +50,10 @@ builder.Services.AddAuthorization(options =>
     // Tương thích ngược với policy cũ
     options.AddPolicy("ManagerOnly", policy =>
         policy.RequireRole("Admin", "Manager"));
+
+    // Policy chỉ dành riêng cho Quản trị viên cấp cao (Admin / Chủ quán): Nhân sự & Cài đặt hệ thống
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("Admin"));
 });
 
 var app = builder.Build();

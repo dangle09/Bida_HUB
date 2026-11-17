@@ -48,13 +48,13 @@ namespace QuanLyQuanBida.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Categories");
+                return RedirectToAction("Index", "Pos");
             }
 
             ViewData["Title"] = "Đăng nhập hệ thống";
             var model = new LoginViewModel
             {
-                ReturnUrl = returnUrl ?? Url.Content("~/Categories")
+                ReturnUrl = returnUrl ?? Url.Content("~/Pos")
             };
 
             return View("Login", model);
@@ -68,7 +68,7 @@ namespace QuanLyQuanBida.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
-            model.ReturnUrl = returnUrl ?? model.ReturnUrl ?? Url.Content("~/Categories");
+            model.ReturnUrl = returnUrl ?? model.ReturnUrl ?? Url.Content("~/Pos");
 
             if (!ModelState.IsValid)
             {
@@ -136,7 +136,7 @@ namespace QuanLyQuanBida.Controllers
                     {
                         return LocalRedirect(model.ReturnUrl);
                     }
-                    return RedirectToAction("Index", "Categories");
+                    return RedirectToAction("Index", "Pos");
                 }
             }
 

@@ -256,9 +256,16 @@
                 </div>
             </div>
             <div class="modal-footer border-secondary border-opacity-25 justify-content-between">
-                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-dismiss="modal" onclick="openCancelInvoiceModal()" style="border-radius: 2px !important;">
-                    <i class="bi bi-x-octagon me-1"></i> Hủy Hóa Đơn
-                </button>
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-dismiss="modal" onclick="openCancelInvoiceModal()" style="border-radius: 2px !important;">
+                        <i class="bi bi-x-octagon me-1"></i> Hủy Hóa Đơn
+                    </button>
+                }
+                else
+                {
+                    <span class="small text-muted"><i class="bi bi-lock me-1"></i>Chỉ Quản lý/Admin được hủy bill</span>
+                }
                 <div class="d-flex gap-2">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
                     <button type="button" class="btn btn-bolt-neon btn-sm" onclick="alert('Đã gửi lệnh in lại hóa đơn ra máy in nhiệt K80 (Bản in lại lần 1 - Ghi Audit Log).');" style="border-radius: 2px !important;">

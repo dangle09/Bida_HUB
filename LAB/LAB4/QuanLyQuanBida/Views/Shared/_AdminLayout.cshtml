@@ -7,7 +7,7 @@
    - Chuẩn viền bo: 2px radius toàn trang
    =================================================================================== *@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,7 +34,7 @@
     <header class="bida-topbar">
         <!-- Logo & Thương hiệu -->
         <div class="d-flex align-items-center gap-3">
-            <a class="bida-brand" asp-controller="Home" asp-action="Index">
+            <a class="bida-brand" asp-controller="Pos" asp-action="Index" title="Trang chủ điều hành POS">
                 <img src="~/images/bolt-billiards-logo.png" alt="Bolt Billiards" />
                 <div>
                     <div class="brand-text"><span style="color: var(--primary-neon);">BOLT</span> BILLIARDS</div>
@@ -69,7 +69,7 @@
                 <div class="dropdown">
                     <button class="btn btn-dark dropdown-toggle d-flex align-items-center gap-2 border-0 bg-transparent text-white p-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="avatar-badge" style="width: 32px; height: 32px; border-radius: 2px; background: var(--primary-neon); color: #000; display: flex; align-items: center; justify-content: center; font-weight: 800;">
-                            Đ
+                            @((User.Identity.Name ?? "U").Substring(0, 1).ToUpper())
                         </div>
                         <div class="text-start d-none d-sm-block">
                             <div class="fw-semibold small" style="line-height: 1.2;">@User.Identity.Name</div>
@@ -173,18 +173,21 @@
                     <span>Danh mục hàng hóa</span>
                 </a>
             </li>
-            <li>
-                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Inventory" ? "active" : "")" asp-controller="Inventory" asp-action="Index">
-                    <i class="bi bi-box-seam" style="color: #60a5fa;"></i>
-                    <span>Kho & Nhập hàng</span>
-                </a>
-            </li>
-            <li>
-                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tables" ? "active" : "")" asp-controller="Tables" asp-action="Index">
-                    <i class="bi bi-gear-wide-connected" style="color: #c084fc;"></i>
-                    <span>Quản lý Bàn & Giá</span>
-                </a>
-            </li>
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <li>
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Inventory" ? "active" : "")" asp-controller="Inventory" asp-action="Index">
+                        <i class="bi bi-box-seam" style="color: #60a5fa;"></i>
+                        <span>Kho & Nhập hàng</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tables" ? "active" : "")" asp-controller="Tables" asp-action="Index">
+                        <i class="bi bi-gear-wide-connected" style="color: #c084fc;"></i>
+                        <span>Quản lý Bàn & Giá</span>
+                    </a>
+                </li>
+            }
         </ul>
 
         <!-- NHÓM 3: HỘI VIÊN & GIẢI ĐẤU -->
@@ -196,42 +199,54 @@
                     <span>Khách hàng & VIP</span>
                 </a>
             </li>
-            <li>
-                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tournaments" ? "active" : "")" asp-controller="Tournaments" asp-action="Index">
-                    <i class="bi bi-trophy-fill text-danger"></i>
-                    <span>Giải đấu giao lưu</span>
-                </a>
-            </li>
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <li>
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tournaments" ? "active" : "")" asp-controller="Tournaments" asp-action="Index">
+                        <i class="bi bi-trophy-fill text-danger"></i>
+                        <span>Giải đấu giao lưu</span>
+                    </a>
+                </li>
+            }
         </ul>
 
-        <!-- NHÓM 4: QUẢN TRỊ & BÁO CÁO -->
-        <div class="sidebar-heading">— QUẢN TRỊ & BÁO CÁO</div>
-        <ul class="sidebar-menu">
-            <li>
-                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Staff" ? "active" : "")" asp-controller="Staff" asp-action="Index">
-                    <i class="bi bi-people-fill text-primary"></i>
-                    <span>Nhân sự & Phân ca</span>
-                </a>
-            </li>
-            <li>
-                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Index">
-                    <i class="bi bi-bar-chart-line-fill text-success"></i>
-                    <span>Doanh thu & Báo cáo</span>
-                </a>
-            </li>
-            <li>
-                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AiAssistant" ? "active" : "")" asp-controller="AiAssistant" asp-action="Index">
-                    <i class="bi bi-robot" style="color: var(--primary-neon);"></i>
-                    <span>AI Trợ lý Bida</span>
-                </a>
-            </li>
-            <li>
-                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")" asp-controller="Settings" asp-action="Index">
-                    <i class="bi bi-sliders text-info"></i>
-                    <span>Cài đặt hệ thống</span>
-                </a>
-            </li>
-        </ul>
+        <!-- NHÓM 4: QUẢN TRỊ & BÁO CÁO (CHỈ ADMIN / MANAGER) -->
+        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+        {
+            <div class="sidebar-heading">— QUẢN TRỊ & BÁO CÁO</div>
+            <ul class="sidebar-menu">
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Staff" ? "active" : "")" asp-controller="Staff" asp-action="Index">
+                            <i class="bi bi-people-fill text-primary"></i>
+                            <span>Nhân sự & Phân ca</span>
+                        </a>
+                    </li>
+                }
+                <li>
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Index">
+                        <i class="bi bi-bar-chart-line-fill text-success"></i>
+                        <span>Doanh thu & Báo cáo</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AiAssistant" ? "active" : "")" asp-controller="AiAssistant" asp-action="Index">
+                        <i class="bi bi-robot" style="color: var(--primary-neon);"></i>
+                        <span>AI Trợ lý Bida</span>
+                    </a>
+                </li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")" asp-controller="Settings" asp-action="Index">
+                            <i class="bi bi-sliders text-info"></i>
+                            <span>Cài đặt hệ thống</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
     </aside>
 
     <!-- ========================================================= -->

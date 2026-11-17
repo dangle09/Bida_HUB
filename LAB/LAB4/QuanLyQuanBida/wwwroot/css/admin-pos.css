@@ -655,3 +655,55 @@ body.bida-body {
     margin: 0 auto;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
 }
+
+/* ========================================================= */
+/* FIX TRIỆT ĐỂ ĐỘ TƯƠNG PHẢN CHỮ TRÊN NỀN TỐI (KHÔNG TÀNG HÌNH) */
+/* ========================================================= */
+.text-muted {
+    color: #a8b7cc !important;
+}
+
+.text-secondary {
+    color: #94a3b8 !important;
+}
+
+.form-text {
+    color: #94a3b8 !important;
+}
+
+.table-dark {
+    --bs-table-color: #f1f5f9;
+    --bs-table-bg: #0d121c;
+    --bs-table-hover-color: #ffffff;
+    --bs-table-hover-bg: #162033;
+    --bs-table-border-color: rgba(255, 255, 255, 0.08);
+}
+
+.table-dark td,
+.table-dark th {
+    color: #e2e8f0;
+}
+
+.table-dark .text-muted,
+.card .text-muted,
+.modal-content .text-muted,
+.dropdown-menu-dark .text-muted {
+    color: #a8b7cc !important;
+}
+
+.table-dark .badge.bg-dark,
+.badge.bg-dark.text-muted {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+/* Riêng giấy hóa đơn nền trắng thì giữ chữ tối dễ đọc */
+.pos-receipt-paper .text-muted {
+    color: #4b5563 !important;
+}
+
+::placeholder {
+    color: #7c8da3 !important;
+    opacity: 1 !important;
+}

@@ -14,7 +14,7 @@
 <div class="container-fluid px-0">
     <div class="pos-breadcrumb d-flex align-items-center mb-3">
         <i class="bi bi-geo-alt-fill text-warning me-2"></i>
-        <a asp-controller="Categories" asp-action="Index" class="text-secondary text-decoration-none">Quản lý hàng hóa</a>
+        <a asp-controller="Pos" asp-action="Index" class="text-secondary text-decoration-none">Sơ đồ bàn (POS)</a>
         <span class="mx-2 text-muted">/</span>
         <span class="text-white fw-semibold">Từ chối truy cập (403)</span>
     </div>
@@ -30,8 +30,9 @@
                 
                 <h3 class="fw-bold text-danger mb-2 font-heading">403 - TỪ CHỐI TRUY CẬP HỆ THỐNG</h3>
                 <p class="text-secondary small mb-4">
-                    Thao tác Thêm, Sửa, Xóa danh mục yêu cầu quyền <strong>Admin</strong> hoặc <strong>Manager</strong> 
-                    theo chính sách phân quyền <code>AdminOrManager</code>. Tài khoản Thu ngân (Cashier) chỉ có quyền xem danh mục & sơ đồ bàn.
+                    Chức năng bạn đang truy cập yêu cầu quyền cao hơn (<strong>Admin</strong> hoặc <strong>Manager</strong>) theo chính sách phân quyền MVC.
+                    <br />• <strong>Cashier (Thu ngân):</strong> Chỉ được vận hành Sơ đồ bàn POS, Hóa đơn, Hội viên và Xem Danh mục / Thực đơn.
+                    <br />• <strong>Manager (Quản lý):</strong> Không được truy cập Quản trị Nhân sự & Cài đặt hệ thống (Chỉ dành cho Admin).
                 </p>
 
                 <div class="bg-black bg-opacity-40 p-3 text-start small mb-4 border border-secondary border-opacity-25" style="border-radius: 2px !important;">
@@ -48,8 +49,8 @@
                 </div>
 
                 <div class="d-flex gap-2 justify-content-center">
-                    <a asp-controller="Categories" asp-action="Index" class="btn btn-outline-light px-4" style="border-radius: 2px !important;">
-                        <i class="bi bi-arrow-left me-1"></i> Quay Lại Bảng Danh Mục
+                    <a asp-controller="Pos" asp-action="Index" class="btn btn-outline-light px-4" style="border-radius: 2px !important;">
+                        <i class="bi bi-arrow-left me-1"></i> Quay Lại Sơ Đồ Bàn (POS)
                     </a>
                     <form asp-controller="Login" asp-action="Logout" method="post" class="d-inline">
                         @Html.AntiForgeryToken()

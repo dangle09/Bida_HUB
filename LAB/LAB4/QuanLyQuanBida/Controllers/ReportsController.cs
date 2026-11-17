@@ -9,7 +9,7 @@ namespace QuanLyQuanBida.Controllers
     // - Quản lý View: Views/Reports/Index.cshtml
     // - Layout: Views/Shared/_AdminLayout.cshtml
     // ===================================================================================
-    [Authorize]
+    [Authorize(Policy = "AdminOrManager")]
     public class ReportsController : Controller
     {
         public IActionResult Index()
