@@ -24,11 +24,6 @@ namespace QuanLyQuanBida.Data.Configurations
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.Property(x => x.Image)
-                .HasColumnName("Image")
-                .HasMaxLength(255)
-                .IsRequired(false);
-
         }
     }
 }
