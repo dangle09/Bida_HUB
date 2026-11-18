@@ -238,7 +238,7 @@
                 <label class="form-label-custom">Tài khoản / Tên đăng nhập</label>
                 <div class="input-group-custom">
                     <i class="bi bi-person-fill input-icon"></i>
-                    <input type="text" asp-for="Email" id="inputEmail" class="form-control-custom" placeholder="Nhập admin, manager hoặc cashier..." autofocus required />
+                    <input type="text" asp-for="Email" id="inputEmail" class="form-control-custom" placeholder="Nhập admin_giang, manager_dang hoặc cashier_mai..." autofocus required />
                 </div>
                 <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
             </div>
@@ -253,15 +253,20 @@
                 <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
             </div>
 
-            <!-- 3. Ghi nhớ & Về trang khách -->
+            <!-- 3. Ghi nhớ & Quên mật khẩu -->
             <div class="d-flex justify-content-between align-items-center mb-4 small">
                 <div class="form-check">
                     <input asp-for="RememberMe" class="form-check-input" id="rememberMeCheck" style="background-color: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); border-radius: 2px;" />
                     <label asp-for="RememberMe" class="form-check-label text-light-50" for="rememberMeCheck" style="color: #cbd5e1; cursor: pointer;">Ghi nhớ 24h</label>
                 </div>
-                <a asp-controller="Home" asp-action="Index" class="text-decoration-none hover-neon small">
-                    <i class="bi bi-arrow-left me-1"></i> Trang chủ khách
-                </a>
+                <div class="d-flex align-items-center gap-3">
+                    <a asp-controller="Login" asp-action="ForgotPassword" class="text-decoration-none text-warning hover-neon small fw-semibold">
+                        <i class="bi bi-key me-1"></i>Quên mật khẩu?
+                    </a>
+                    <a asp-controller="Home" asp-action="Index" class="text-decoration-none hover-neon small">
+                        <i class="bi bi-arrow-left me-1"></i>Trang khách
+                    </a>
+                </div>
             </div>
 
             <!-- 4. Nút Đăng nhập -->
@@ -276,17 +281,17 @@
                 <i class="bi bi-lightning-charge-fill me-1" style="color: var(--bolt-neon);"></i>Click chọn nhanh 3 tài khoản phân quyền:
             </div>
             <div class="d-flex flex-wrap gap-2 justify-content-center">
-                <button type="button" class="quick-badge" onclick="fillAccount('admin', 'giangcc111')" title="Quản trị viên: Toàn quyền thêm, sửa, xóa, quản trị">
+                <button type="button" class="quick-badge" onclick="fillAccount('admin_giang', 'giangcc111')" title="Quản trị viên: Toàn quyền thêm, sửa, xóa, quản trị">
                     <i class="bi bi-shield-fill text-danger"></i>
-                    <span><strong>Admin:</strong> admin</span>
+                    <span><strong>Admin:</strong> admin_giang</span>
                 </button>
-                <button type="button" class="quick-badge" onclick="fillAccount('manager', 'dangcc111')" title="Quản lý cơ sở: Toàn quyền thêm, sửa, xóa danh mục">
+                <button type="button" class="quick-badge" onclick="fillAccount('manager_dang', 'dangcc111')" title="Quản lý cơ sở: Toàn quyền quản lý thực đơn, kho, báo cáo">
                     <i class="bi bi-star-fill text-warning"></i>
-                    <span><strong>Manager:</strong> manager</span>
+                    <span><strong>Manager:</strong> manager_dang</span>
                 </button>
-                <button type="button" class="quick-badge" onclick="fillAccount('cashier', 'khoacc111')" title="Thu ngân POS: Xem sơ đồ bàn & danh mục (bị chặn Thêm/Sửa/Xóa)">
+                <button type="button" class="quick-badge" onclick="fillAccount('cashier_mai', 'khoacc111')" title="Thu ngân POS: Vận hành sơ đồ bàn, hóa đơn và xem thực đơn">
                     <i class="bi bi-person-fill text-info"></i>
-                    <span><strong>Cashier:</strong> cashier</span>
+                    <span><strong>Cashier:</strong> cashier_mai</span>
                 </button>
             </div>
         </div>

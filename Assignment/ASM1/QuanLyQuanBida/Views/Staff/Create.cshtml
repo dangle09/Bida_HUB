@@ -1,0 +1,166 @@
+@model QuanLyQuanBida.ViewModels.StaffViewModel
+@{
+    ViewData["Title"] = "Thêm nhân viên mới";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-0 compact-form-shell">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div class="pos-breadcrumb d-flex align-items-center mb-0">
+            <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+            <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+            <span class="mx-2 text-muted">/</span>
+            <a asp-controller="Staff" asp-action="Index">Nhân sự &amp; Phân ca</a>
+            <span class="mx-2 text-muted">/</span>
+            <span class="text-white fw-semibold">Thêm nhân viên mới</span>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm action-btn-labeled">
+            <i class="bi bi-arrow-left"></i><span>Quay lại danh sách</span>
+        </a>
+    </div>
+
+    <div class="row g-3 align-items-start">
+        <div class="col-12 col-lg-8">
+            <div class="card form-workspace-card">
+                <div class="card-header bg-black bg-opacity-40 py-2 px-3 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-person-plus-fill fs-5" style="color: var(--primary-neon);"></i>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-white font-heading">TẠO TÀI KHOẢN NHÂN VIÊN MỚI</h6>
+                            <div class="small text-muted fw-normal" style="font-size: 0.76rem;">Tạo hồ sơ nhân sự, cấp vai trò làm việc và email khôi phục mật khẩu</div>
+                        </div>
+                    </div>
+                    <span class="badge bg-black border border-danger text-danger font-monospace">AdminOnly</span>
+                </div>
+                <div class="card-body p-3">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" style="@(ViewData.ModelState.IsValid ? "display:none;" : "")"></div>
+
+                        <div class="form-section-title">
+                            <i class="bi bi-shield-lock text-info"></i> 1. Thông tin đăng nhập &amp; Vai trò phân quyền
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-4">
+                                <label asp-for="Username" class="form-label small fw-bold text-uppercase text-muted mb-1">Tên đăng nhập <span class="text-danger">*</span></label>
+                                <input asp-for="Username" id="sUser" class="form-control form-control-bolt font-monospace" placeholder="VD: cashier_an" required />
+                                <span asp-validation-for="Username" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Password" class="form-label small fw-bold text-uppercase text-muted mb-1">Mật khẩu khởi tạo <span class="text-danger">*</span></label>
+                                <input asp-for="Password" type="password" class="form-control form-control-bolt" placeholder="Tối thiểu 6 ký tự" required />
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="RoleId" class="form-label small fw-bold text-uppercase text-muted mb-1">Vai trò RBAC <span class="text-danger">*</span></label>
+                                <select asp-for="RoleId" id="sRole" asp-items="ViewBag.RoleList" class="form-select form-select-bolt"></select>
+                                <span asp-validation-for="RoleId" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">
+                            <i class="bi bi-person-vcard text-warning"></i> 2. Hồ sơ cá nhân &amp; Liên hệ SMTP
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="FullName" class="form-label small fw-bold text-uppercase text-muted mb-1">Họ và tên đầy đủ <span class="text-danger">*</span></label>
+                                <input asp-for="FullName" id="sName" class="form-control form-control-bolt" placeholder="VD: Nguyễn Văn An" required />
+                                <span asp-validation-for="FullName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="PhoneNumber" class="form-label small fw-bold text-uppercase text-muted mb-1">Số điện thoại</label>
+                                <input asp-for="PhoneNumber" id="sPhone" class="form-control form-control-bolt font-monospace" placeholder="VD: 0901234567" />
+                            </div>
+                            <div class="col-md-8">
+                                <label asp-for="Email" class="form-label small fw-bold text-uppercase text-muted mb-1">Email (nhận mật khẩu khi Quên mật khẩu) <span class="text-danger">*</span></label>
+                                <input asp-for="Email" id="sEmail" type="email" class="form-control form-control-bolt" placeholder="VD: nhanvien@boltbilliards.vn" required />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <div class="w-100 p-2 px-3 bg-black border border-secondary border-opacity-50 d-flex align-items-center justify-content-between" style="height: 37px; border-radius: 2px;">
+                                    <label class="form-check-label small fw-bold text-light mb-0" asp-for="IsActive">Kích hoạt ngay</label>
+                                    <input class="form-check-input m-0" asp-for="IsActive" id="sActive" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">
+                            <i class="bi bi-camera text-success"></i> 3. Ảnh đại diện nhân viên (tùy chọn)
+                        </div>
+                        <div class="mb-3">
+                            <input asp-for="AvatarFile" id="sAvatarFile" type="file" class="form-control form-control-bolt" accept="image/*" />
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3"><i class="bi bi-x-circle me-1"></i> Hủy bỏ</a>
+                            <button type="submit" class="btn btn-bolt-neon btn-sm px-4"><i class="bi bi-check-circle-fill"></i> Tạo Tài Khoản Nhân Viên</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="card detail-hero-card">
+                <div class="card-body p-3 text-center">
+                    <div class="form-section-title justify-content-center"><i class="bi bi-person-badge text-info"></i> Thẻ nhân sự (Live Preview)</div>
+                    <div class="detail-avatar-frame mb-2" id="sPrevAvatarBox" style="width: 110px; height: 110px;">
+                        <div id="sPrevInitial" class="w-100 h-100 d-flex align-items-center justify-content-center fw-bold"
+                             style="background: linear-gradient(135deg,#a6ff00,#52b700); color: #05080c; font-size: 3.2rem; font-family: 'Montserrat', sans-serif;">N</div>
+                        <img id="sPrevImg" src="" alt="Preview" class="w-100 h-100 object-fit-cover d-none" />
+                    </div>
+                    <h5 id="sPrevName" class="fw-bold text-white font-heading mb-1">Họ tên nhân viên</h5>
+                    <div class="mb-2"><span id="sPrevUser" class="badge bg-black border border-info text-info font-monospace">@@username</span></div>
+                    <div class="d-flex justify-content-center gap-2 mb-3">
+                        <span id="sPrevRole" class="badge bg-warning text-dark fw-bold">Vai trò</span>
+                        <span id="sPrevStatus" class="badge bg-success text-dark fw-bold">HOẠT ĐỘNG</span>
+                    </div>
+                    <div class="text-start p-3 bg-black bg-opacity-50 border border-secondary border-opacity-25 small">
+                        <div class="mb-1 text-light"><i class="bi bi-envelope text-info me-2"></i><span id="sPrevEmail">email@boltbilliards.vn</span></div>
+                        <div class="text-muted"><i class="bi bi-telephone text-warning me-2"></i><span id="sPrevPhone">Chưa nhập SĐT</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        const sync = () => {
+            const name = document.getElementById('sName').value.trim() || 'Họ tên nhân viên';
+            document.getElementById('sPrevName').textContent = name;
+            document.getElementById('sPrevInitial').textContent = name.charAt(0).toUpperCase();
+            document.getElementById('sPrevUser').textContent = '@@' + (document.getElementById('sUser').value.trim() || 'username');
+            const roleSel = document.getElementById('sRole');
+            document.getElementById('sPrevRole').textContent = roleSel.options[roleSel.selectedIndex]?.text || 'Vai trò';
+            document.getElementById('sPrevEmail').textContent = document.getElementById('sEmail').value.trim() || 'email@boltbilliards.vn';
+            document.getElementById('sPrevPhone').textContent = document.getElementById('sPhone').value.trim() || 'Chưa nhập SĐT';
+            const st = document.getElementById('sPrevStatus');
+            const act = document.getElementById('sActive').checked;
+            st.className = act ? 'badge bg-success text-dark fw-bold' : 'badge bg-danger text-light fw-bold';
+            st.textContent = act ? 'HOẠT ĐỘNG' : 'ĐÃ KHÓA';
+        };
+        ['sName','sUser','sRole','sEmail','sPhone','sActive'].forEach(id => {
+            document.getElementById(id).addEventListener('input', sync);
+            document.getElementById(id).addEventListener('change', sync);
+        });
+        document.getElementById('sAvatarFile').addEventListener('change', e => {
+            const f = e.target.files[0];
+            if (f) {
+                const r = new FileReader();
+                r.onload = ev => {
+                    document.getElementById('sPrevInitial').classList.add('d-none');
+                    const img = document.getElementById('sPrevImg');
+                    img.src = ev.target.result;
+                    img.classList.remove('d-none');
+                };
+                r.readAsDataURL(f);
+            }
+        });
+        sync();
+    </script>
+}

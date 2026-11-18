@@ -35,13 +35,17 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 // 2. Phân quyền: Cấu hình các Policy vai trò theo yêu cầu phân quyền Admin / Manager / Cashier
 builder.Services.AddAuthorization(options =>
 {
-    // Policy cho phép truy cập khu vực Quản lý Dashboard / POS (Admin, Manager, Cashier)
+    // Policy cho phép truy cập khu vực Vận hành tối thiểu (POS & Thực đơn: Admin, Manager, Cashier, Waiter)
     options.AddPolicy("ManagementAccess", policy =>
+        policy.RequireRole("Admin", "Manager", "Cashier", "Waiter"));
+
+    // Policy từ Thu ngân trở lên (Admin, Manager, Cashier — chặn Waiter khỏi Hóa đơn, Khách hàng, Danh mục, Trang chủ)
+    options.AddPolicy("CashierOrAbove", policy =>
         policy.RequireRole("Admin", "Manager", "Cashier"));
 
     // Tương thích ngược với policy cũ
     options.AddPolicy("EmployeeOrManager", policy =>
-        policy.RequireRole("Admin", "Manager", "Cashier"));
+        policy.RequireRole("Admin", "Manager", "Cashier", "Waiter"));
 
     // Policy cho phép Thêm, Sửa, Xóa danh mục (Admin và Manager đều làm được)
     options.AddPolicy("AdminOrManager", policy =>

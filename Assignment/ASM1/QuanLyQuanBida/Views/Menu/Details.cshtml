@@ -1,0 +1,264 @@
+@model QuanLyQuanBida.Models.ServiceItem
+@{
+    ViewData["Title"] = $"Chi tiết món: {Model.Name}";
+    Layout = "_AdminLayout";
+    bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
+    int stockQty = ViewBag.StockQty ?? 0;
+    int safetyStock = ViewBag.SafetyStock ?? 10;
+    int totalSold = ViewBag.TotalSoldQty ?? 0;
+    decimal totalRev = ViewBag.TotalSalesRevenue ?? 0m;
+    int totalImported = ViewBag.TotalImportedQty ?? 0;
+    decimal avgImportPrice = ViewBag.AvgImportPrice ?? 0m;
+    var importLines = ViewBag.ImportLines as List<QuanLyQuanBida.Models.GoodsReceiptDetail> ?? new List<QuanLyQuanBida.Models.GoodsReceiptDetail>();
+    var receiptDict = ViewBag.ReceiptDict as Dictionary<int, QuanLyQuanBida.Models.GoodsReceipt> ?? new Dictionary<int, QuanLyQuanBida.Models.GoodsReceipt>();
+
+    bool isLowStock = stockQty <= safetyStock;
+    int stockPercent = safetyStock > 0 ? Math.Min(100, (int)Math.Round(stockQty * 100.0 / (safetyStock * 3.0))) : 100;
+    decimal marginPercent = Model.UnitPrice > 0 ? Math.Round((Model.UnitPrice - avgImportPrice) * 100m / Model.UnitPrice, 1) : 0;
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb & Header Actions -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div class="pos-breadcrumb d-flex align-items-center mb-0">
+            <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+            @if (!User.IsInRole("Waiter"))
+            {
+                <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+                <span class="mx-2 text-muted">/</span>
+            }
+            <a asp-controller="Menu" asp-action="Index">Thực đơn &amp; Dịch vụ</a>
+            <span class="mx-2 text-muted">/</span>
+            <span class="text-white fw-semibold">Chi tiết sản phẩm (#@Model.Id)</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm action-btn-labeled">
+                <i class="bi bi-arrow-left"></i><span>Quay lại</span>
+            </a>
+            @if (isAdminOrManager)
+            {
+                <a asp-controller="Inventory" asp-action="Index" class="btn btn-outline-info btn-sm action-btn-labeled">
+                    <i class="bi bi-box-seam"></i><span>Quản lý kho</span>
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning text-dark btn-sm action-btn-labeled">
+                    <i class="bi bi-pencil-square"></i><span>Chỉnh sửa</span>
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm action-btn-labeled">
+                    <i class="bi bi-trash"></i><span>Xóa món</span>
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="row g-3 align-items-start">
+        <!-- CỘT TRÁI: THẺ TRƯNG BÀY SẢN PHẨM GỌN ÔM KHÍT NỘI DUNG -->
+        <div class="col-12 col-lg-4">
+            <div class="card detail-hero-card">
+                <div class="card-body p-3">
+                    <div class="form-section-title d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-cup-straw text-info me-1"></i> Thẻ sản phẩm POS</span>
+                        <span class="badge @(Model.IsActive ? "bg-success text-dark" : "bg-danger text-light") fw-bold">
+                            @(Model.IsActive ? "ĐANG PHỤC VỤ" : "TẠM NGƯNG")
+                        </span>
+                    </div>
+
+                    <div class="mb-2 position-relative overflow-hidden border border-secondary border-opacity-50 bg-black" style="height: 185px; border-radius: 2px;">
+                        @if (!string.IsNullOrWhiteSpace(Model.Image))
+                        {
+                            <img src="~/@Model.Image" alt="@Model.Name" class="w-100 h-100 object-fit-cover" />
+                        }
+                        else
+                        {
+                            <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-muted">
+                                <i class="bi bi-cup-straw fs-1 mb-1"></i>
+                                <span class="small">Chưa có ảnh minh họa</span>
+                            </div>
+                        }
+                        <div class="position-absolute bottom-0 start-0 end-0 px-3 py-2" style="background: linear-gradient(transparent, rgba(0,0,0,0.9));">
+                            <div class="small text-warning fw-semibold">@ViewBag.CategoryName</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="badge bg-black border border-info text-info font-monospace">@Model.Code</span>
+                        <span class="badge bg-black border border-secondary text-muted font-monospace">ID #@Model.Id</span>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2 font-heading">@Model.Name</h5>
+
+                    <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-black bg-opacity-50 border border-secondary border-opacity-25 mb-3">
+                        <span class="fs-4 fw-bold font-heading lh-1" style="color: var(--primary-neon);">@Model.UnitPrice.ToString("N0") đ</span>
+                        <span class="small text-muted lh-1">/ @Model.Unit</span>
+                    </div>
+
+                    <!-- THANH TÌNH TRẠNG TỒN KHO ĐỒNG BỘ -->
+                    <div class="p-3 bg-black bg-opacity-50 border @(isLowStock ? "border-danger" : "border-secondary border-opacity-25")" style="border-radius: 2px;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small text-uppercase fw-bold text-muted" style="font-size: 0.72rem;">
+                                <i class="bi bi-boxes me-1 text-info"></i>Tồn kho hiện tại
+                            </span>
+                            <span class="badge @(stockQty == 0 ? "bg-danger" : isLowStock ? "bg-warning text-dark" : "bg-success text-dark") fw-bold">
+                                @(stockQty == 0 ? "HẾT HÀNG" : isLowStock ? "SẮP HẾT HÀNG" : "ĐỦ HÀNG")
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fs-4 fw-bold lh-1 @(isLowStock ? "text-danger" : "text-white")">@stockQty <small class="fs-6 text-muted fw-normal">@Model.Unit</small></span>
+                            <span class="small text-muted lh-1">Mức an toàn: <strong class="text-light">@safetyStock @Model.Unit</strong></span>
+                        </div>
+                        <div class="progress bg-dark" style="height: 6px; border-radius: 2px;">
+                            <div class="progress-bar @(isLowStock ? "bg-danger" : "bg-success")" style="width: @stockPercent%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: PHÂN QUYỀN CHẶT (CHỈ ADMIN/MANAGER MỚI THẤY GIÁ VỐN, LỢI NHUẬN & LỊCH SỬ NHẬP NCC) -->
+        <div class="col-12 col-lg-8">
+            <div class="card form-workspace-card @(isAdminOrManager ? "mb-3" : "")">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-sliders text-info fs-5"></i>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-white font-heading">@(isAdminOrManager ? "THÔNG SỐ & HIỆU QUẢ KINH DOANH" : "THÔNG TIN SẢN PHẨM PHỤC VỤ")</h6>
+                            <div class="small text-muted fw-normal" style="font-size: 0.76rem;">
+                                @(isAdminOrManager ? "Dữ liệu doanh số, giá nhập bình quân và biên lợi nhuận đồng bộ từ hệ thống bán hàng" : "Thông số niêm yết, đơn vị tính và tình trạng phục vụ tại quầy POS")
+                            </div>
+                        </div>
+                    </div>
+                    <span class="badge bg-black border border-info text-info font-monospace">@Model.Code</span>
+                </div>
+                <div class="card-body p-3">
+                    @if (isAdminOrManager)
+                    {
+                        <div class="row g-2 mb-3 align-items-stretch">
+                            <div class="col-6 col-md-3">
+                                <div class="detail-mini-kpi" style="border-left-color: var(--primary-neon);">
+                                    <div class="detail-info-label text-nowrap"><i class="bi bi-graph-up-arrow" style="color: var(--primary-neon);"></i>Doanh thu</div>
+                                    <div class="fs-6 fw-bold text-white font-heading lh-1 mt-1">@totalRev.ToString("N0") <small class="text-muted fw-normal">đ</small></div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="detail-mini-kpi" style="border-left-color: #38bdf8;">
+                                    <div class="detail-info-label text-nowrap"><i class="bi bi-bag-check text-info"></i>Đã bán ra</div>
+                                    <div class="fs-6 fw-bold text-info font-heading lh-1 mt-1">@totalSold <small class="text-muted fw-normal">@Model.Unit</small></div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="detail-mini-kpi" style="border-left-color: #eab308;">
+                                    <div class="detail-info-label text-nowrap"><i class="bi bi-truck text-warning"></i>Tổng đã nhập</div>
+                                    <div class="fs-6 fw-bold text-warning font-heading lh-1 mt-1">@totalImported <small class="text-muted fw-normal">@Model.Unit</small></div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="detail-mini-kpi" style="border-left-color: #a855f7;">
+                                    <div class="detail-info-label text-nowrap"><i class="bi bi-percent" style="color: #c084fc;"></i>Biên lợi nhuận</div>
+                                    <div class="fs-6 fw-bold font-heading lh-1 mt-1" style="color: #c084fc;">@marginPercent%</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="row g-2">
+                        <div class="col-6 col-md-4">
+                            <div class="detail-info-tile py-2">
+                                <div class="detail-info-label"><i class="bi bi-hash text-secondary"></i>Mã định danh</div>
+                                <div class="detail-info-value font-monospace">#@Model.Id</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="detail-info-tile py-2">
+                                <div class="detail-info-label"><i class="bi bi-upc-scan text-info"></i>Mã SKU / Code</div>
+                                <div class="detail-info-value text-info font-monospace">@Model.Code</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="detail-info-tile py-2">
+                                <div class="detail-info-label"><i class="bi bi-folder2-open text-warning"></i>Nhóm danh mục</div>
+                                <div class="detail-info-value text-warning">@ViewBag.CategoryName</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="detail-info-tile py-2">
+                                <div class="detail-info-label"><i class="bi bi-tag-fill text-success"></i>Giá niêm yết</div>
+                                <div class="detail-info-value" style="color: var(--primary-neon);">@Model.UnitPrice.ToString("N0") đ</div>
+                            </div>
+                        </div>
+                        @if (isAdminOrManager)
+                        {
+                            <div class="col-6 col-md-4">
+                                <div class="detail-info-tile py-2">
+                                    <div class="detail-info-label"><i class="bi bi-cash text-secondary"></i>Giá nhập bình quân</div>
+                                    <div class="detail-info-value">@avgImportPrice.ToString("N0") đ</div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-6 col-md-4">
+                                <div class="detail-info-tile py-2">
+                                    <div class="detail-info-label"><i class="bi bi-check2-circle text-success"></i>Trạng thái bán</div>
+                                    <div class="detail-info-value @(Model.IsActive ? "text-success" : "text-danger")">@(Model.IsActive ? "Đang phục vụ" : "Tạm ngưng bán")</div>
+                                </div>
+                            </div>
+                        }
+                        <div class="col-12 col-md-4">
+                            <div class="detail-info-tile py-2">
+                                <div class="detail-info-label"><i class="bi bi-rulers text-info"></i>Đơn vị tính</div>
+                                <div class="detail-info-value">@Model.Unit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (isAdminOrManager)
+            {
+                <!-- LỊCH SỬ PHIẾU NHẬP KHO CỦA MÓN NÀY (CHỈ ADMIN & MANAGER) -->
+                <div class="card form-workspace-card overflow-hidden">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-clock-history text-warning fs-5"></i>
+                            <div>
+                                <h6 class="mb-0 fw-bold text-white font-heading">LỊCH SỬ NHẬP HÀNG TỪ NHÀ CUNG CẤP (@importLines.Count ĐỢT)</h6>
+                                <div class="small text-muted fw-normal" style="font-size: 0.76rem;">Theo dõi số lượng, đơn giá vốn và thời điểm nhập kho của sản phẩm</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle mb-0 small">
+                            <thead class="text-secondary text-uppercase" style="font-size: 0.72rem;">
+                                <tr>
+                                    <th class="ps-3">MÃ PHIẾU NHẬP</th>
+                                    <th>NGÀY NHẬP</th>
+                                    <th class="text-center">SỐ LƯỢNG</th>
+                                    <th class="text-end">ĐƠN GIÁ NHẬP</th>
+                                    <th class="text-end pe-3">THÀNH TIỀN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (importLines.Any())
+                                {
+                                    foreach (var line in importLines)
+                                    {
+                                        var gr = receiptDict.ContainsKey(line.GoodsReceiptId) ? receiptDict[line.GoodsReceiptId] : null;
+                                        <tr>
+                                            <td class="ps-3 font-monospace fw-bold text-info">@(gr?.Code ?? $"PN #{line.GoodsReceiptId}")</td>
+                                            <td class="text-muted">@(gr != null ? gr.ImportDate.ToString("dd/MM/yyyy HH:mm") : "—")</td>
+                                            <td class="text-center fw-bold text-white">+@line.Quantity @Model.Unit</td>
+                                            <td class="text-end">@line.ImportPrice.ToString("N0") đ</td>
+                                            <td class="text-end pe-3 fw-bold" style="color: var(--primary-neon);">@((line.Quantity * line.ImportPrice).ToString("N0")) đ</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="5" class="text-center text-muted py-4">Chưa có phiếu nhập kho riêng cho mặt hàng này. Bạn có thể tạo phiếu nhập tại mục <strong>Kho &amp; Nhập hàng</strong>.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

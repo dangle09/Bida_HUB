@@ -8,15 +8,19 @@
 @{
     ViewData["Title"] = "Sơ đồ bàn (POS) - BOLT BILLIARDS";
     Layout = "_AdminLayout";
+    bool isCashierOrAbove = User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Cashier");
 }
 
 <div class="container-fluid px-0">
     <!-- Breadcrumb -->
     <div class="pos-breadcrumb d-flex align-items-center mb-3">
         <i class="bi bi-geo-alt-fill text-warning me-2"></i>
-        <span class="text-secondary">Trang chủ</span>
-        <span class="mx-2 text-muted">/</span>
-        <span class="text-secondary">Vận hành & Bán hàng</span>
+        @if (isCashierOrAbove)
+        {
+            <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+            <span class="mx-2 text-muted">/</span>
+        }
+        <a asp-controller="Pos" asp-action="Index">Vận hành &amp; Bán hàng</a>
         <span class="mx-2 text-muted">/</span>
         <span class="text-white fw-semibold">Sơ đồ bàn (POS)</span>
     </div>
@@ -26,7 +30,7 @@
         <div>
             <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
                 <i class="bi bi-grid-3x3-gap-fill text-warning"></i>
-                SƠ ĐỒ BÀN & ĐIỀU HÀNH POS
+                SƠ ĐỒ BÀN &amp; ĐIỀU HÀNH POS
             </h2>
             <div class="text-muted small">Cập nhật trạng thái đầy đủ 20 bàn bida theo thời gian thực • Chi nhánh Đồng Nai</div>
         </div>
@@ -34,12 +38,15 @@
             <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="location.reload();" style="border-radius: 2px !important;">
                 <i class="bi bi-arrow-clockwise"></i> Làm mới (F5)
             </button>
-            <button class="btn btn-outline-info btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalGopBan" style="border-radius: 2px !important;">
-                <i class="bi bi-intersect"></i> Gộp bàn / Ghép bill
-            </button>
-            <button class="btn btn-bolt-outline btn-sm" data-bs-toggle="modal" data-bs-target="#modalChuyenCa" style="border-radius: 2px !important;">
-                <i class="bi bi-person-badge"></i> Chuyển ca trực
-            </button>
+            @if (isCashierOrAbove)
+            {
+                <button class="btn btn-outline-info btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalGopBan" style="border-radius: 2px !important;">
+                    <i class="bi bi-intersect"></i> Gộp bàn / Ghép bill
+                </button>
+                <button class="btn btn-bolt-outline btn-sm" data-bs-toggle="modal" data-bs-target="#modalChuyenCa" style="border-radius: 2px !important;">
+                    <i class="bi bi-person-badge"></i> Chuyển ca trực
+                </button>
+            }
             <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalMoBan" style="border-radius: 2px !important;">
                 <i class="bi bi-plus-circle-fill"></i> Mở Bàn Nhanh
             </button>
@@ -82,16 +89,41 @@
             </div>
         </div>
         <div class="col-6 col-xl-3">
-            <div class="kpi-stat-card d-flex align-items-center gap-3">
-                <div class="kpi-icon" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
-                    <i class="bi bi-cash-stack"></i>
+            @if (isCashierOrAbove)
+            {
+                <div class="kpi-stat-card d-flex align-items-center gap-3">
+                    <div class="kpi-icon" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                    <div>
+                        <p class="kpi-label">Doanh thu hôm nay</p>
+                        <div class="kpi-value text-white">@(((decimal)(ViewBag.TodayRevenue ?? 0m)).ToString("N0")) <small class="fs-6 text-muted fw-normal">đ</small></div>
+                    </div>
                 </div>
-                <div>
-                    <p class="kpi-label">Tạm tính ca chiều</p>
-                    <div class="kpi-value text-white">4.850K <small class="fs-6 text-muted fw-normal">VNĐ</small></div>
+            }
+            else
+            {
+                <div class="kpi-stat-card d-flex align-items-center gap-3">
+                    <div class="kpi-icon" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
+                        <i class="bi bi-calendar2-check-fill"></i>
+                    </div>
+                    <div>
+                        <p class="kpi-label">Bàn đã đặt trước</p>
+                        <div class="kpi-value text-info">1 <small class="fs-6 text-muted fw-normal">Bàn chờ khách</small></div>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
+    </div>
+
+    <!-- THANH BIỂU PHÍ KHUNG GIỜ ĐANG ÁP DỤNG (ĐỒNG BỘ TỪ QUẢN LÝ BÀN & GIÁ) -->
+    <div id="posActiveSlotBanner" class="alert bg-dark border border-secondary border-opacity-50 py-2 px-3 mb-3 d-flex flex-wrap justify-content-between align-items-center gap-2 small">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-clock-history text-warning"></i>
+            <span class="text-light">Biểu phí tự động theo khung giờ hiện tại:</span>
+            <strong id="posLiveSlotSummary" style="color: var(--primary-neon);">Đang đồng bộ biểu phí...</strong>
+        </div>
+        <span class="text-muted">Tự động tính lại tiền bàn theo từng phút khi chuyển khung giờ</span>
     </div>
 
     <!-- BỘ LỌC KHU VỰC BÀN -->
@@ -1908,6 +1940,123 @@
                     }
                 });
             });
+
+            // =========================================================================
+            // ĐỘNG CƠ TÍNH TIỀN TỰ ĐỘNG THEO 2 KHUNG GIỜ (ĐỒNG BỘ TỪ QUẢN LÝ BÀN & GIÁ)
+            // Khi khách đang chơi bước qua mốc đổi khung giờ (VD: 17:00 hoặc 08:00),
+            // từng phút trong khung 1 tính theo giá khung 1, từng phút khung 2 tính theo giá khung 2!
+            // =========================================================================
+            const timeSlots = @Html.Raw(ViewBag.TimeSlotsJson ?? "[]");
+            const slotMap = {};
+            timeSlots.forEach(s => { slotMap[s.key] = s; });
+
+            function isMinuteInRange(minOfDay, startMin, endMin) {
+                if (startMin === endMin) return true;
+                if (startMin < endMin) return minOfDay >= startMin && minOfDay < endMin;
+                return minOfDay >= startMin || minOfDay < endMin; // Vượt qua nửa đêm (VD: 17:00 -> 08:00)
+            }
+
+            function getRateForMinute(slotCfg, minOfDay) {
+                if (!slotCfg) return 60000;
+                if (isMinuteInRange(minOfDay, slotCfg.slot1StartMin, slotCfg.slot1EndMin)) {
+                    return slotCfg.slot1Price;
+                }
+                return slotCfg.slot2Price;
+            }
+
+            function fmtMin(m) {
+                const hh = String(Math.floor(m / 60) % 24).padStart(2, '0');
+                const mm = String(m % 60).padStart(2, '0');
+                return `${hh}:${mm}`;
+            }
+
+            function updateSlotBanner() {
+                const now = new Date();
+                const curMin = now.getHours() * 60 + now.getMinutes();
+                const pool = slotMap['pool'], carom = slotMap['carom'], vip = slotMap['vip'];
+                if (!pool) return;
+                const isSlot1 = isMinuteInRange(curMin, pool.slot1StartMin, pool.slot1EndMin);
+                const label = isSlot1
+                    ? `Khung Ngày (${fmtMin(pool.slot1StartMin)} - ${fmtMin(pool.slot1EndMin)})`
+                    : `Khung Tối (${fmtMin(pool.slot2StartMin)} - ${fmtMin(pool.slot2EndMin)})`;
+                const pRate = getRateForMinute(pool, curMin).toLocaleString('vi-VN');
+                const cRate = getRateForMinute(carom, curMin).toLocaleString('vi-VN');
+                const vRate = getRateForMinute(vip, curMin).toLocaleString('vi-VN');
+                const el = document.getElementById('posLiveSlotSummary');
+                if (el) el.textContent = `${label}: Pool ${pRate}đ/h • Carom ${cRate}đ/h • VIP ${vRate}đ/h`;
+            }
+
+            // Khởi tạo trạng thái giờ chơi ban đầu cho từng card bàn đang chơi
+            const occupiedCards = [];
+            document.querySelectorAll('.pos-table-card.occupied').forEach(card => {
+                const numText = card.querySelector('.pos-table-number')?.textContent || '';
+                const mNum = numText.match(/BÀN\s+(\d+)/i);
+                const tableNo = mNum ? parseInt(mNum[1], 10) : 1;
+                const typeKey = tableNo <= 10 ? 'pool' : (tableNo <= 16 ? 'carom' : 'vip');
+
+                const timerEl = card.querySelector('.pos-table-timer');
+                const mTime = (timerEl?.textContent || '').match(/(\d{2}):(\d{2}):(\d{2})/);
+                const elapsedSec = mTime ? (parseInt(mTime[1], 10) * 3600 + parseInt(mTime[2], 10) * 60 + parseInt(mTime[3], 10)) : 3600;
+
+                // Trích xuất tiền F&B hiện tại của bàn (nếu có)
+                let fnbFee = 0;
+                const fnbEl = card.querySelector('.bi-cup-straw')?.parentElement;
+                if (fnbEl) {
+                    const mFnb = fnbEl.textContent.match(/\(([\d.]+)\s*đ\)/i);
+                    if (mFnb) fnbFee = parseInt(mFnb[1].replace(/\./g, ''), 10) || 0;
+                }
+
+                const totalEl = card.querySelector('.fw-bold[style*="primary-neon"]');
+                const payBtn = card.querySelector('.btn-action-pay');
+
+                occupiedCards.push({
+                    card,
+                    typeKey,
+                    startEpochMs: Date.now() - elapsedSec * 1000,
+                    fnbFee,
+                    timerEl,
+                    totalEl,
+                    payBtn
+                });
+            });
+
+            function recalculateAllTables() {
+                const nowMs = Date.now();
+                updateSlotBanner();
+
+                occupiedCards.forEach(item => {
+                    const totalSec = Math.max(0, Math.floor((nowMs - item.startEpochMs) / 1000));
+                    const hh = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+                    const mm = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+                    const ss = String(totalSec % 60).padStart(2, '0');
+                    if (item.timerEl) {
+                        item.timerEl.innerHTML = `<i class="bi bi-clock-history"></i> ${hh}:${mm}:${ss}`;
+                    }
+
+                    // Tính tiền bàn từng phút từ startEpochMs đến nowMs theo đúng khung giờ thực tế
+                    const cfg = slotMap[item.typeKey];
+                    const totalMinutes = Math.max(1, Math.floor(totalSec / 60));
+                    let tableFee = 0;
+                    const startDate = new Date(item.startEpochMs);
+                    let startMinOfDay = startDate.getHours() * 60 + startDate.getMinutes();
+
+                    for (let m = 0; m < totalMinutes; m++) {
+                        const curMinOfDay = (startMinOfDay + m) % 1440;
+                        tableFee += getRateForMinute(cfg, curMinOfDay) / 60.0;
+                    }
+
+                    // Làm tròn nghìn đồng
+                    const roundedTableFee = Math.round(tableFee / 1000) * 1000;
+                    const grandTotal = roundedTableFee + item.fnbFee;
+                    const totalText = grandTotal.toLocaleString('vi-VN') + ' đ';
+
+                    if (item.totalEl) item.totalEl.textContent = totalText;
+                    if (item.payBtn) item.payBtn.setAttribute('data-total', totalText);
+                });
+            }
+
+            recalculateAllTables();
+            setInterval(recalculateAllTables, 1000);
         });
     </script>
 }

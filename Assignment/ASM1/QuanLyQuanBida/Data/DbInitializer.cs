@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using QuanLyQuanBida.Models;
 
@@ -10,9 +11,10 @@ namespace QuanLyQuanBida.Data
         {
             context.Database.EnsureCreated();
 
-            // Kiểm tra nếu đã có dữ liệu thì không nạp lại
+            // Nếu database đã có bảng nền, vẫn chạy đồng bộ & bổ sung dữ liệu mẫu phong phú (idempotent)
             if (context.Roles.Any())
             {
+                EnsureRichSynchronizedData(context);
                 return;
             }
 
@@ -508,6 +510,795 @@ namespace QuanLyQuanBida.Data
             context.AiStates.AddRange(aiStates);
 
             context.SaveChanges();
+
+            // Nạp bổ sung đồng bộ đầy đủ cho tất cả phân hệ (Nhân sự, Tồn kho, Phiếu nhập, Hóa đơn, Doanh thu, Hội viên...)
+            EnsureRichSynchronizedData(context);
+        }
+
+        // =========================================================================
+        // ĐỒNG BỘ & BỔ SUNG DỮ LIỆU MẪU PHONG PHÚ CHO TOÀN HỆ THỐNG (IDEMPOTENT)
+        // Đảm bảo 100% số liệu khớp giữa: Thực đơn <-> Kho & Nhập hàng, Hóa đơn <-> Doanh thu, Nhân sự <-> Nhật ký
+        // =========================================================================
+        private static void EnsureRichSynchronizedData(QuanLyQuanBidaContext context)
+        {
+            var roles = context.Roles.ToList();
+            int adminRoleId = roles.FirstOrDefault(r => r.Name == "Admin")?.Id ?? 1;
+            int managerRoleId = roles.FirstOrDefault(r => r.Name == "Manager")?.Id ?? 2;
+            int cashierRoleId = roles.FirstOrDefault(r => r.Name == "Cashier")?.Id ?? 3;
+            int waiterRoleId = roles.FirstOrDefault(r => r.Name == "Waiter")?.Id ?? 4;
+
+            // 1. CHUẨN HÓA ĐỒNG NHẤT USERNAME THEO QUY CHUẨN phânquyền_tên, GỘP TRÙNG TRẦN THỊ MAI & CẬP NHẬT EMAIL ADMIN
+            var uAdmin = context.Users.FirstOrDefault(u => u.Username == "admin" || u.Username == "admin_giang");
+            if (uAdmin != null)
+            {
+                uAdmin.Username = "admin_giang";
+                uAdmin.Email = "lemonquestiondog112233@gmail.com";
+            }
+            var uManager = context.Users.FirstOrDefault(u => u.Username == "manager" || u.Username == "manager_dang");
+            if (uManager != null)
+            {
+                uManager.Username = "manager_dang";
+                if (uManager.Email == "manager@boltbilliards.vn") uManager.Email = "manager.dang@boltbilliards.vn";
+            }
+            var uCashier = context.Users.FirstOrDefault(u => u.Username == "cashier" || u.Username == "cashier_mai");
+            if (uCashier != null)
+            {
+                uCashier.Username = "cashier_mai";
+                if (uCashier.Email == "cashier@boltbilliards.vn") uCashier.Email = "cashier.mai@boltbilliards.vn";
+            }
+            context.SaveChanges();
+
+            // Gộp và xóa bản ghi Trần Thị Mai bị trùng (thungan_mai) chuyển toàn bộ khóa ngoại sang cashier_mai
+            var dupMai = context.Users.FirstOrDefault(u => u.Username == "thungan_mai");
+            if (dupMai != null && uCashier != null && dupMai.Id != uCashier.Id)
+            {
+                int oldId = dupMai.Id;
+                int newId = uCashier.Id;
+                foreach (var x in context.Invoices.Where(i => i.UserId == oldId)) x.UserId = newId;
+                foreach (var x in context.ActivityLogs.Where(i => i.UserId == oldId)) x.UserId = newId;
+                foreach (var x in context.WorkSchedules.Where(i => i.UserId == oldId)) x.UserId = newId;
+                foreach (var x in context.Timekeepings.Where(i => i.UserId == oldId)) x.UserId = newId;
+                foreach (var x in context.Payrolls.Where(i => i.UserId == oldId)) x.UserId = newId;
+                foreach (var x in context.InventoryAudits.Where(i => i.UserId == oldId)) x.UserId = newId;
+                foreach (var x in context.GoodsReceipts.Where(i => i.UserId == oldId)) x.UserId = newId;
+                foreach (var x in context.PaymentVouchers.Where(i => i.UserId == oldId)) x.UserId = newId;
+                foreach (var x in context.AiSessions.Where(i => i.UserId == oldId)) x.UserId = newId;
+                var oldRoles = context.UserRoles.Where(ur => ur.UserId == oldId).ToList();
+                if (oldRoles.Any()) context.UserRoles.RemoveRange(oldRoles);
+                context.Users.Remove(dupMai);
+                context.SaveChanges();
+            }
+
+            // Bổ sung đầy đủ 10 nhân sự chuẩn quy tắc phânquyền_tên
+            var extraStaff = new (string Username, string Password, string FullName, string Email, string Phone, int RoleId, bool IsActive, int DaysAgo)[]
+            {
+                ("manager_hung", "hung1234", "Nguyễn Quốc Hùng (Quản lý Ca Tối)", "manager.hung@boltbilliards.vn", "0908112233", managerRoleId, true, 25),
+                ("cashier_linh", "linh1234", "Phạm Thùy Linh (Thu ngân Ca Sáng)", "cashier.linh@boltbilliards.vn", "0932445566", cashierRoleId, true, 22),
+                ("cashier_nam", "nam1234", "Võ Minh Nam (Thu ngân Ca Đêm)", "cashier.nam@boltbilliards.vn", "0919556677", cashierRoleId, true, 18),
+                ("waiter_tuan", "tuan1234", "Hoàng Anh Tuấn (Phục vụ Tầng 1)", "waiter.tuan@boltbilliards.vn", "0973667788", waiterRoleId, true, 16),
+                ("waiter_huy", "huy1234", "Trần Gia Huy (Phục vụ Tầng 2)", "waiter.huy@boltbilliards.vn", "0964778899", waiterRoleId, true, 14),
+                ("waiter_vy", "vy1234", "Lê Thảo Vy (Phục vụ Phòng VIP)", "waiter.vy@boltbilliards.vn", "0945889900", waiterRoleId, true, 10),
+                ("waiter_khoa", "khoa1234", "Đỗ Đăng Khoa (Phục vụ - Nghỉ phép)", "waiter.khoa@boltbilliards.vn", "0981990011", waiterRoleId, false, 30)
+            };
+
+            foreach (var s in extraStaff)
+            {
+                if (!context.Users.Any(u => u.Username == s.Username))
+                {
+                    var u = new User
+                    {
+                        Username = s.Username,
+                        PasswordHash = HashPassword(s.Password),
+                        FullName = s.FullName,
+                        Email = s.Email,
+                        PhoneNumber = s.Phone,
+                        IsActive = s.IsActive,
+                        CreatedAt = DateTime.Now.AddDays(-s.DaysAgo)
+                    };
+                    context.Users.Add(u);
+                    context.SaveChanges();
+
+                    context.UserRoles.Add(new UserRole
+                    {
+                        UserId = u.Id,
+                        RoleId = s.RoleId,
+                        CreatedAt = u.CreatedAt
+                    });
+                }
+            }
+            context.SaveChanges();
+
+            // 2. ĐỒNG BỘ TỒN KHO 100% CHO TOÀN BỘ SERVICEITEMS (KHÔNG ĐỂ SÓT MÓN TỒN = 0 BẤT THƯỜNG)
+            var allItems = context.ServiceItems.OrderBy(i => i.Id).ToList();
+            var existingInvItemIds = context.Inventories.Select(i => i.ServiceItemId).ToHashSet();
+
+            // Định mức tồn kho thực tế đồng bộ giữa /Menu và /Inventory
+            var presetStock = new Dictionary<string, (int Stock, int Reorder)>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["SP_CF_MUOI"] = (85, 20),
+                ["SP_TRA_DAO"] = (72, 20),
+                ["SP_REDBULL"] = (8, 24),      // Sắp hết hàng (cảnh báo đồng bộ cả Menu & Kho)
+                ["SP_TRA_MC"] = (64, 15),
+                ["SP_C2"] = (96, 24),
+                ["SP_SUOI"] = (140, 30),
+                ["SP_MI_TRUNG"] = (55, 15),
+                ["SP_BANH_MI"] = (42, 12),
+                ["SP_COM_CHIEN"] = (38, 10),
+                ["SP_KHOAI_TAY"] = (48, 12),
+                ["SP_KHO_BO"] = (6, 15),       // Sắp hết hàng
+                ["SP_HEINEKEN"] = (10, 24),    // Sắp hết hàng
+                ["SP_TIGER"] = (78, 24),
+                ["SP_CORONA"] = (36, 12),
+                ["SP_CO_FURY"] = (3, 5),       // Sắp hết hàng
+                ["SP_CO_AILEEX"] = (7, 4),
+                ["SP_KHUC_NOI"] = (14, 5),
+                ["SP_GANG_TAY"] = (34, 10),
+                ["SP_LO_MASTER"] = (65, 20),
+                ["SP_BAO_DA"] = (12, 4),
+                ["SP_DAU_TAY"] = (22, 8),
+                ["SP_KHAN_LAU"] = (45, 15),
+                ["SP_BIT_REN"] = (28, 10)
+            };
+
+            bool invChanged = false;
+            foreach (var item in allItems)
+            {
+                if (!existingInvItemIds.Contains(item.Id))
+                {
+                    var (stock, reorder) = presetStock.TryGetValue(item.Code, out var pair)
+                        ? pair
+                        : (40, 10);
+
+                    context.Inventories.Add(new Inventory
+                    {
+                        ServiceItemId = item.Id,
+                        StockQuantity = stock,
+                        ReorderLevel = reorder
+                    });
+                    invChanged = true;
+                }
+            }
+            if (invChanged) context.SaveChanges();
+
+            // Đảm bảo một số mặt hàng mẫu có mức cảnh báo thực tế (nếu trước đó seed số quá cao)
+            var redbullItem = allItems.FirstOrDefault(i => i.Code == "SP_REDBULL");
+            if (redbullItem != null)
+            {
+                var rbInv = context.Inventories.FirstOrDefault(i => i.ServiceItemId == redbullItem.Id);
+                if (rbInv != null && rbInv.StockQuantity == 200)
+                {
+                    rbInv.StockQuantity = 8;
+                    rbInv.ReorderLevel = 24;
+                    context.SaveChanges();
+                }
+            }
+
+            // 3. BỔ SUNG NHÀ CUNG CẤP & PHIẾU NHẬP KHO ĐỒNG BỘ VỚI SERVICEITEMS
+            var extraSuppliers = new (string Name, string Phone, string Address)[]
+            {
+                ("Công ty TNHH Heineken Việt Nam - CN Đồng Nai", "02513889900", "KCN Biên Hòa 2, Đồng Nai"),
+                ("Tổng Kho Nguyên Liệu F&B & Thực Phẩm Miền Nam", "0909665544", "TP. Thủ Đức, TP. Hồ Chí Minh")
+            };
+            foreach (var sup in extraSuppliers)
+            {
+                if (!context.Suppliers.Any(x => x.Name == sup.Name))
+                {
+                    context.Suppliers.Add(new Supplier { Name = sup.Name, PhoneNumber = sup.Phone, Address = sup.Address });
+                }
+            }
+            context.SaveChanges();
+
+            var suppliers = context.Suppliers.OrderBy(s => s.Id).ToList();
+            var adminUser = context.Users.FirstOrDefault(u => u.Username == "admin") ?? context.Users.First();
+            var managerUser = context.Users.FirstOrDefault(u => u.Username == "manager") ?? adminUser;
+
+            if (context.GoodsReceipts.Count() < 5 && suppliers.Count >= 3 && allItems.Count >= 15)
+            {
+                var today = DateTime.Today;
+                var receiptSpecs = new (string Code, int SupIdx, int UserId, DateTime Date, (int ItemIdx, int Qty, decimal Price)[] Lines)[]
+                {
+                    ("PN_202611_002", 1, adminUser.Id, today.AddDays(-6).AddHours(9), new[] { (11, 72, 18500m), (12, 96, 16500m), (13, 36, 26000m) }),
+                    ("PN_202611_003", 2, managerUser.Id, today.AddDays(-4).AddHours(14), new[] { (14, 4, 1950000m), (17, 30, 38000m), (18, 50, 22000m) }),
+                    ("PN_202611_004", 0, adminUser.Id, today.AddDays(-2).AddHours(10), new[] { (0, 60, 14000m), (1, 50, 15000m), (4, 80, 9000m), (5, 120, 4500m) }),
+                    ("PN_202611_005", suppliers.Count - 1, managerUser.Id, today.AddDays(-1).AddHours(15), new[] { (6, 40, 18000m), (7, 35, 21000m), (8, 30, 24000m), (9, 40, 14000m) })
+                };
+
+                foreach (var spec in receiptSpecs)
+                {
+                    if (!context.GoodsReceipts.Any(gr => gr.Code == spec.Code))
+                    {
+                        decimal total = spec.Lines.Sum(l => l.Qty * l.Price);
+                        var gr = new GoodsReceipt
+                        {
+                            SupplierId = suppliers[Math.Min(spec.SupIdx, suppliers.Count - 1)].Id,
+                            UserId = spec.UserId,
+                            Code = spec.Code,
+                            ImportDate = spec.Date,
+                            TotalImportAmount = total
+                        };
+                        context.GoodsReceipts.Add(gr);
+                        context.SaveChanges();
+
+                        foreach (var l in spec.Lines)
+                        {
+                            if (l.ItemIdx < allItems.Count)
+                            {
+                                context.GoodsReceiptDetails.Add(new GoodsReceiptDetail
+                                {
+                                    GoodsReceiptId = gr.Id,
+                                    ServiceItemId = allItems[l.ItemIdx].Id,
+                                    Quantity = l.Qty,
+                                    ImportPrice = l.Price
+                                });
+                            }
+                        }
+                        context.SaveChanges();
+                    }
+                }
+            }
+
+            // 4. ĐỒNG BỘ CHÍNH XÁC 20 BÀN BIDA (KHỚP 100% SƠ ĐỒ BÀN POS & QUẢN LÝ BÀN: 14 ĐANG CHƠI, 5 TRỐNG, 1 ĐẶT TRƯỚC)
+            var areas = context.TableAreas.OrderBy(a => a.Id).ToList();
+            var tTypes = context.TableTypes.OrderBy(t => t.Id).ToList();
+            if (areas.Count >= 3 && tTypes.Count >= 3)
+            {
+                // Chuyển đổi mã cũ BAN_VIP_01/02 sang BAN_17/BAN_18 để không trùng và giữ nguyên khóa ngoại
+                var vip1 = context.BilliardTables.FirstOrDefault(b => b.Code == "BAN_VIP_01");
+                if (vip1 != null && !context.BilliardTables.Any(b => b.Code == "BAN_17"))
+                {
+                    vip1.Code = "BAN_17";
+                    vip1.Name = "Bàn 17 (VIP 3 Băng)";
+                }
+                var vip2 = context.BilliardTables.FirstOrDefault(b => b.Code == "BAN_VIP_02");
+                if (vip2 != null && !context.BilliardTables.Any(b => b.Code == "BAN_18"))
+                {
+                    vip2.Code = "BAN_18";
+                    vip2.Name = "Bàn 18 (VIP 3 Băng)";
+                }
+                context.SaveChanges();
+
+                var targetTables = new (string Code, string Name, int AreaIdx, int TypeIdx, string Status)[]
+                {
+                    // Tầng 1 - 10 bàn Pool (7 đang chơi, 3 trống)
+                    ("BAN_01", "Bàn 01 (Lỗ Pool)", 0, 0, "Đang chơi"),
+                    ("BAN_02", "Bàn 02 (Lỗ Pool)", 0, 0, "Đang chơi"),
+                    ("BAN_03", "Bàn 03 (Lỗ Pool)", 0, 0, "Đang chơi"),
+                    ("BAN_04", "Bàn 04 (Lỗ Pool)", 0, 0, "Trống"),
+                    ("BAN_05", "Bàn 05 (Lỗ Pool)", 0, 0, "Đang chơi"),
+                    ("BAN_06", "Bàn 06 (Lỗ Pool)", 0, 0, "Trống"),
+                    ("BAN_07", "Bàn 07 (Lỗ Pool)", 0, 0, "Đang chơi"),
+                    ("BAN_08", "Bàn 08 (Lỗ Pool)", 0, 0, "Đang chơi"),
+                    ("BAN_09", "Bàn 09 (Lỗ Pool)", 0, 0, "Đang chơi"),
+                    ("BAN_10", "Bàn 10 (Lỗ Pool)", 0, 0, "Trống"),
+                    // Tầng 2 - 6 bàn Carom (4 đang chơi, 2 trống)
+                    ("BAN_11", "Bàn 11 (Carom Phăng)", 1, 1, "Đang chơi"),
+                    ("BAN_12", "Bàn 12 (Carom Phăng)", 1, 1, "Đang chơi"),
+                    ("BAN_13", "Bàn 13 (Carom Phăng)", 1, 1, "Trống"),
+                    ("BAN_14", "Bàn 14 (Carom Phăng)", 1, 1, "Đang chơi"),
+                    ("BAN_15", "Bàn 15 (Carom Phăng)", 1, 1, "Trống"),
+                    ("BAN_16", "Bàn 16 (Carom Phăng)", 1, 1, "Đang chơi"),
+                    // Phòng VIP - 4 bàn 3 Băng (3 đang chơi, 1 đặt trước)
+                    ("BAN_17", "Bàn 17 (VIP 3 Băng)", 2, 2, "Đang chơi"),
+                    ("BAN_18", "Bàn 18 (VIP 3 Băng)", 2, 2, "Đang chơi"),
+                    ("BAN_19", "Bàn 19 (VIP 3 Băng)", 2, 2, "Đang chơi"),
+                    ("BAN_20", "Bàn 20 (VIP 3 Băng)", 2, 2, "Đã đặt trước")
+                };
+
+                foreach (var t in targetTables)
+                {
+                    var existing = context.BilliardTables.FirstOrDefault(b => b.Code == t.Code);
+                    if (existing == null)
+                    {
+                        context.BilliardTables.Add(new BilliardTable
+                        {
+                            TableAreaId = areas[t.AreaIdx].Id,
+                            TableTypeId = tTypes[t.TypeIdx].Id,
+                            Code = t.Code,
+                            Name = t.Name,
+                            Status = t.Status
+                        });
+                    }
+                    else
+                    {
+                        existing.TableAreaId = areas[t.AreaIdx].Id;
+                        existing.TableTypeId = tTypes[t.TypeIdx].Id;
+                        existing.Name = t.Name;
+                        existing.Status = t.Status;
+                    }
+                }
+                context.SaveChanges();
+            }
+
+            // 5. BỔ SUNG KHÁCH HÀNG & HỘI VIÊN VIP (14 CƠ THỦ) + TỦ CƠ
+            var tiers = context.MembershipTiers.OrderBy(m => m.Id).ToList();
+            if (tiers.Count >= 4)
+            {
+                var extraCustomers = new (string Code, string Name, string Phone, int TierIdx, int Points, decimal Balance, int DaysAgo)[]
+                {
+                    ("KH_004", "Phạm Trần Bạch Long", "0982870986", 3, 1420, 2100000m, 45),
+                    ("KH_005", "Hoàng Minh Tuấn", "0908776655", 2, 680, 750000m, 38),
+                    ("KH_006", "Nguyễn Đình Trọng", "0933123456", 2, 590, 620000m, 34),
+                    ("KH_007", "Nguyễn Văn Năm (Chú Năm)", "0903445667", 3, 1680, 1800000m, 60),
+                    ("KH_008", "Trương Đăng Khoa", "0913456780", 2, 740, 900000m, 29),
+                    ("KH_009", "Bùi Đức Thắng", "0971554321", 1, 310, 350000m, 24),
+                    ("KH_010", "Đỗ Hải Đăng", "0934567890", 1, 245, 280000m, 20),
+                    ("KH_011", "Vũ Đình Khang", "0917890123", 1, 195, 150000m, 16),
+                    ("KH_012", "Trần Quang Huy", "0962333888", 0, 85, 100000m, 12),
+                    ("KH_013", "Lê Thanh Sơn", "0907888999", 0, 60, 50000m, 8),
+                    ("KH_014", "Ngô Trí Dũng", "0939000111", 2, 820, 1100000m, 40)
+                };
+                foreach (var c in extraCustomers)
+                {
+                    if (!context.Customers.Any(x => x.Code == c.Code))
+                    {
+                        context.Customers.Add(new Customer
+                        {
+                            MembershipTierId = tiers[c.TierIdx].Id,
+                            Code = c.Code,
+                            FullName = c.Name,
+                            PhoneNumber = c.Phone,
+                            AccumulatedPoints = c.Points,
+                            AccountBalance = c.Balance,
+                            CreatedAt = DateTime.Now.AddDays(-c.DaysAgo)
+                        });
+                    }
+                }
+                context.SaveChanges();
+            }
+
+            // Bổ sung tủ cơ & cơ gửi
+            var allCustomers = context.Customers.OrderBy(c => c.Id).ToList();
+            var extraLockers = new (string Num, string Area, string Status, decimal Rent)[]
+            {
+                ("TU_03", "Khu Tủ Tầng 1", "Đang thuê", 150000m),
+                ("TU_04", "Khu Tủ Tầng 2", "Đang thuê", 150000m),
+                ("TU_VIP_02", "Phòng VIP Tầng 2", "Trống", 200000m)
+            };
+            foreach (var lk in extraLockers)
+            {
+                if (!context.Lockers.Any(x => x.LockerNumber == lk.Num))
+                {
+                    context.Lockers.Add(new Locker { LockerNumber = lk.Num, Area = lk.Area, Status = lk.Status, MonthlyRent = lk.Rent });
+                }
+            }
+            context.SaveChanges();
+
+            if (context.CustomerCues.Count() < 4 && allCustomers.Count >= 5)
+            {
+                var extraCues = new (string Code, int CustIdx, string Brand, string Shaft)[]
+                {
+                    ("GAY_002", 2, "Cuetec Cynergy Truewood", "Ngọn Carbon 12.5mm"),
+                    ("GAY_003", 3, "Fury Tempest Series", "Ngọn Maple Pro Taper"),
+                    ("GAY_004", 4, "Mezz EC9-N", "Ngọn Ignite 12.2 Carbon")
+                };
+                foreach (var cue in extraCues)
+                {
+                    if (!context.CustomerCues.Any(x => x.Code == cue.Code))
+                    {
+                        context.CustomerCues.Add(new CustomerCue
+                        {
+                            CustomerId = allCustomers[cue.CustIdx].Id,
+                            Code = cue.Code,
+                            CueBrand = cue.Brand,
+                            ShaftType = cue.Shaft,
+                            ReceivedDate = DateTime.Today.AddDays(-10),
+                            Status = "Đang lưu kho"
+                        });
+                    }
+                }
+                context.SaveChanges();
+            }
+
+            // 6. BỔ SUNG HÓA ĐƠN (16 HÓA ĐƠN THẬT), CHI TIẾT MÓN & THANH TOÁN (ĐỒNG BỘ 100% HÓA ĐƠN <-> DOANH THU)
+            var allTables = context.BilliardTables.OrderBy(t => t.Id).ToList();
+            var allUsers = context.Users.OrderBy(u => u.Id).ToList();
+            var payMethods = context.PaymentMethods.OrderBy(p => p.Id).ToList();
+            var cashierUsers = allUsers.Where(u => u.Username.Contains("cashier") || u.Username == "manager" || u.Username == "admin").ToList();
+            if (!cashierUsers.Any()) cashierUsers = allUsers;
+
+            if (context.Invoices.Count() < 12 && allTables.Count >= 5 && allItems.Count >= 14 && payMethods.Count >= 2)
+            {
+                var today = DateTime.Today;
+                var invoiceSpecs = new (string Code, int DayOffset, int StartHour, int DurationMins, int TableIdx, int CustIdx, int UserIdx, int PayIdx, decimal TableAmt, decimal DiscountAmt, string Status, (int ItemIdx, int Qty)[] Lines)[]
+                {
+                    // Hôm nay (10 hóa đơn hoàn tất + 2 đang chơi)
+                    ("HD_LAB5_T01", 0, 8, 120, 0, 0, 0, 1, 120000m, 15000m, "Đã thanh toán", new[] { (0, 2), (6, 1) }),
+                    ("HD_LAB5_T02", 0, 9, 150, 1, 1, 1, 0, 150000m, 0m, "Đã thanh toán", new[] { (1, 2), (2, 2), (9, 1) }),
+                    ("HD_LAB5_T03", 0, 10, 135, 4, 2, 0, 1, 180000m, 25000m, "Đã thanh toán", new[] { (11, 4), (10, 1) }),
+                    ("HD_LAB5_T04", 0, 11, 120, 2, 3, 2, 1, 120000m, 10000m, "Đã thanh toán", new[] { (0, 1), (3, 2), (7, 1) }),
+                    ("HD_LAB5_T05", 0, 12, 180, 3, 4, 1, 0, 150000m, 0m, "Đã thanh toán", new[] { (12, 3), (8, 2) }),
+                    ("HD_LAB5_T06", 0, 13, 150, 5, 5, 2, 1, 150000m, 15000m, "Đã thanh toán", new[] { (2, 3), (6, 2) }),
+                    ("HD_LAB5_T07", 0, 14, 165, 4, 6, 0, 2, 220000m, 30000m, "Đã thanh toán", new[] { (11, 6), (10, 2), (17, 1) }),
+                    ("HD_LAB5_T08", 0, 15, 120, 6, 7, 1, 1, 120000m, 0m, "Đã thanh toán", new[] { (1, 3), (9, 2) }),
+                    ("HD_LAB5_T09", 0, 16, 150, 7, 8, 2, 0, 125000m, 10000m, "Đã thanh toán", new[] { (12, 4), (7, 1) }),
+                    ("HD_LAB5_T10", 0, 17, 120, 8, 9, 0, 1, 100000m, 0m, "Đã thanh toán", new[] { (0, 2), (4, 2), (18, 1) }),
+                    // Hôm qua (6 hóa đơn hoàn tất để biểu đồ so sánh Hôm nay vs Hôm qua có dữ liệu thật!)
+                    ("HD_LAB5_Y01", -1, 9, 120, 0, 1, 1, 0, 120000m, 0m, "Đã thanh toán", new[] { (0, 2), (2, 2) }),
+                    ("HD_LAB5_Y02", -1, 11, 150, 4, 0, 0, 1, 200000m, 20000m, "Đã thanh toán", new[] { (11, 5), (10, 1) }),
+                    ("HD_LAB5_Y03", -1, 14, 180, 1, 3, 2, 1, 180000m, 15000m, "Đã thanh toán", new[] { (1, 2), (8, 2), (9, 1) }),
+                    ("HD_LAB5_Y04", -1, 16, 120, 2, 4, 1, 0, 120000m, 0m, "Đã thanh toán", new[] { (12, 4), (6, 1) }),
+                    ("HD_LAB5_Y05", -1, 19, 150, 4, 6, 2, 1, 200000m, 25000m, "Đã thanh toán", new[] { (13, 4), (10, 2) }),
+                    ("HD_LAB5_Y06", -1, 20, 120, 3, 2, 0, 2, 100000m, 0m, "Đã thanh toán", new[] { (2, 4), (7, 2) })
+                };
+
+                foreach (var spec in invoiceSpecs)
+                {
+                    if (!context.Invoices.Any(i => i.InvoiceCode == spec.Code))
+                    {
+                        decimal svcAmt = 0m;
+                        foreach (var l in spec.Lines)
+                        {
+                            if (l.ItemIdx < allItems.Count)
+                                svcAmt += allItems[l.ItemIdx].UnitPrice * l.Qty;
+                        }
+                        decimal totalPay = Math.Max(0, spec.TableAmt + svcAmt - spec.DiscountAmt);
+                        var startDt = today.AddDays(spec.DayOffset).AddHours(spec.StartHour);
+                        var endDt = startDt.AddMinutes(spec.DurationMins);
+
+                        var inv = new Invoice
+                        {
+                            BilliardTableId = allTables[spec.TableIdx % allTables.Count].Id,
+                            UserId = cashierUsers[spec.UserIdx % cashierUsers.Count].Id,
+                            CustomerId = allCustomers.Any() ? allCustomers[spec.CustIdx % allCustomers.Count].Id : 1,
+                            InvoiceCode = spec.Code,
+                            StartTime = startDt,
+                            EndTime = spec.Status == "Đã thanh toán" ? endDt : null,
+                            TableAmount = spec.TableAmt,
+                            ServiceAmount = svcAmt,
+                            DiscountAmount = spec.DiscountAmt,
+                            TotalPayment = totalPay,
+                            Status = spec.Status
+                        };
+                        context.Invoices.Add(inv);
+                        context.SaveChanges();
+
+                        foreach (var l in spec.Lines)
+                        {
+                            if (l.ItemIdx < allItems.Count)
+                            {
+                                var item = allItems[l.ItemIdx];
+                                context.InvoiceDetails.Add(new InvoiceDetail
+                                {
+                                    InvoiceId = inv.Id,
+                                    ServiceItemId = item.Id,
+                                    Quantity = l.Qty,
+                                    UnitPrice = item.UnitPrice,
+                                    TotalAmount = item.UnitPrice * l.Qty
+                                });
+                            }
+                        }
+
+                        if (spec.Status == "Đã thanh toán")
+                        {
+                            context.InvoicePayments.Add(new InvoicePayment
+                            {
+                                InvoiceId = inv.Id,
+                                PaymentMethodId = payMethods[spec.PayIdx % payMethods.Count].Id,
+                                Amount = totalPay,
+                                PaymentTime = endDt
+                            });
+                        }
+                        context.SaveChanges();
+                    }
+                }
+            }
+
+            // 7. BỔ SUNG PHIẾU CHI (PAYMENTVOUCHERS) ĐỒNG BỘ BÁO CÁO TÀI CHÍNH
+            var expTypes = context.ExpenseTypes.OrderBy(e => e.Id).ToList();
+            if (expTypes.Count >= 3 && context.PaymentVouchers.Count() < 4)
+            {
+                var vouchers = new (string Code, int ExpIdx, decimal Amount, int DaysAgo, string Purpose, string Note)[]
+                {
+                    ("PC_202611_002", 1, 680000m, 5, "Thanh toán hóa đơn nước sinh hoạt CLB tháng 11", "Chuyển khoản định kỳ"),
+                    ("PC_202611_003", 2, 1250000m, 3, "Bảo trì đèn LED & thay nỉ góc Bàn 04, Bàn 09", "Thợ kỹ thuật Hùng Bida"),
+                    ("PC_202611_004", 0, 420000m, 0, "Mua đá viên tinh khiết & vật tư vệ sinh quầy Bar", "Chi tiền mặt két ca sáng")
+                };
+                foreach (var v in vouchers)
+                {
+                    if (!context.PaymentVouchers.Any(p => p.Code == v.Code))
+                    {
+                        context.PaymentVouchers.Add(new PaymentVoucher
+                        {
+                            ExpenseTypeId = expTypes[v.ExpIdx % expTypes.Count].Id,
+                            UserId = adminUser.Id,
+                            Code = v.Code,
+                            Amount = v.Amount,
+                            CreatedAt = DateTime.Today.AddDays(-v.DaysAgo).AddHours(10),
+                            ExpensePurpose = v.Purpose,
+                            Notes = v.Note
+                        });
+                    }
+                }
+                context.SaveChanges();
+            }
+
+            // 8. BỔ SUNG NHẬT KÝ HỆ THỐNG (ACTIVITYLOGS) CHO TAB AUDIT TRAIL TRONG /Staff
+            if (context.ActivityLogs.Count() < 8)
+            {
+                var extraLogs = new (int UserIdx, string Action, string Table, string Desc, int HoursAgo)[]
+                {
+                    (0, "IMPORT_STOCK", "GoodsReceipts", "Nhập kho phiếu PN_202611_005 từ Tổng Kho F&B Miền Nam", 18),
+                    (1, "UPDATE_MENU", "ServiceItems", "Cập nhật giá bán & đồng bộ tồn kho 23 món Thực đơn F&B", 12),
+                    (2, "PAY_INVOICE", "Invoices", "Thanh toán hóa đơn HD_LAB5_T03 qua VietQR (Bàn VIP 01)", 5),
+                    (0, "CREATE_STAFF", "Users", "Phân quyền vai trò Cashier & Waiter cho đội ngũ ca chiều tối", 4),
+                    (1, "AUDIT_STOCK", "Inventories", "Kiểm kê kho phát hiện 4 mặt hàng dưới định mức an toàn", 2),
+                    (2, "PAY_INVOICE", "Invoices", "Thanh toán hóa đơn HD_LAB5_T07 qua Quẹt thẻ POS", 1)
+                };
+                foreach (var log in extraLogs)
+                {
+                    if (!context.ActivityLogs.Any(a => a.Description == log.Desc))
+                    {
+                        context.ActivityLogs.Add(new ActivityLog
+                        {
+                            UserId = allUsers[log.UserIdx % allUsers.Count].Id,
+                            Action = log.Action,
+                            TableName = log.Table,
+                            RecordId = 1,
+                            Description = log.Desc,
+                            IpAddress = "192.168.1." + (10 + log.HoursAgo),
+                            CreatedAt = DateTime.Now.AddHours(-log.HoursAgo)
+                        });
+                    }
+                }
+                context.SaveChanges();
+            }
+
+            // 9. CHUẨN HÓA ĐỒNG NHẤT MÃ CHỨNG TỪ TOÀN HỆ THỐNG (KHÔNG DÙNG TIỀN TỐ LAB)
+            // Hóa đơn: HD-2611-001.. | Phiếu nhập: PN-2611-001.. | Phiếu chi: PC-2611-001..
+            var allInvsOrder = context.Invoices.OrderBy(i => i.Id).ToList();
+            bool codeChanged = false;
+            int invSeq = 1;
+            foreach (var inv in allInvsOrder)
+            {
+                if (inv.InvoiceCode.Contains("LAB5", StringComparison.OrdinalIgnoreCase) || inv.InvoiceCode.StartsWith("HD_2026", StringComparison.OrdinalIgnoreCase))
+                {
+                    inv.InvoiceCode = $"HD-2611-{invSeq:000}";
+                    codeChanged = true;
+                }
+                invSeq++;
+            }
+
+            var allReceiptsOrder = context.GoodsReceipts.OrderBy(r => r.Id).ToList();
+            int pnSeq = 1;
+            foreach (var gr in allReceiptsOrder)
+            {
+                if (gr.Code.StartsWith("PN_2026", StringComparison.OrdinalIgnoreCase))
+                {
+                    gr.Code = $"PN-2611-{pnSeq:000}";
+                    codeChanged = true;
+                }
+                pnSeq++;
+            }
+
+            var allVouchersOrder = context.PaymentVouchers.OrderBy(v => v.Id).ToList();
+            int pcSeq = 1;
+            foreach (var pv in allVouchersOrder)
+            {
+                if (pv.Code.StartsWith("PC_2026", StringComparison.OrdinalIgnoreCase))
+                {
+                    pv.Code = $"PC-2611-{pcSeq:000}";
+                    codeChanged = true;
+                }
+                pcSeq++;
+            }
+
+            var dirtyLogs = context.ActivityLogs.Where(l => l.Description != null && (l.Description.Contains("LAB5") || l.Description.Contains("PN_202611_"))).ToList();
+            foreach (var lg in dirtyLogs)
+            {
+                lg.Description = (lg.Description ?? "")
+                    .Replace("HD_LAB5_T03", "HD-2611-005")
+                    .Replace("HD_LAB5_T07", "HD-2611-009")
+                    .Replace("PN_202611_005", "PN-2611-005");
+                codeChanged = true;
+            }
+
+            if (codeChanged) context.SaveChanges();
+
+            // 10. ĐỒNG BỘ LOẠI BÀN, 2 KHUNG GIỜ GIÁ CHO MỖI LOẠI BÀN (KHỚP 100% QUẢNG CÁO WEB KHÁCH) & THIẾT BỊ ĐỦ 20 BÀN
+            var activeTypes = context.TableTypes.OrderBy(t => t.Id).ToList();
+            if (activeTypes.Count >= 3)
+            {
+                // Chuẩn hóa tên 3 loại bàn chuẩn đang vận hành (Pool 9-Ball, Carom Phăng, Phòng VIP 3 Băng)
+                if (activeTypes[0].Name != "Bàn Pool 9-Ball (Bida Lỗ)")
+                {
+                    activeTypes[0].Name = "Bàn Pool 9-Ball (Bida Lỗ)";
+                    activeTypes[0].BasePrice = 59000m;
+                }
+                if (activeTypes[1].Name != "Bàn Carom (Bida Phăng)")
+                {
+                    activeTypes[1].Name = "Bàn Carom (Bida Phăng)";
+                    activeTypes[1].BasePrice = 65000m;
+                }
+                if (activeTypes[2].Name != "Phòng VIP 3 Băng Đẳng Cấp")
+                {
+                    activeTypes[2].Name = "Phòng VIP 3 Băng Đẳng Cấp";
+                    activeTypes[2].BasePrice = 119000m;
+                }
+                context.SaveChanges();
+
+                // Đảm bảo mỗi loại bàn có ĐÚNG 2 khung giờ (Khung Ngày 08:00-17:00 & Khung Tối 17:00-08:00) khớp 100% Web Khách
+                var activeTypeIds = new[] { activeTypes[0].Id, activeTypes[1].Id, activeTypes[2].Id };
+                var currentSlots = context.TimeSlotPrices.ToList();
+                bool needResetSlots = currentSlots.Count != 6 || activeTypeIds.Any(tid => currentSlots.Count(s => s.TableTypeId == tid) != 2);
+                if (needResetSlots)
+                {
+                    if (currentSlots.Any()) context.TimeSlotPrices.RemoveRange(currentSlots);
+                    context.TimeSlotPrices.AddRange(new TimeSlotPrice[]
+                    {
+                        // Pool 9-Ball: 59k (08:00-17:00) & 69k (17:00-08:00)
+                        new() { TableTypeId = activeTypes[0].Id, SlotStartTime = new TimeSpan(8, 0, 0), SlotEndTime = new TimeSpan(17, 0, 0), SlotPrice = 59000m },
+                        new() { TableTypeId = activeTypes[0].Id, SlotStartTime = new TimeSpan(17, 0, 0), SlotEndTime = new TimeSpan(8, 0, 0), SlotPrice = 69000m },
+                        // Carom Phăng: 65k (08:00-17:00) & 75k (17:00-08:00)
+                        new() { TableTypeId = activeTypes[1].Id, SlotStartTime = new TimeSpan(8, 0, 0), SlotEndTime = new TimeSpan(17, 0, 0), SlotPrice = 65000m },
+                        new() { TableTypeId = activeTypes[1].Id, SlotStartTime = new TimeSpan(17, 0, 0), SlotEndTime = new TimeSpan(8, 0, 0), SlotPrice = 75000m },
+                        // Phòng VIP 3 Băng: 119k (08:00-17:00) & 119k (17:00-08:00)
+                        new() { TableTypeId = activeTypes[2].Id, SlotStartTime = new TimeSpan(8, 0, 0), SlotEndTime = new TimeSpan(17, 0, 0), SlotPrice = 119000m },
+                        new() { TableTypeId = activeTypes[2].Id, SlotStartTime = new TimeSpan(17, 0, 0), SlotEndTime = new TimeSpan(8, 0, 0), SlotPrice = 119000m }
+                    });
+                    context.SaveChanges();
+                }
+            }
+
+            // Đảm bảo ĐỦ 20/20 BÀN đều có bản ghi thiết bị đi kèm (TableEquipments)
+            var all20Tables = context.BilliardTables.OrderBy(t => t.Id).ToList();
+            var equippedTableIds = context.TableEquipments.Select(e => e.BilliardTableId).ToHashSet();
+            bool eqAdded = false;
+            foreach (var tbl in all20Tables)
+            {
+                if (!equippedTableIds.Contains(tbl.Id))
+                {
+                    bool isVip = tbl.Name.Contains("VIP", StringComparison.OrdinalIgnoreCase);
+                    bool isCarom = tbl.Name.Contains("Carom", StringComparison.OrdinalIgnoreCase);
+                    context.TableEquipments.Add(new TableEquipment
+                    {
+                        BilliardTableId = tbl.Id,
+                        Name = isVip
+                            ? "Bộ bi Aramith 3C Pro Cup + Đèn LED chao đôi + Băng sưởi nhiệt"
+                            : isCarom
+                                ? "Bộ bi Carom Aramith Super Pro + Đèn LED chống lóa 3 chao"
+                                : "Bộ bi Pool Aramith Pro Cup + Đèn LED 3 chao + Tam giác gỗ sồi",
+                        Quantity = 1,
+                        Status = tbl.Status == "Bảo trì" ? "Đang bảo trì" : "Hoạt động tốt"
+                    });
+                    eqAdded = true;
+                }
+            }
+            if (eqAdded) context.SaveChanges();
+
+            // 11. ĐỒNG BỘ ĐỦ 156 HỘI VIÊN & KHÁCH HÀNG VIP TRONG SQL SERVER (14 KIM CƯƠNG, 38 VÀNG, 42 BẠC, 62 ĐỒNG)
+            var memberTiers = context.MembershipTiers.OrderBy(m => m.MinPoints).ToList();
+            if (memberTiers.Count >= 4 && context.Customers.Count() < 156)
+            {
+                int bronzeId = memberTiers[0].Id;
+                int silverId = memberTiers[1].Id;
+                int goldId = memberTiers[2].Id;
+                int diamondId = memberTiers[3].Id;
+
+                int curDia = context.Customers.Count(c => c.MembershipTierId == diamondId);
+                int curGold = context.Customers.Count(c => c.MembershipTierId == goldId);
+                int curSilv = context.Customers.Count(c => c.MembershipTierId == silverId);
+                int curBron = context.Customers.Count(c => c.MembershipTierId == bronzeId);
+
+                var existingCodes = context.Customers.Select(c => c.Code).ToHashSet();
+                int seqCode = context.Customers.Count() + 1;
+
+                string NextCustomerCode(string prefix)
+                {
+                    string code;
+                    do { code = $"{prefix}-{seqCode++:000}"; } while (existingCodes.Contains(code));
+                    existingCodes.Add(code);
+                    return code;
+                }
+
+                string[] lastNames = { "Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Huỳnh", "Phan", "Vũ", "Võ", "Đặng", "Bùi", "Đỗ", "Hồ", "Ngô", "Dương" };
+                string[] midNames = { "Văn", "Minh", "Quốc", "Đình", "Anh", "Gia", "Thanh", "Hữu", "Đức", "Hoàng", "Tuấn", "Tiến" };
+                string[] firstNames = { "Long", "Nam", "Dũng", "Hùng", "Tuấn", "Khang", "Huy", "Bảo", "Trọng", "Đạt", "Cường", "Phúc", "Quân", "Sơn", "Tùng", "Lộc", "Thắng", "Toàn" };
+
+                string GenName(int idx) => $"{lastNames[idx % lastNames.Length]} {midNames[(idx * 3) % midNames.Length]} {firstNames[(idx * 7) % firstNames.Length]}";
+
+                for (int i = curDia; i < 14; i++)
+                {
+                    context.Customers.Add(new Customer
+                    {
+                        MembershipTierId = diamondId,
+                        Code = NextCustomerCode("VIP"),
+                        FullName = GenName(i + 1),
+                        PhoneNumber = $"090{(10 + i):00}{(20000 + i * 137):00000}",
+                        AccumulatedPoints = 1100 + (14 - i) * 180,
+                        AccountBalance = 1200000m + (14 - i) * 150000m,
+                        CreatedAt = DateTime.Now.AddDays(-(60 + i * 3))
+                    });
+                }
+                for (int i = curGold; i < 38; i++)
+                {
+                    context.Customers.Add(new Customer
+                    {
+                        MembershipTierId = goldId,
+                        Code = NextCustomerCode("VIP"),
+                        FullName = GenName(i + 25),
+                        PhoneNumber = $"091{(10 + i):00}{(30000 + i * 193):00000}",
+                        AccumulatedPoints = 520 + (38 - i) * 14,
+                        AccountBalance = 450000m + (38 - i) * 30000m,
+                        CreatedAt = DateTime.Now.AddDays(-(40 + (i % 35)))
+                    });
+                }
+                for (int i = curSilv; i < 42; i++)
+                {
+                    context.Customers.Add(new Customer
+                    {
+                        MembershipTierId = silverId,
+                        Code = NextCustomerCode("VIP"),
+                        FullName = GenName(i + 75),
+                        PhoneNumber = $"093{(10 + i):00}{(40000 + i * 151):00000}",
+                        AccumulatedPoints = 120 + (42 - i) * 8,
+                        AccountBalance = 150000m + (42 - i) * 15000m,
+                        CreatedAt = DateTime.Now.AddDays(-(25 + (i % 30)))
+                    });
+                }
+                for (int i = curBron; i < 62; i++)
+                {
+                    context.Customers.Add(new Customer
+                    {
+                        MembershipTierId = bronzeId,
+                        Code = NextCustomerCode("STD"),
+                        FullName = GenName(i + 130),
+                        PhoneNumber = $"097{(10 + i):00}{(50000 + i * 113):00000}",
+                        AccumulatedPoints = 15 + (62 - i) * 1,
+                        AccountBalance = 50000m + (i % 5) * 20000m,
+                        CreatedAt = DateTime.Now.AddDays(-(5 + (i % 25)))
+                    });
+                }
+                context.SaveChanges();
+            }
+
+            // 12. MỞ RỘNG HỆ THỐNG TỦ ĐỒ CÁ NHÂN ĐỦ 200 TỦ (PHÂN TRANG 30 TỦ / TRANG)
+            int curLockerCount = context.Lockers.Count();
+            if (curLockerCount < 200)
+            {
+                var existingLockerNums = context.Lockers.Select(l => l.LockerNumber).ToHashSet();
+                int toAdd = 200 - curLockerCount;
+                int numSeq = 1;
+                for (int i = 0; i < toAdd; i++)
+                {
+                    string area;
+                    decimal rent;
+                    string prefix;
+                    int totalIdx = curLockerCount + i;
+                    if (totalIdx < 100)
+                    {
+                        area = "Khu Tủ Tầng 1";
+                        rent = 150000m;
+                        prefix = "TU";
+                    }
+                    else if (totalIdx < 160)
+                    {
+                        area = "Khu Tủ Tầng 2";
+                        rent = 150000m;
+                        prefix = "TU";
+                    }
+                    else
+                    {
+                        area = "Phòng VIP Tầng 2";
+                        rent = 200000m;
+                        prefix = "TU-VIP";
+                    }
+
+                    string lockerNo;
+                    do { lockerNo = $"{prefix}-{numSeq++:000}"; } while (existingLockerNums.Contains(lockerNo));
+                    existingLockerNums.Add(lockerNo);
+
+                    // Phân bổ thực tế khoảng 15 tủ đang thuê, còn lại trống sẵn sàng cho khách gửi cơ/đồ
+                    string st = (i < 12) ? "Đang thuê" : "Trống";
+                    context.Lockers.Add(new Locker
+                    {
+                        LockerNumber = lockerNo,
+                        Area = area,
+                        Status = st,
+                        MonthlyRent = rent
+                    });
+                }
+                context.SaveChanges();
+            }
         }
 
         // HÀM BĂM MẬT KHẨU SHA256 (Khắc phục góp ý thầy chấm về mật khẩu thô)
