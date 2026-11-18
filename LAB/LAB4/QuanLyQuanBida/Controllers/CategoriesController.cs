@@ -260,16 +260,41 @@ namespace QuanLyQuanBida.Controllers
             var category = await _context.Categories.FindAsync(id);
             if (category != null)
             {
-                var itemCount = await _context.ServiceItems.CountAsync(s => s.CategoryId == id);
-                if (itemCount > 0)
+                // Xóa tuần tự các bản ghi liên kết khóa ngoại qua EF Core DbContext (chuẩn MVC thuần)
+                var itemIds = await _context.ServiceItems
+                    .Where(s => s.CategoryId == id)
+                    .Select(s => s.Id)
+                    .ToListAsync();
+
+                if (itemIds.Any())
                 {
-                    TempData["ErrorMessage"] = $"Không thể xóa danh mục '{category.Name}' vì đang có {itemCount} món/dụng cụ liên kết.";
-                    return RedirectToAction(nameof(Index));
+                    var inventories = await _context.Inventories
+                        .Where(i => itemIds.Contains(i.ServiceItemId))
+                        .ToListAsync();
+                    if (inventories.Any()) _context.Inventories.RemoveRange(inventories);
+
+                    var invoiceDetails = await _context.InvoiceDetails
+                        .Where(d => itemIds.Contains(d.ServiceItemId))
+                        .ToListAsync();
+                    if (invoiceDetails.Any()) _context.InvoiceDetails.RemoveRange(invoiceDetails);
+
+                    var receiptDetails = await _context.GoodsReceiptDetails
+                        .Where(r => itemIds.Contains(r.ServiceItemId))
+                        .ToListAsync();
+                    if (receiptDetails.Any()) _context.GoodsReceiptDetails.RemoveRange(receiptDetails);
+
+                    var items = await _context.ServiceItems
+                        .Where(s => s.CategoryId == id)
+                        .ToListAsync();
+                    _context.ServiceItems.RemoveRange(items);
                 }
 
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = $"Đã xóa thành công danh mục '{category.Name}'.";
+
+                TempData["SuccessMessage"] = itemIds.Any()
+                    ? $"Đã xóa thành công danh mục '{category.Name}' cùng {itemIds.Count} món/dụng cụ liên kết."
+                    : $"Đã xóa thành công danh mục '{category.Name}'.";
             }
 
             return RedirectToAction(nameof(Index));

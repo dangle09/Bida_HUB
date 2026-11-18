@@ -262,12 +262,21 @@
                                     <td class="text-end fw-bold text-white">@m.Spend.ToString("N0") đ</td>
                                     <td class="small text-muted">@m.JoinDate</td>
                                     <td class="text-center pe-3">
-                                        <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="@m.Name" data-card="@m.Code" data-points="@m.Points" title="Cộng điểm thưởng" style="border-radius: 2px !important;">
-                                            <i class="bi bi-coin"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info p-1 px-2 btn-edit-customer" data-name="@m.Name" data-card="@m.Code" data-phone="@m.Phone" data-tier="@m.Tier" data-spend="@m.Spend" title="Chỉnh sửa thông tin & ảnh đại diện" style="border-radius: 2px !important;">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </button>
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                        {
+                                            <button class="btn btn-sm btn-outline-warning p-1 px-2 me-1 btn-add-points" data-name="@m.Name" data-card="@m.Code" data-points="@m.Points" title="Cộng điểm thưởng" style="border-radius: 2px !important;">
+                                                <i class="bi bi-coin"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info p-1 px-2 btn-edit-customer" data-name="@m.Name" data-card="@m.Code" data-phone="@m.Phone" data-tier="@m.Tier" data-spend="@m.Spend" title="Chỉnh sửa thông tin & ảnh đại diện" style="border-radius: 2px !important;">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-sm btn-outline-secondary opacity-50 p-1 px-2" disabled title="Chỉ Admin/Manager được cộng điểm & sửa hạng VIP" style="border-radius: 2px !important;">
+                                                <i class="bi bi-lock-fill"></i>
+                                            </button>
+                                        }
                                     </td>
                                 </tr>
                             }
