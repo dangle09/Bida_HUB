@@ -1,0 +1,92 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - TAB DANH MỤC: XÁC NHẬN XÓA DANH MỤC
+   - Tên file: Views/Categories/Delete.cshtml
+   - Vai trò: Giao diện cảnh báo xác nhận xóa danh mục
+   - Layout khung sườn: Views/Shared/_AdminLayout.cshtml
+   - File CSS: wwwroot/css/admin-pos.css
+   - Controller phụ trách: Controllers/CategoriesController.cs (Action Delete GET/POST)
+   - URL truy cập: http://localhost:PORT/Categories/Delete/{id}
+   =================================================================================== *@
+@model QuanLyQuanBida.Models.Category
+@{
+    ViewData["Title"] = "Xác nhận xóa Danh mục - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+    int itemCount = ViewBag.ItemCount ?? 0;
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb chuẩn Wireframe -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <a asp-action="Index" class="text-secondary text-decoration-none">Quản lý hàng hóa</a>
+        <span class="mx-2 text-muted">/</span>
+        <a asp-action="Index" class="text-secondary text-decoration-none">Danh mục món ăn & dụng cụ</a>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Xác nhận xóa (#@Model.Id)</span>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card bg-dark text-white border-danger border-opacity-50 shadow-lg overflow-hidden" style="border-radius: 2px !important; background-color: var(--bg-card, #0e131d) !important;">
+                <div class="card-header bg-danger bg-opacity-10 py-3 border-danger border-opacity-25 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-danger d-flex align-items-center gap-2 font-heading">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        XÁC NHẬN XÓA DANH MỤC
+                    </h5>
+                    <span class="badge bg-black border border-danger text-danger small" style="border-radius: 2px !important;">Quyền: AdminOrManager</span>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-secondary small mb-3">
+                        Bạn có chắc chắn muốn xóa danh mục này khỏi cơ sở dữ liệu hệ thống không? Thao tác này không thể hoàn tác!
+                    </p>
+
+                    <div class="bg-black bg-opacity-50 p-3 mb-4 border border-secondary border-opacity-25" style="border-radius: 2px !important;">
+                        @if (!string.IsNullOrEmpty(Model.Image))
+                        {
+                            <div class="text-center mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                                <img src="~/@Model.Image" alt="@Model.Name" style="max-height: 80px; border-radius: 2px; border: 1px solid rgba(255, 255, 255, 0.2);" />
+                            </div>
+                        }
+                        <div class="d-flex justify-content-between py-1 border-bottom border-secondary border-opacity-25">
+                            <span class="text-muted small">Mã định danh ID:</span>
+                            <span class="fw-bold text-white">#@Model.Id</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-1 border-bottom border-secondary border-opacity-25">
+                            <span class="text-muted small">Mã phân loại Code:</span>
+                            <span class="fw-bold text-info font-monospace">@Model.Code</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-1 border-bottom border-secondary border-opacity-25">
+                            <span class="text-muted small">Tên Danh Mục:</span>
+                            <span class="fw-bold text-warning">@Model.Name</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-1">
+                            <span class="text-muted small">Số sản phẩm liên kết:</span>
+                            <span class="badge @(itemCount > 0 ? "bg-danger" : "bg-success")" style="border-radius: 2px !important;">@itemCount món</span>
+                        </div>
+                    </div>
+
+                    @if (itemCount > 0)
+                    {
+                        <div class="alert alert-warning py-2 small mb-4" role="alert" style="border-radius: 2px !important;">
+                            <i class="bi bi-shield-exclamation me-1"></i>
+                            <strong>Lưu ý dữ liệu liên kết:</strong> Danh mục này đang chứa <strong>@itemCount</strong> sản phẩm / món ăn liên kết. Khi bấm <strong>Xác Nhận Xóa</strong>, hệ thống sẽ xóa đồng thời danh mục này cùng toàn bộ @itemCount sản phẩm thuộc nhóm để đảm bảo toàn vẹn khóa ngoại SQL Server.
+                        </div>
+                    }
+
+                    <form asp-action="Delete" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4" style="border-radius: 2px !important;">
+                                <i class="bi bi-x-circle me-1"></i> Hủy Bỏ
+                            </a>
+                            <button type="submit" class="btn btn-danger px-4 fw-bold" style="border-radius: 2px !important;">
+                                <i class="bi bi-trash-fill me-1"></i> @(itemCount > 0 ? $"Xác Nhận Xóa (Kèm {itemCount} món)" : "Xác Nhận Xóa")
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

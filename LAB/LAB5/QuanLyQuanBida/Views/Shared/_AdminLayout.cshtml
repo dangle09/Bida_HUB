@@ -1,0 +1,413 @@
+﻿@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - KHUNG GIAO DIỆN CHÍNH (LAYOUT)
+   - Tên file: _AdminLayout.cshtml
+   - Chức năng: Bộ khung sườn tổng thể của Web Quản lý (Topbar 60px + Sidebar 260px + Footer 35px)
+   - Vùng hiển thị nội dung các Tab: @RenderBody()
+   - File CSS: wwwroot/css/admin-pos.css
+   - Chuẩn viền bo: 2px radius toàn trang
+   =================================================================================== *@
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BOLT BILLIARDS ADMIN POS</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="~/images/bolt-billiards-logo.png" />
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Admin POS CSS chuẩn Wireframe & Màu đen than - Neon Lime -->
+    <link rel="stylesheet" href="~/css/admin-pos.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="bida-body">
+
+    <!-- ========================================================= -->
+    <!-- 1. [HEADER / TOPBAR] (Cố định trên cùng - Cao 60px)       -->
+    <!-- ========================================================= -->
+    <header class="bida-topbar">
+        <!-- Logo & Thương hiệu -->
+        <div class="d-flex align-items-center gap-3">
+            <a class="bida-brand" asp-controller="Pos" asp-action="Index" title="Trang chủ điều hành POS">
+                <img src="~/images/bolt-billiards-logo.png" alt="Bolt Billiards" />
+                <div>
+                    <div class="brand-text"><span style="color: var(--primary-neon);">BOLT</span> BILLIARDS</div>
+                    <div class="brand-sub">BIDA HUB POS • CHI NHÁNH ĐỒNG NAI</div>
+                </div>
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-bolt-outline btn-sm ms-2 d-none d-md-inline-flex" style="padding: 4px 10px; font-size: 0.75rem; border-radius: 2px !important;" title="Xem trang chủ khách hàng">
+                <i class="bi bi-box-arrow-up-right"></i> Trang Khách
+            </a>
+        </div>
+
+        <!-- Trạng thái quán thời gian thực & Đồng hồ -->
+        <div class="d-none d-lg-flex align-items-center gap-3">
+            <!-- Đồng hồ thời gian thực và ca trực -->
+            <div class="status-pill">
+                <i class="bi bi-clock-history" style="color: var(--primary-neon);"></i>
+                <span id="posLiveClock" class="fw-semibold">14:35:20</span>
+                <span style="color: var(--primary-neon);" id="posShiftName">(Ca Chiều)</span>
+            </div>
+
+            <!-- Tình trạng bàn bida đang chơi -->
+            <div class="status-pill">
+                <span class="indicator-dot"></span>
+                <span><strong>14/20</strong> Bàn đang chơi</span>
+            </div>
+        </div>
+
+        <!-- Avatar & Tên tài khoản / Đăng xuất -->
+        <div class="d-flex align-items-center gap-2">
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <div class="dropdown">
+                    <button class="btn btn-dark dropdown-toggle d-flex align-items-center gap-2 border-0 bg-transparent text-white p-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="avatar-badge" style="width: 32px; height: 32px; border-radius: 2px; background: var(--primary-neon); color: #000; display: flex; align-items: center; justify-content: center; font-weight: 800;">
+                            @((User.Identity.Name ?? "U").Substring(0, 1).ToUpper())
+                        </div>
+                        <div class="text-start d-none d-sm-block">
+                            <div class="fw-semibold small" style="line-height: 1.2;">@User.Identity.Name</div>
+                            <div style="font-size: 0.72rem; color: var(--primary-neon);">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <span>👑 Quản trị viên (Admin)</span>
+                                }
+                                else if (User.IsInRole("Manager"))
+                                {
+                                    <span>⭐ Quản lý cơ sở (Manager)</span>
+                                }
+                                else
+                                {
+                                    <span>👤 Thu ngân POS (Cashier)</span>
+                                }
+                            </div>
+                        </div>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow border-secondary border-opacity-50" style="border-radius: 2px !important;">
+                        <li class="dropdown-header text-uppercase text-secondary" style="font-size: 0.7rem;">Phiên làm việc</li>
+                        <li>
+                            <div class="px-3 py-1 small">
+                                <div class="text-light fw-bold">@User.Identity.Name</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">
+                                    @(User.IsInRole("Admin") ? "Toàn quyền quản trị hệ thống" : User.IsInRole("Manager") ? "Quyền quản lý điều hành cơ sở" : "Quyền thu ngân bán hàng POS")
+                                </div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider border-secondary border-opacity-25"></li>
+                        <li>
+                            <a class="dropdown-item small" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalThongTinCaNhan">
+                                <i class="bi bi-person me-2 text-info"></i>Thông tin cá nhân
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item small" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDoiMatKhau">
+                                <i class="bi bi-shield-lock me-2 text-warning"></i>Đổi mật khẩu
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item small" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-globe me-2 text-success"></i>Xem Web Vãng Lai
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider border-secondary border-opacity-25"></li>
+                        <li>
+                            <form asp-controller="Login" asp-action="Logout" method="post" class="px-2">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-sm w-100 text-start d-flex align-items-center gap-2" style="border-radius: 2px !important;">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <span>Đăng xuất</span>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a asp-controller="Login" asp-action="Login" class="btn btn-bolt-neon btn-sm" style="border-radius: 2px !important;">
+                    <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                </a>
+            }
+        </div>
+    </header>
+
+    <!-- ========================================================= -->
+    <!-- 2. [SIDEBAR MENU TRÁI] (Rộng 260px, cuộn dọc theo Wireframe)-->
+    <!-- ========================================================= -->
+    <aside class="bida-sidebar">
+        <!-- NHÓM 1: VẬN HÀNH & BÁN HÀNG -->
+        <div class="sidebar-heading">— VẬN HÀNH & BÁN HÀNG</div>
+        <ul class="sidebar-menu">
+            <li>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Pos" ? "active" : "")" asp-controller="Pos" asp-action="Index">
+                    <i class="bi bi-grid-3x3-gap-fill text-warning"></i>
+                    <span>Sơ đồ bàn (POS)</span>
+                </a>
+            </li>
+            <li>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Menu" ? "active" : "")" asp-controller="Menu" asp-action="Index">
+                    <i class="bi bi-cup-straw text-info"></i>
+                    <span>Thực đơn & Dịch vụ</span>
+                </a>
+            </li>
+            <li>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Invoices" ? "active" : "")" asp-controller="Invoices" asp-action="Index">
+                    <i class="bi bi-receipt text-success"></i>
+                    <span>Hóa đơn & Thu ngân</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- NHÓM 2: QUẢN LÝ HÀNG HÓA -->
+        <div class="sidebar-heading">— QUẢN LÝ HÀNG HÓA</div>
+        <ul class="sidebar-menu">
+            <li>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Categories" ? "active" : "")" asp-controller="Categories" asp-action="Index">
+                    <i class="bi bi-folder2-open" style="color: var(--primary-neon);"></i>
+                    <span>Danh mục hàng hóa</span>
+                </a>
+            </li>
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <li>
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Inventory" ? "active" : "")" asp-controller="Inventory" asp-action="Index">
+                        <i class="bi bi-box-seam" style="color: #60a5fa;"></i>
+                        <span>Kho & Nhập hàng</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tables" ? "active" : "")" asp-controller="Tables" asp-action="Index">
+                        <i class="bi bi-gear-wide-connected" style="color: #c084fc;"></i>
+                        <span>Quản lý Bàn & Giá</span>
+                    </a>
+                </li>
+            }
+        </ul>
+
+        <!-- NHÓM 3: HỘI VIÊN & GIẢI ĐẤU -->
+        <div class="sidebar-heading">— HỘI VIÊN & GIẢI ĐẤU</div>
+        <ul class="sidebar-menu">
+            <li>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
+                    <i class="bi bi-award-fill text-warning"></i>
+                    <span>Khách hàng & VIP</span>
+                </a>
+            </li>
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <li>
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tournaments" ? "active" : "")" asp-controller="Tournaments" asp-action="Index">
+                        <i class="bi bi-trophy-fill text-danger"></i>
+                        <span>Giải đấu giao lưu</span>
+                    </a>
+                </li>
+            }
+        </ul>
+
+        <!-- NHÓM 4: QUẢN TRỊ & BÁO CÁO (CHỈ ADMIN / MANAGER) -->
+        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+        {
+            <div class="sidebar-heading">— QUẢN TRỊ & BÁO CÁO</div>
+            <ul class="sidebar-menu">
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Staff" ? "active" : "")" asp-controller="Staff" asp-action="Index">
+                            <i class="bi bi-people-fill text-primary"></i>
+                            <span>Nhân sự & Phân ca</span>
+                        </a>
+                    </li>
+                }
+                <li>
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Index">
+                        <i class="bi bi-bar-chart-line-fill text-success"></i>
+                        <span>Doanh thu & Báo cáo</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AiAssistant" ? "active" : "")" asp-controller="AiAssistant" asp-action="Index">
+                        <i class="bi bi-robot" style="color: var(--primary-neon);"></i>
+                        <span>AI Trợ lý Bida</span>
+                    </a>
+                </li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")" asp-controller="Settings" asp-action="Index">
+                            <i class="bi bi-sliders text-info"></i>
+                            <span>Cài đặt hệ thống</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+    </aside>
+
+    <!-- ========================================================= -->
+    <!-- 3. [VÙNG LÀM VIỆC CHÍNH - MAIN CONTENT]                   -->
+    <!-- ========================================================= -->
+    <main class="bida-main-content">
+        @RenderBody()
+    </main>
+
+    <!-- ========================================================= -->
+    <!-- 4. [FOOTER / STATUS BAR] (Dưới cùng theo Wireframe)       -->
+    <!-- ========================================================= -->
+    <footer class="bida-statusbar">
+        <div class="statusbar-item">
+            <i class="bi bi-hdd-network text-success"></i>
+            <span><strong>Bida HUB v1.0</strong> • ASP.NET Core MVC (Đồng bộ thời gian thực)</span>
+        </div>
+        <div class="statusbar-item d-none d-md-inline-flex">
+            <span>Máy in Bill: Sẵn sàng</span>
+            <span class="indicator-dot"></span>
+        </div>
+        <div class="statusbar-item">
+            <span>Ca trực: <strong style="color: var(--primary-neon);" id="statusCaTruc">Ca Chiều</strong> (16:00 - 23:59)</span>
+        </div>
+    </footer>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL THÔNG TIN CÁ NHÂN (PROFILE)                                         -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalThongTinCaNhan" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+                <div class="modal-header border-secondary border-opacity-25">
+                    <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                        <i class="bi bi-person-circle text-info"></i> THÔNG TIN TÀI KHOẢN CÁ NHÂN
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <div class="position-relative d-inline-block">
+                            <div style="width: 72px; height: 72px; border-radius: 2px; background: var(--primary-neon); color: #000; font-size: 2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 2px solid rgba(255,255,255,0.2);">
+                                Đ
+                            </div>
+                            <label for="profileAvatarUpload" class="btn btn-sm btn-dark position-absolute bottom-0 end-0 p-1 border-secondary" style="border-radius: 2px; cursor: pointer;" title="Đổi ảnh đại diện">
+                                <i class="bi bi-camera-fill text-warning"></i>
+                            </label>
+                            <input type="file" id="profileAvatarUpload" class="d-none" accept="image/*" onchange="alert('Đã tải ảnh đại diện mới lên!');" />
+                        </div>
+                        <div class="fw-bold text-white mt-2">Đào Ngọc Giang</div>
+                        <div class="badge bg-danger text-light" style="border-radius: 2px;">👑 ADMIN / TOÀN QUYỀN HỆ THỐNG</div>
+                    </div>
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Họ và tên (*):</label>
+                            <input type="text" class="form-control bg-black text-light border-secondary fw-bold" value="Đào Ngọc Giang" style="border-radius: 2px !important;" />
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small text-muted">Tên đăng nhập:</label>
+                                <input type="text" class="form-control bg-black text-info border-secondary font-monospace" value="admin" readonly style="border-radius: 2px !important;" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small text-muted">Số điện thoại:</label>
+                                <input type="text" class="form-control bg-black text-light border-secondary" value="0347.987.360" style="border-radius: 2px !important;" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Email liên hệ:</label>
+                            <input type="email" class="form-control bg-black text-light border-secondary" value="admin@bms.com" style="border-radius: 2px !important;" />
+                        </div>
+                        <div class="small text-muted p-2 bg-black border border-secondary border-opacity-25" style="border-radius: 2px;">
+                            <i class="bi bi-clock-history me-1 text-warning"></i> Ngày gia nhập: <strong>01/01/2026</strong> • Đăng nhập lần cuối: <strong>Hôm nay 14:35</strong>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-secondary border-opacity-25">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
+                    <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã cập nhật thông tin cá nhân thành công!');" style="border-radius: 2px !important;">
+                        <i class="bi bi-check-lg"></i> Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL ĐỔI MẬT KHẨU                                                        -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalDoiMatKhau" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+                <div class="modal-header border-secondary border-opacity-25">
+                    <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-lock-fill text-warning"></i> THAY ĐỔI MẬT KHẨU ĐĂNG NHẬP
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Mật khẩu hiện tại (*):</label>
+                            <input type="password" class="form-control bg-black text-light border-secondary" placeholder="Nhập mật khẩu cũ..." style="border-radius: 2px !important;" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Mật khẩu mới (*):</label>
+                            <input type="password" class="form-control bg-black text-light border-secondary" placeholder="Ít nhất 6 ký tự..." style="border-radius: 2px !important;" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Xác nhận mật khẩu mới (*):</label>
+                            <input type="password" class="form-control bg-black text-light border-secondary" placeholder="Nhập lại mật khẩu mới..." style="border-radius: 2px !important;" required />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-secondary border-opacity-25">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Hủy</button>
+                    <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã đổi mật khẩu thành công! Vui lòng ghi nhớ mật khẩu mới.');" style="border-radius: 2px !important;">
+                        <i class="bi bi-check-lg"></i> Cập nhật mật khẩu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script Đồng hồ thời gian thực và cập nhật Ca trực tự động -->
+    <script>
+        function updatePosClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeStr = `${hours}:${minutes}:${seconds}`;
+
+            const clockEl = document.getElementById('posLiveClock');
+            if (clockEl) clockEl.textContent = timeStr;
+
+            // Xác định ca trực theo giờ
+            let shift = "Ca Chiều";
+            let shiftDetail = "Ca Chiều (16:00 - 23:59)";
+            const h = now.getHours();
+            if (h >= 8 && h < 16) {
+                shift = "Ca Sáng";
+                shiftDetail = "Ca Sáng (08:00 - 16:00)";
+            } else if (h >= 0 && h < 8) {
+                shift = "Ca Đêm";
+                shiftDetail = "Ca Đêm (00:00 - 08:00)";
+            }
+
+            const shiftEl = document.getElementById('posShiftName');
+            if (shiftEl) shiftEl.textContent = `(${shift})`;
+            const statusCaEl = document.getElementById('statusCaTruc');
+            if (statusCaEl) statusCaEl.textContent = shift;
+        }
+
+        setInterval(updatePosClock, 1000);
+        updatePosClock();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
