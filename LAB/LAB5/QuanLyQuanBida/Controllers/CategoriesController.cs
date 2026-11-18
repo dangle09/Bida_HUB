@@ -38,7 +38,7 @@ namespace QuanLyQuanBida.Controllers
         // =========================================================================
         // 1. GET: /Categories/Index (Policy: ManagementAccess - Admin, Manager, Cashier)
         // =========================================================================
-        [Authorize(Policy = "ManagementAccess")]
+        [Authorize(Policy = "CashierOrAbove")]
         public async Task<IActionResult> Index()
         {
             ViewData["Title"] = "Quản lý danh mục đồ uống & dịch vụ";
@@ -57,7 +57,7 @@ namespace QuanLyQuanBida.Controllers
         // =========================================================================
         // 2. GET: /Categories/Details/5 (Policy: ManagementAccess)
         // =========================================================================
-        [Authorize(Policy = "ManagementAccess")]
+        [Authorize(Policy = "CashierOrAbove")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -72,12 +72,21 @@ namespace QuanLyQuanBida.Controllers
             }
 
             // Danh sách các món ăn / đồ uống / dụng cụ thuộc danh mục (khớp 100% web vãng lai)
-            var items = await _context.ServiceItems
+            var items = await _context.ServiceItems.AsNoTracking()
                 .Where(s => s.CategoryId == id)
                 .OrderBy(s => s.UnitPrice)
                 .ToListAsync();
 
+            var itemIds = items.Select(i => i.Id).ToList();
+            var stockDict = await _context.Inventories.AsNoTracking()
+                .Where(inv => itemIds.Contains(inv.ServiceItemId))
+                .GroupBy(inv => inv.ServiceItemId)
+                .ToDictionaryAsync(g => g.Key, g => g.Sum(x => x.StockQuantity));
+
             ViewBag.Items = items;
+            ViewBag.StockDict = stockDict;
+            ViewBag.TotalStock = stockDict.Values.Sum();
+            ViewBag.ActiveCount = items.Count(x => x.IsActive);
             return View(category);
         }
 

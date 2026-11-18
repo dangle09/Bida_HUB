@@ -19,9 +19,9 @@
     <!-- Breadcrumb chuẩn Wireframe -->
     <div class="pos-breadcrumb d-flex align-items-center mb-3">
         <i class="bi bi-geo-alt-fill text-warning me-2"></i>
-        <span class="text-secondary">Trang chủ</span>
+        <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
         <span class="mx-2 text-muted">/</span>
-        <span class="text-secondary">Quản lý hàng hóa</span>
+        <a asp-controller="Categories" asp-action="Index">Quản lý hàng hóa</a>
         <span class="mx-2 text-muted">/</span>
         <span class="text-white fw-semibold">Danh mục món ăn & dụng cụ</span>
     </div>
@@ -29,10 +29,11 @@
     <!-- Header của trang: Tiêu đề + Nút hành động nhanh -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
-            <h2 class="h4 fw-bold text-white mb-0 d-flex align-items-center gap-2 font-heading">
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
                 <i class="bi bi-folder2-open" style="color: var(--primary-neon, #a6ff00);"></i>
-                DANH MỤC MÓN ĂN & DỤNG CỤ BIDA
+                DANH MỤC MÓN ĂN &amp; DỤNG CỤ BIDA
             </h2>
+            <div class="text-muted small">Phân loại nhóm đồ uống, món ăn và dụng cụ bida phục vụ quản lý thực đơn và bán hàng tại quầy</div>
         </div>
         <div class="d-flex align-items-center gap-2">
             @if (isAdminOrManager)
@@ -83,7 +84,7 @@
             <table class="table table-dark table-hover align-middle mb-0" style="background-color: transparent;">
                 <thead class="table-dark text-secondary small text-uppercase border-secondary" style="border-bottom: 1px solid var(--border-color, #1a2233);">
                     <tr>
-                        <th style="width: 70px;" class="text-center">#ID</th>
+                        <th style="width: 65px;" class="text-center">STT</th>
                         <th style="width: 90px;" class="text-center">Ảnh</th>
                         <th style="width: 160px;">Mã Code</th>
                         <th>Tên Danh Mục Nhóm Hàng</th>
@@ -94,11 +95,12 @@
                 <tbody>
                     @if (Model != null && Model.Any())
                     {
+                        int stt = 1;
                         foreach (var item in Model)
                         {
                             int count = itemCounts.ContainsKey(item.Id) ? itemCounts[item.Id] : 0;
                             <tr>
-                                <td class="text-center text-muted fw-bold">#@item.Id</td>
+                                <td class="text-center text-muted fw-bold font-monospace">@(stt++)</td>
                                 <td class="text-center">
                                     @if (!string.IsNullOrEmpty(item.Image))
                                     {
@@ -123,32 +125,28 @@
                                         <i class="bi bi-box-seam text-warning me-1"></i>@count sản phẩm
                                     </span>
                                 </td>
-                                <td class="text-end">
-                                    <div class="btn-group btn-group-sm">
-                                        <!-- Xem chi tiết (Tất cả vai trò đều được) -->
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" style="border-radius: 2px !important;" title="Xem chi tiết danh mục">
-                                            <i class="bi bi-eye"></i> Xem
+                                <td class="text-end pe-3">
+                                    <div class="action-btn-group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info action-btn-labeled" title="Xem chi tiết danh mục">
+                                            <i class="bi bi-eye"></i><span>Xem</span>
                                         </a>
 
                                         @if (isAdminOrManager)
                                         {
-                                            <!-- Sửa (Admin & Manager) -->
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning" style="border-radius: 2px !important;" title="Chỉnh sửa danh mục & ảnh">
-                                                <i class="bi bi-pencil-square"></i> Sửa
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning action-btn-labeled" title="Chỉnh sửa danh mục & ảnh">
+                                                <i class="bi bi-pencil-square"></i><span>Sửa</span>
                                             </a>
-                                            <!-- Xóa (Admin & Manager) -->
-                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" style="border-radius: 2px !important;" title="Xóa danh mục">
-                                                <i class="bi bi-trash"></i> Xóa
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger action-btn-labeled" title="Xóa danh mục">
+                                                <i class="bi bi-trash"></i><span>Xóa</span>
                                             </a>
                                         }
                                         else
                                         {
-                                            <!-- Khi là Cashier, nút bị khóa để hướng dẫn quyền -->
-                                            <button type="button" class="btn btn-outline-secondary opacity-50" style="border-radius: 2px !important;" disabled title="Thu ngân không có quyền Sửa">
-                                                <i class="bi bi-lock"></i> Sửa
+                                            <button type="button" class="btn btn-outline-secondary opacity-50 action-btn-labeled" disabled title="Thu ngân không có quyền Sửa">
+                                                <i class="bi bi-lock"></i><span>Sửa</span>
                                             </button>
-                                            <button type="button" class="btn btn-outline-secondary opacity-50" style="border-radius: 2px !important;" disabled title="Thu ngân không có quyền Xóa">
-                                                <i class="bi bi-lock"></i> Xóa
+                                            <button type="button" class="btn btn-outline-secondary opacity-50 action-btn-labeled" disabled title="Thu ngân không có quyền Xóa">
+                                                <i class="bi bi-lock"></i><span>Xóa</span>
                                             </button>
                                         }
                                     </div>

@@ -1,332 +1,276 @@
-@* ===================================================================================
-   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - QUẢN LÝ HÀNG HÓA: QUẢN LÝ BÀN & GIÁ
-   - Tên file: Views/Tables/Index.cshtml
-   - Vai trò: Quản lý đầy đủ danh sách 20 bàn bida, linh kiện nỉ/bi và cấu hình bảng giá theo khung giờ
-   - Layout: Views/Shared/_AdminLayout.cshtml
-   - CSS: wwwroot/css/admin-pos.css (Chuẩn bo góc 2px radius toàn trang)
-   =================================================================================== *@
+@model QuanLyQuanBida.ViewModels.TablesManageViewModel
 @{
     ViewData["Title"] = "Quản lý Bàn & Giá - BOLT BILLIARDS";
     Layout = "_AdminLayout";
+    var allTables = ViewBag.AllTables as List<QuanLyQuanBida.ViewModels.PosTableCardViewModel> ?? Model.Tables;
+    var slotsByType = ViewBag.SlotsByType as Dictionary<int, List<QuanLyQuanBida.Models.TimeSlotPrice>> ?? new Dictionary<int, List<QuanLyQuanBida.Models.TimeSlotPrice>>();
+    var tablesById = ViewBag.TablesById as Dictionary<int, QuanLyQuanBida.Models.BilliardTable> ?? new Dictionary<int, QuanLyQuanBida.Models.BilliardTable>();
+    int? selectedAreaId = ViewBag.SelectedAreaId as int?;
+
+    int poolCount = allTables.Count(t => t.TableTypeName.Contains("Pool", StringComparison.OrdinalIgnoreCase));
+    int caromCount = allTables.Count(t => t.TableTypeName.Contains("Carom", StringComparison.OrdinalIgnoreCase));
+    int vipCount = allTables.Count(t => t.TableTypeName.Contains("VIP", StringComparison.OrdinalIgnoreCase));
 }
 
 <div class="container-fluid px-0">
     <!-- Breadcrumb -->
     <div class="pos-breadcrumb d-flex align-items-center mb-3">
         <i class="bi bi-geo-alt-fill text-warning me-2"></i>
-        <span class="text-secondary">Trang chủ</span>
+        <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
         <span class="mx-2 text-muted">/</span>
-        <span class="text-secondary">Quản lý hàng hóa</span>
+        <a asp-controller="Categories" asp-action="Index">Quản lý hàng hóa</a>
         <span class="mx-2 text-muted">/</span>
-        <span class="text-white fw-semibold">Quản lý Bàn & Giá</span>
+        <span class="text-white fw-semibold">Quản lý Bàn &amp; Giá</span>
     </div>
 
-    <!-- Header Trang & Tác vụ nhanh -->
+    <!-- Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
                 <i class="bi bi-gear-wide-connected" style="color: #c084fc;"></i>
-                QUẢN LÝ 20 BÀN BIDA & BIỂU PHÍ THEO KHUNG GIỜ
+                QUẢN LÝ @allTables.Count BÀN BIDA &amp; BIỂU PHÍ THEO KHUNG GIỜ
             </h2>
-            <div class="text-muted small">Cấu hình thông số kỹ thuật bàn thi đấu quốc tế và thiết lập giá giờ tự động theo khung giờ</div>
+            <div class="text-muted small">Cấu hình danh sách bàn thi đấu, thiết lập biểu phí 2 khung giờ tự động và theo dõi thiết bị đi kèm của từng bàn</div>
         </div>
         <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-dark btn-sm border-secondary text-light d-flex align-items-center gap-1" onclick="alert('Đã đồng bộ biểu phí giờ chơi sang hệ thống máy trạm POS.');" style="border-radius: 2px !important;">
-                <i class="bi bi-cloud-arrow-up"></i> Đồng bộ biểu phí
-            </button>
-            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemBan" style="border-radius: 2px !important;">
+            <a asp-controller="Pos" asp-action="Index" class="btn btn-dark btn-sm border-secondary text-light action-btn-labeled">
+                <i class="bi bi-grid-3x3-gap text-warning"></i><span>Xem Sơ đồ bàn POS</span>
+            </a>
+            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemBan">
                 <i class="bi bi-plus-circle-fill"></i> Thêm Bàn Mới
             </button>
         </div>
     </div>
 
-    <!-- 4 THẺ THỐNG KÊ KPI BÀN BIDA -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show bg-success bg-opacity-10 border-success text-success d-flex align-items-center gap-2 py-2 mb-3">
+            <i class="bi bi-check-circle-fill fs-5"></i>
+            <div>@TempData["SuccessMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show bg-danger bg-opacity-10 border-danger text-danger d-flex align-items-center gap-2 py-2 mb-3">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            <div>@TempData["ErrorMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- 4 KPI BÀN THỰC TẾ -->
     <div class="row g-3 mb-4">
         <div class="col-6 col-xl-3">
             <div class="kpi-stat-card d-flex align-items-center gap-3">
-                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
-                    <i class="bi bi-grid-3x3-gap"></i>
-                </div>
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);"><i class="bi bi-grid-3x3-gap"></i></div>
                 <div>
                     <p class="kpi-label">Tổng số bàn thi đấu</p>
-                    <div class="kpi-value text-white">20 <small class="fs-6 text-muted fw-normal">Bàn</small></div>
+                    <div class="kpi-value text-white">@allTables.Count <small class="fs-6 text-muted fw-normal">Bàn</small></div>
                 </div>
             </div>
         </div>
         <div class="col-6 col-xl-3">
             <div class="kpi-stat-card d-flex align-items-center gap-3">
-                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
-                    <i class="bi bi-circle"></i>
-                </div>
+                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);"><i class="bi bi-circle"></i></div>
                 <div>
                     <p class="kpi-label">Bàn Pool 9-Ball (Lỗ)</p>
-                    <div class="kpi-value" style="color: #60a5fa;">10 <small class="fs-6 text-muted fw-normal">Aileex Crown</small></div>
+                    <div class="kpi-value" style="color: #60a5fa;">@poolCount <small class="fs-6 text-muted fw-normal">Bàn</small></div>
                 </div>
             </div>
         </div>
         <div class="col-6 col-xl-3">
             <div class="kpi-stat-card d-flex align-items-center gap-3">
-                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
-                    <i class="bi bi-disc"></i>
-                </div>
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);"><i class="bi bi-disc"></i></div>
                 <div>
                     <p class="kpi-label">Bàn Carom Phăng</p>
-                    <div class="kpi-value" style="color: #eab308;">6 <small class="fs-6 text-muted fw-normal">Gabriels</small></div>
+                    <div class="kpi-value" style="color: #eab308;">@caromCount <small class="fs-6 text-muted fw-normal">Bàn</small></div>
                 </div>
             </div>
         </div>
         <div class="col-6 col-xl-3">
             <div class="kpi-stat-card d-flex align-items-center gap-3">
-                <div class="kpi-icon" style="color: #c084fc; background: rgba(192, 132, 252, 0.1);">
-                    <i class="bi bi-star-fill"></i>
-                </div>
+                <div class="kpi-icon" style="color: #c084fc; background: rgba(192, 132, 252, 0.1);"><i class="bi bi-star-fill"></i></div>
                 <div>
                     <p class="kpi-label">Phòng VIP 3 Băng</p>
-                    <div class="kpi-value" style="color: #c084fc;">4 <small class="fs-6 text-muted fw-normal">Min Table</small></div>
+                    <div class="kpi-value" style="color: #c084fc;">@vipCount <small class="fs-6 text-muted fw-normal">Phòng</small></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TABS ĐIỀU HƯỚNG: DANH SÁCH BÀN & BẢNG GIÁ GIỜ -->
-    <ul class="nav nav-pills nav-pills-bolt mb-3" id="tableSettingTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="tab-dsban-btn" data-bs-toggle="pill" data-bs-target="#tab-dsban" type="button" role="tab" aria-controls="tab-dsban" aria-selected="true">
-                <i class="bi bi-list-columns me-1"></i> Danh Sách Thông Số 20 Bàn (20)
+    <ul class="nav nav-pills nav-pills-bolt mb-3" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-dsban" type="button">
+                <i class="bi bi-list-columns me-1"></i> Danh Sách Thông Số Bàn (@Model.Tables.Count)
             </button>
         </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-banggia-btn" data-bs-toggle="pill" data-bs-target="#tab-banggia" type="button" role="tab" aria-controls="tab-banggia" aria-selected="false">
-                <i class="bi bi-clock-history me-1"></i> Biểu Phí Theo Khung Giờ (Time Slots)
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-banggia" type="button">
+                <i class="bi bi-clock-history me-1"></i> Biểu Phí Theo Khung Giờ (@Model.TimeSlots.Count Khung)
             </button>
         </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-thietbi-btn" data-bs-toggle="pill" data-bs-target="#tab-thietbi" type="button" role="tab" aria-controls="tab-thietbi" aria-selected="false">
-                <i class="bi bi-lamp me-1"></i> Thiết Bị Đi Kèm Bàn (Bi, Cơ, Đèn)
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-thietbi" type="button">
+                <i class="bi bi-lamp me-1"></i> Thiết Bị Đi Kèm Bàn (@Model.Equipments.Select(e => e.BilliardTableId).Distinct().Count()/@allTables.Count Bàn)
             </button>
         </li>
     </ul>
 
-    <!-- NỘI DUNG TABS -->
-    <div class="tab-content" id="tableSettingTabsContent">
-        <!-- TAB 1: DANH SÁCH 20 BÀN -->
-        <div class="tab-pane fade show active" id="tab-dsban" role="tabpanel">
-            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
-                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
-                    <div class="d-flex align-items-center gap-2">
-                        <input type="text" id="tableSearchInput" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="Tìm kiếm theo số bàn, khu vực, loại bàn..." style="width: 280px; border-radius: 2px !important;" />
-                        <select id="tableAreaFilter" class="form-select form-select-sm bg-black text-light border-secondary" style="width: 220px; border-radius: 2px !important;">
-                            <option value="">Tất cả khu vực (20 bàn)</option>
-                            <option value="tang1">Tầng 1 - Bàn Lỗ Pool (10)</option>
-                            <option value="tang2">Tầng 2 - Carom Phăng (6)</option>
-                            <option value="vip">Phòng VIP 3 Băng (4)</option>
-                        </select>
-                    </div>
-                    <span class="text-muted small">Quy mô tiêu chuẩn thi đấu Liên đoàn Billiards & Snooker</span>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-dark table-hover align-middle mb-0" id="tablesListTable" style="font-size: 0.88rem;">
-                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.74rem; letter-spacing: 0.5px;">
-                            <tr>
-                                <th class="ps-3">SỐ BÀN</th>
-                                <th>TÊN BÀN</th>
-                                <th>KHU VỰC</th>
-                                <th>CHỦNG LOẠI</th>
-                                <th>THƯƠNG HIỆU</th>
-                                <th>VẢI NỈ & BI</th>
-                                <th>BẢO TRÌ GẦN NHẤT</th>
-                                <th class="text-end">ĐƠN GIÁ GIỜ</th>
-                                <th class="text-center">TÌNH TRẠNG</th>
-                                <th class="text-center pe-3">THAO TÁC</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @* ================= TẦNG 1: 10 BÀN POOL (BÀN 01 ĐẾN 10) ================= *@
-                            @for (int i = 1; i <= 10; i++)
-                            {
-                                string tableNum = i < 10 ? $"0{i}" : $"{i}";
-                                <tr data-area="tang1">
-                                    <td class="ps-3"><strong class="text-white font-monospace">#@tableNum</strong></td>
-                                    <td><span class="fw-bold text-white">BÀN @tableNum</span></td>
-                                    <td><span class="badge bg-black border border-secondary text-secondary">Tầng 1 - Sàn Lỗ</span></td>
-                                    <td>Bida Lỗ (Pool 9FT)</td>
-                                    <td><strong class="text-info">Aileex Crown 9020</strong></td>
-                                    <td>Nỉ Simonis 860 / Bi Aramith Pro Cup</td>
-                                    <td class="small text-muted">01/11/2026 (Thay nỉ Simonis mới)</td>
-                                    <td class="text-end fw-bold" style="color: var(--primary-neon);">60.000 đ/h</td>
-                                    <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">HOÀN HẢO</span></td>
-                                    <td class="text-center pe-3">
-                                        <button class="btn btn-sm btn-outline-warning p-1 px-2 btn-edit-table" data-table="BÀN @tableNum" data-brand="Aileex Crown 9020" data-price="60000" data-area="Tầng 1" title="Cập nhật bảo trì & giá" style="border-radius: 2px !important;"><i class="bi bi-tools"></i></button>
-                                    </td>
-                                </tr>
-                            }
-
-                            @* ================= TẦNG 2: 6 BÀN CAROM (BÀN 11 ĐẾN 16) ================= *@
-                            @for (int i = 11; i <= 16; i++)
-                            {
-                                <tr data-area="tang2">
-                                    <td class="ps-3"><strong class="text-white font-monospace">#@i</strong></td>
-                                    <td><span class="fw-bold text-white">BÀN @i</span></td>
-                                    <td><span class="badge bg-black border border-secondary text-warning">Tầng 2 - Sàn Phăng</span></td>
-                                    <td>Carom Phăng (Libre)</td>
-                                    <td><strong class="text-warning">Gabriels Rafale France</strong></td>
-                                    <td>Nỉ Iwan Simonis / Bi Super Aramith</td>
-                                    <td class="small text-muted">28/10/2026 (Cân đá mặt phẳng)</td>
-                                    <td class="text-end fw-bold" style="color: var(--primary-neon);">50.000 đ/h</td>
-                                    <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">HOÀN HẢO</span></td>
-                                    <td class="text-center pe-3">
-                                        <button class="btn btn-sm btn-outline-warning p-1 px-2 btn-edit-table" data-table="BÀN @i" data-brand="Gabriels Rafale France" data-price="50000" data-area="Tầng 2" title="Cập nhật bảo trì & giá" style="border-radius: 2px !important;"><i class="bi bi-tools"></i></button>
-                                    </td>
-                                </tr>
-                            }
-
-                            @* ================= PHÒNG VIP: 4 BÀN 3 BĂNG (BÀN 17 ĐẾN 20) ================= *@
-                            @for (int i = 17; i <= 20; i++)
-                            {
-                                <tr data-area="vip">
-                                    <td class="ps-3"><strong class="text-white font-monospace">#@i</strong></td>
-                                    <td><span class="fw-bold text-white">BÀN @i (VIP)</span></td>
-                                    <td><span class="badge bg-black border border-primary text-info">Phòng VIP Máy Lạnh</span></td>
-                                    <td>Carom 3 Băng Sưởi Nhiệt</td>
-                                    <td><strong class="text-primary">Min Table Korea Stadium</strong></td>
-                                    <td>Sưởi nhiệt điện trở / Vải Simonis 300</td>
-                                    <td class="small text-muted">05/11/2026 (Kiểm định nhiệt độ bàn)</td>
-                                    <td class="text-end fw-bold" style="color: var(--primary-neon);">90.000 đ/h</td>
-                                    <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">HOÀN HẢO</span></td>
-                                    <td class="text-center pe-3">
-                                        <button class="btn btn-sm btn-outline-warning p-1 px-2 btn-edit-table" data-table="BÀN @i (VIP)" data-brand="Min Table Korea Stadium" data-price="90000" data-area="Phòng VIP" title="Cập nhật bảo trì & giá" style="border-radius: 2px !important;"><i class="bi bi-tools"></i></button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 2: BIỂU PHÍ THEO KHUNG GIỜ -->
-        <div class="tab-pane fade" id="tab-banggia" role="tabpanel">
-            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
-                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
-                    <span class="fw-bold text-white font-heading">CẤU HÌNH BIỂU PHÍ GIỜ CHƠI TỰ ĐỘNG THEO CA & PHÒNG</span>
-                    <button class="btn btn-sm btn-bolt-outline" onclick="alert('Đã lưu cấu hình bảng giá giờ chơi mới!');" style="border-radius: 2px !important;">
-                        <i class="bi bi-save"></i> Lưu cài đặt biểu phí
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="row g-4">
-                        <div class="col-md-4">
-                            <div class="p-3 bg-black border border-secondary border-opacity-50" style="border-radius: 2px !important;">
-                                <div class="fw-bold text-info fs-6 font-heading mb-2">KHUNG GIỜ THƯỜNG (08:00 - 14:00)</div>
-                                <div class="small text-muted mb-3">Áp dụng cho học sinh, sinh viên và khách tập luyện buổi sáng</div>
-                                <div class="mb-2">
-                                    <label class="small text-secondary">Đơn giá áp dụng:</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control bg-dark text-light border-secondary" value="50000" style="border-radius: 2px !important;" />
-                                        <span class="input-group-text bg-secondary text-dark fw-bold">VNĐ/Giờ</span>
-                                    </div>
-                                </div>
-                                <div class="small text-success"><i class="bi bi-check2"></i> Đang kích hoạt tự động theo đồng hồ hệ thống</div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="p-3 bg-black border border-warning border-opacity-50" style="border-radius: 2px !important;">
-                                <div class="fw-bold text-warning fs-6 font-heading mb-2">KHUNG GIỜ VÀNG (14:00 - 22:00)</div>
-                                <div class="small text-muted mb-3">Thời gian cao điểm sau giờ làm việc, phục vụ cơ thủ giao lưu</div>
-                                <div class="mb-2">
-                                    <label class="small text-secondary">Đơn giá áp dụng:</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control bg-dark text-light border-secondary" value="70000" style="border-radius: 2px !important;" />
-                                        <span class="input-group-text bg-secondary text-dark fw-bold">VNĐ/Giờ</span>
-                                    </div>
-                                </div>
-                                <div class="small text-warning"><i class="bi bi-lightning-charge"></i> Khung giờ cao điểm đông khách nhất</div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="p-3 bg-black border border-secondary border-opacity-50" style="border-radius: 2px !important;">
-                                <div class="fw-bold text-white fs-6 font-heading mb-2">KHUNG GIỜ ĐÊM (22:00 - 08:00)</div>
-                                <div class="small text-muted mb-3">Chính sách ưu đãi cho anh em cơ thủ cày đêm xuyên sáng</div>
-                                <div class="mb-2">
-                                    <label class="small text-secondary">Đơn giá áp dụng:</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control bg-dark text-light border-secondary" value="60000" style="border-radius: 2px !important;" />
-                                        <span class="input-group-text bg-secondary text-dark fw-bold">VNĐ/Giờ</span>
-                                    </div>
-                                </div>
-                                <div class="small text-muted"><i class="bi bi-moon-stars"></i> Mở cửa xuyên đêm 24/7 phục vụ</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 3: THIẾT BỊ ĐI KÈM BÀN BIDA (BẢNG thiet_bi_ban) -->
-        <div class="tab-pane fade" id="tab-thietbi" role="tabpanel" aria-labelledby="tab-thietbi-btn">
-            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
-                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-white fw-bold mb-0"><i class="bi bi-lamp text-warning me-2"></i>Trang Thiết Bị Bàn Bida (Bộ Bi Aramith, Đèn LED, Cơ CLB, Bảng Điểm)</h6>
-                        <div class="text-muted small" style="font-size: 0.76rem;">Theo dõi tình trạng hao mòn phụ kiện trang bị cố định theo từng bàn</div>
-                    </div>
-                    <button class="btn btn-bolt-outline btn-sm" onclick="alert('Đã xuất danh sách kiểm kê trang thiết bị 20 bàn bida.');" style="border-radius: 2px !important;">
-                        <i class="bi bi-clipboard-data me-1"></i> Kiểm kê thiết bị
-                    </button>
+    <div class="tab-content">
+        <!-- TAB 1: DANH SÁCH ĐỦ 20 BÀN KÈM GIÁ 2 KHUNG GIỜ -->
+        <div class="tab-pane fade show active" id="tab-dsban">
+            <div class="card bg-dark border-secondary border-opacity-50 overflow-hidden">
+                <div class="card-header bg-black bg-opacity-40 py-3 d-flex flex-wrap gap-2">
+                    <a asp-action="Index" class="btn btn-sm @(selectedAreaId == null ? "btn-bolt-neon" : "btn-outline-secondary")">Tất cả (@allTables.Count)</a>
+                    @foreach (var a in Model.Areas)
+                    {
+                        <a asp-action="Index" asp-route-areaId="@a.Id" class="btn btn-sm @(selectedAreaId == a.Id ? "btn-bolt-neon" : "btn-outline-secondary")">@a.Name</a>
+                    }
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.85rem;">
+                    <table class="table table-dark table-hover align-middle mb-0 small">
                         <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem;">
                             <tr>
-                                <th class="ps-3 py-2">Bàn Bida</th>
-                                <th>Bộ Bi Chuẩn</th>
-                                <th>Đèn LED Chiếu Sáng</th>
-                                <th>Cơ CLB & Cầu Nối</th>
-                                <th>Bảng Điểm & Tam Giác</th>
-                                <th class="text-center">Tình Trạng</th>
-                                <th class="text-center pe-3">Cập Nhật</th>
+                                <th class="ps-3" style="width: 55px;">STT</th>
+                                <th>MÃ BÀN</th>
+                                <th>TÊN BÀN</th>
+                                <th>KHU VỰC</th>
+                                <th>LOẠI BÀN</th>
+                                <th class="text-end">GIÁ KHUNG NGÀY</th>
+                                <th class="text-end">GIÁ KHUNG TỐI</th>
+                                <th class="text-center">TRẠNG THÁI</th>
+                                <th class="text-end pe-3">ĐỔI TRẠNG THÁI</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @{ int tStt = 1; }
+                            @foreach (var t in Model.Tables)
+                            {
+                                var tblEntity = tablesById.ContainsKey(t.Id) ? tablesById[t.Id] : null;
+                                var tSlots = tblEntity != null && slotsByType.ContainsKey(tblEntity.TableTypeId)
+                                    ? slotsByType[tblEntity.TableTypeId]
+                                    : new List<QuanLyQuanBida.Models.TimeSlotPrice>();
+                                decimal p1 = tSlots.Count >= 1 ? tSlots[0].SlotPrice : t.HourlyRate;
+                                decimal p2 = tSlots.Count >= 2 ? tSlots[1].SlotPrice : p1;
+                                <tr>
+                                    <td class="ps-3 text-secondary font-monospace fw-bold">@(tStt++)</td>
+                                    <td class="font-monospace text-info fw-bold">@t.Code</td>
+                                    <td class="fw-bold text-white">@t.Name</td>
+                                    <td>@t.AreaName</td>
+                                    <td>@t.TableTypeName</td>
+                                    <td class="text-end fw-bold text-success">@p1.ToString("N0") đ/h</td>
+                                    <td class="text-end fw-bold" style="color: var(--primary-neon);">@p2.ToString("N0") đ/h</td>
+                                    <td class="text-center">
+                                        <span class="badge @(t.Status == "Đang chơi" ? "bg-warning text-dark" : t.Status == "Trống" ? "bg-success text-dark" : "bg-info text-dark") fw-bold">@t.Status</span>
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <form asp-action="ChangeStatus" method="post" class="d-inline-flex gap-1 align-items-center">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@t.Id" />
+                                            <select name="status" class="form-select form-select-sm bg-black text-light border-secondary" style="width: 135px;">
+                                                <option value="Trống" selected="@(t.Status == "Trống" ? "selected" : null)">Trống</option>
+                                                <option value="Đang chơi" selected="@(t.Status == "Đang chơi" ? "selected" : null)">Đang chơi</option>
+                                                <option value="Đã đặt trước" selected="@(t.Status == "Đã đặt trước" ? "selected" : null)">Đã đặt trước</option>
+                                                <option value="Bảo trì" selected="@(t.Status == "Bảo trì" ? "selected" : null)">Bảo trì</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-outline-info btn-sm action-btn" title="Cập nhật trạng thái">
+                                                <i class="bi bi-check-lg"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: BIỂU PHÍ 2 KHUNG GIỜ CHO MỖI LOẠI BÀN + NÚT SỬA GIÁ & GIỜ -->
+        <div class="tab-pane fade" id="tab-banggia">
+            <div class="card bg-dark border-secondary border-opacity-50 overflow-hidden">
+                <div class="card-header bg-black bg-opacity-40 py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-bold text-white small text-uppercase font-heading"><i class="bi bi-clock-history text-warning me-2"></i>CẤU HÌNH 2 KHUNG GIỜ GIÁ CHO TỪNG LOẠI BÀN</span>
+                        <div class="text-muted small">Mỗi loại bàn có Khung Ngày và Khung Tối. Khi khách đang chơi bước sang khung giờ mới, Sơ đồ bàn POS sẽ tự động tính lại tiền giờ theo từng phút.</div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0 small">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem;">
                             <tr>
-                                <td class="ps-3 fw-bold text-white">BÀN 01 - BÀN 03 <small class="text-muted">(Pool)</small></td>
-                                <td>Aramith Pro-Cup TV (16 bi)</td>
-                                <td>LED Panel Chống Chói 120W</td>
-                                <td>4 Cơ Fury + 1 Lết</td>
-                                <td>Bảng cơ + Tam giác gỗ</td>
-                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">TỐT (100%)</span></td>
-                                <td class="text-center pe-3"><button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Thiết bị Bàn 01-03 đang hoạt động ổn định.');"><i class="bi bi-wrench"></i></button></td>
+                                <th class="ps-3" style="width: 55px;">STT</th>
+                                <th>LOẠI BÀN</th>
+                                <th>NHÓM KHUNG GIỜ</th>
+                                <th>KHUNG GIỜ ÁP DỤNG</th>
+                                <th class="text-end">ĐƠN GIÁ GIỜ</th>
+                                <th class="text-end pe-3" style="width: 150px;">CHỈNH SỬA</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int slotStt = 1;
+                                var seenByType = new Dictionary<string, int>();
+                            }
+                            @foreach (var s in Model.TimeSlots)
+                            {
+                                int idxInType = seenByType.ContainsKey(s.TableTypeName) ? seenByType[s.TableTypeName] + 1 : 1;
+                                seenByType[s.TableTypeName] = idxInType;
+                                bool isDay = idxInType == 1;
+                                <tr>
+                                    <td class="ps-3 text-secondary font-monospace fw-bold">@(slotStt++)</td>
+                                    <td class="fw-bold text-white">@s.TableTypeName</td>
+                                    <td>
+                                        <span class="badge @(isDay ? "bg-info text-dark" : "bg-warning text-dark") fw-bold">
+                                            @(isDay ? "☀️ Khung 1 (Ban ngày)" : "🌙 Khung 2 (Buổi tối / Đêm)")
+                                        </span>
+                                    </td>
+                                    <td class="font-monospace text-info fw-semibold">@s.SlotStartTime.ToString(@"hh\:mm") — @s.SlotEndTime.ToString(@"hh\:mm")</td>
+                                    <td class="text-end fw-bold fs-6" style="color: var(--primary-neon);">@s.SlotPrice.ToString("N0") đ/giờ</td>
+                                    <td class="text-end pe-3">
+                                        <button type="button" class="btn btn-outline-warning action-btn-labeled"
+                                                onclick="openEditSlotModal(@s.Id, '@s.TableTypeName', '@(isDay ? "Khung 1 (Ban ngày)" : "Khung 2 (Buổi tối / Đêm)")', '@s.SlotStartTime.ToString(@"hh\:mm")', '@s.SlotEndTime.ToString(@"hh\:mm")', @((int)s.SlotPrice))">
+                                            <i class="bi bi-pencil-square"></i><span>Sửa giá &amp; giờ</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: THIẾT BỊ ĐI KÈM ĐẦY ĐỦ 20/20 BÀN -->
+        <div class="tab-pane fade" id="tab-thietbi">
+            <div class="card bg-dark border-secondary border-opacity-50 overflow-hidden">
+                <div class="card-header bg-black bg-opacity-40 py-3">
+                    <span class="fw-bold text-white small text-uppercase font-heading"><i class="bi bi-lamp text-info me-2"></i>DANH MỤC THIẾT BỊ ĐI KÈM ĐẦY ĐỦ @Model.Equipments.Count BÀN</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0 small">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem;">
                             <tr>
-                                <td class="ps-3 fw-bold text-white">BÀN 04 & BÀN 08 <small class="text-muted">(Pool)</small></td>
-                                <td>Aramith Premier (Cần đánh bóng)</td>
-                                <td>LED Panel 120W (Nhấp nháy nhẹ)</td>
-                                <td>4 Cơ CLB (2 đầu tẩy mòn)</td>
-                                <td>Bảng cơ + Tam giác nhựa</td>
-                                <td class="text-center"><span class="badge bg-warning text-dark" style="border-radius: 2px;">CẦN BẢO DƯỠNG</span></td>
-                                <td class="text-center pe-3"><button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Đã tạo yêu cầu thay đầu cơ và đánh bóng bi cho Bàn 04 & 08!');"><i class="bi bi-wrench"></i></button></td>
+                                <th class="ps-3" style="width: 55px;">STT</th>
+                                <th>BÀN ÁP DỤNG</th>
+                                <th>BỘ THIẾT BỊ ĐI KÈM (BI, ĐÈN, PHỤ KIỆN BÀN)</th>
+                                <th class="text-center">SỐ BỘ</th>
+                                <th class="text-center pe-3">TÌNH TRẠNG</th>
                             </tr>
-                            <tr>
-                                <td class="ps-3 fw-bold text-white">BÀN 11 - BÀN 16 <small class="text-muted">(Carom)</small></td>
-                                <td>Aramith Pro-Cup 3 Bi (Đỏ/Trắng/Vàng)</td>
-                                <td>LED Máng Đôi Carom Chuyên Dụng</td>
-                                <td>4 Cơ Carom Libre</td>
-                                <td>Bảng điểm điện tử LED</td>
-                                <td class="text-center"><span class="badge bg-success text-dark" style="border-radius: 2px;">TỐT (98%)</span></td>
-                                <td class="text-center pe-3"><button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Thiết bị khu Carom Tầng 2 hoạt động tốt.');"><i class="bi bi-wrench"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td class="ps-3 fw-bold text-warning">BÀN 17 - BÀN 20 <small class="text-warning">(VIP 3 Băng)</small></td>
-                                <td>Dynaspheres Platinum 3 Băng</td>
-                                <td>Hệ thống sưởi bàn + LED VIP</td>
-                                <td>2 Cơ VIP + Giá đỡ cơ gửi</td>
-                                <td>Màn hình bảng điểm Cảm ứng</td>
-                                <td class="text-center"><span class="badge bg-info text-dark" style="border-radius: 2px;">CHUẨN THI ĐẤU</span></td>
-                                <td class="text-center pe-3"><button class="btn btn-sm btn-outline-warning p-1 px-2" style="border-radius: 2px !important;" onclick="alert('Phòng VIP 3 Băng đạt chuẩn thi đấu Quốc tế.');"><i class="bi bi-wrench"></i></button></td>
-                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int eqStt = 1; }
+                            @foreach (var eq in Model.Equipments)
+                            {
+                                <tr>
+                                    <td class="ps-3 text-secondary font-monospace fw-bold">@(eqStt++)</td>
+                                    <td class="fw-bold text-info">@(Model.TableNameDict.ContainsKey(eq.BilliardTableId) ? Model.TableNameDict[eq.BilliardTableId] : $"Bàn #{eq.BilliardTableId}")</td>
+                                    <td class="text-white">@eq.Name</td>
+                                    <td class="text-center fw-bold">@eq.Quantity</td>
+                                    <td class="text-center pe-3"><span class="badge bg-success text-dark fw-bold">@eq.Status</span></td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -335,197 +279,106 @@
     </div>
 </div>
 
-<!-- ========================================================================= -->
-<!-- MODAL THÊM BÀN BIDA MỚI                                                   -->
-<!-- ========================================================================= -->
-<div class="modal fade" id="modalThemBan" tabindex="-1" aria-hidden="true">
+<!-- MODAL SỬA KHUNG GIỜ & ĐƠN GIÁ -->
+<div class="modal fade" id="modalEditSlot" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+        <div class="modal-content bg-dark border-secondary text-light">
             <div class="modal-header border-secondary border-opacity-25">
-                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
-                    <i class="bi bi-plus-circle-fill text-warning"></i> THÊM BÀN BIDA VÀO SƠ ĐỒ
-                </h5>
+                <h5 class="modal-title font-heading fw-bold"><i class="bi bi-clock-history text-warning me-2"></i>CHỈNH SỬA KHUNG GIỜ &amp; ĐƠN GIÁ</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <form>
-                    <!-- UPLOAD ẢNH BÀN BIDA -->
-                    <div class="mb-3 text-center">
-                        <label class="form-label small text-muted d-block text-start">Ảnh thực tế bàn bida (*):</label>
-                        <div class="d-flex align-items-center gap-3">
-                            <div style="width: 56px; height: 56px; border-radius: 2px; background: #1e293b; border: 1px dashed #64748b; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                <img id="previewNewTableImg" src="" alt="" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
-                                <i id="iconNewTableImg" class="bi bi-camera text-secondary fs-4"></i>
-                            </div>
-                            <div class="flex-grow-1 text-start">
-                                <input type="file" id="newTableImgInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewTableImg(this, 'previewNewTableImg', 'iconNewTableImg');" style="border-radius: 2px !important;" />
-                                <div class="form-text text-muted small" style="font-size: 0.72rem;">Ảnh chụp góc bàn và mặt nỉ để khách tham khảo.</div>
-                            </div>
-                        </div>
+            <form asp-action="UpdateTimeSlot" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="editSlotId" />
+                <div class="modal-body">
+                    <div class="p-2 px-3 mb-3 bg-black border border-secondary border-opacity-50 small">
+                        <div class="fw-bold text-white" id="editSlotTypeName"></div>
+                        <div class="text-warning" id="editSlotGroupLabel"></div>
                     </div>
-                    <div class="row g-2 mb-3">
+                    <div class="row g-3 mb-3">
                         <div class="col-6">
-                            <label class="form-label small text-muted">Số thứ tự bàn (*):</label>
-                            <input type="number" class="form-control bg-black text-light border-secondary" placeholder="21" style="border-radius: 2px !important;" required />
+                            <label class="form-label small fw-bold text-uppercase text-muted">Giờ bắt đầu</label>
+                            <input type="time" name="startTime" id="editSlotStart" class="form-control form-control-bolt" required />
                         </div>
                         <div class="col-6">
-                            <label class="form-label small text-muted">Tên hiển thị:</label>
-                            <input type="text" class="form-control bg-black text-light border-secondary" placeholder="BÀN 21" style="border-radius: 2px !important;" />
+                            <label class="form-label small fw-bold text-uppercase text-muted">Giờ kết thúc</label>
+                            <input type="time" name="endTime" id="editSlotEnd" class="form-control form-control-bolt" required />
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label small text-muted">Khu vực bố trí:</label>
-                        <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
-                            <option value="1">Tầng 1 - Sàn Bàn Lỗ Pool</option>
-                            <option value="2">Tầng 2 - Sàn Bàn Phăng Carom</option>
-                            <option value="3">Phòng VIP Máy Lạnh Riêng Biệt</option>
-                        </select>
+                    <div class="mb-0">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Đơn giá mỗi giờ (VNĐ)</label>
+                        <input type="number" name="slotPrice" id="editSlotPrice" class="form-control form-control-bolt fw-bold" min="0" step="1000" required />
+                        <div class="form-text small">Sau khi lưu, Sơ đồ bàn POS sẽ tự động tính lại tiền giờ theo khung mới.</div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label small text-muted">Chủng loại & Hãng bàn:</label>
-                        <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
-                            <option value="1">Bida Lỗ (Pool 9FT) - Aileex Crown 9020</option>
-                            <option value="2">Bida Phăng (Libre) - Gabriels Rafale</option>
-                            <option value="3">Bida 3 Băng - Min Table Korea Stadium</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small text-muted">Đơn giá niêm yết (VNĐ/giờ):</label>
-                        <input type="number" class="form-control bg-black text-light border-secondary" value="60000" style="border-radius: 2px !important;" />
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-secondary border-opacity-25">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Đóng</button>
-                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã thêm bàn mới vào hệ thống thành công!');" style="border-radius: 2px !important;">
-                    <i class="bi bi-check-lg"></i> Xác nhận Lưu bàn
-                </button>
-            </div>
+                </div>
+                <div class="modal-footer border-secondary border-opacity-25">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm"><i class="bi bi-check-lg me-1"></i>Lưu Biểu Phí Mới</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- ========================================================================= -->
-<!-- MODAL CẬP NHẬT BẢO TRÌ BÀN                                                -->
-<!-- ========================================================================= -->
-<div class="modal fade" id="modalSuaBan" tabindex="-1" aria-hidden="true">
+<!-- MODAL THÊM BÀN MỚI -->
+<div class="modal fade" id="modalThemBan" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark border-secondary text-light" style="border-radius: 2px !important;">
+        <div class="modal-content bg-dark border-secondary text-light">
             <div class="modal-header border-secondary border-opacity-25">
-                <h5 class="modal-title font-heading fw-bold d-flex align-items-center gap-2">
-                    <i class="bi bi-tools text-warning"></i> CẬP NHẬT THÔNG TIN & BẢO TRÌ: <span id="modalEditTableName">BÀN</span>
-                </h5>
+                <h5 class="modal-title font-heading fw-bold"><i class="bi bi-plus-circle-fill text-success me-2"></i>THÊM BÀN BIDA MỚI</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <form>
-                    <!-- UPLOAD ẢNH BÀN KHI BẢO TRÌ -->
-                    <div class="mb-3 text-center">
-                        <label class="form-label small text-muted d-block text-start">Ảnh hiện trạng bàn bida:</label>
-                        <div class="d-flex align-items-center gap-3">
-                            <div style="width: 56px; height: 56px; border-radius: 2px; background: #000; border: 1px solid #334155; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                <img id="previewEditTableImg" src="/images/hero/hero-table.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </div>
-                            <div class="flex-grow-1 text-start">
-                                <input type="file" id="editTableImgInput" class="form-control form-control-sm bg-black text-light border-secondary" accept="image/*" onchange="previewTableImg(this, 'previewEditTableImg');" style="border-radius: 2px !important;" />
-                                <div class="form-text text-muted small" style="font-size: 0.72rem;">Cập nhật ảnh sau khi bảo trì hoặc thay nỉ mới.</div>
-                            </div>
+            <form asp-action="CreateTable" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="row g-3 mb-3">
+                        <div class="col-5">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Mã bàn</label>
+                            <input type="text" name="code" class="form-control form-control-bolt font-monospace text-uppercase" placeholder="VD: BAN_21" required />
+                        </div>
+                        <div class="col-7">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Tên hiển thị</label>
+                            <input type="text" name="name" class="form-control form-control-bolt" placeholder="VD: Bàn 21 (Lỗ Pool)" required />
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small text-muted">Hãng sản xuất / Model:</label>
-                        <input type="text" id="modalEditTableBrand" class="form-control bg-black text-info border-secondary fw-bold" readonly style="border-radius: 2px !important;" />
+                        <label class="form-label small fw-bold text-uppercase text-muted">Khu vực đặt bàn</label>
+                        <select name="tableAreaId" class="form-select form-select-bolt">
+                            @foreach (var a in Model.Areas)
+                            {
+                                <option value="@a.Id">@a.Name</option>
+                            }
+                        </select>
                     </div>
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label small text-muted">Đơn giá giờ (VNĐ):</label>
-                            <input type="number" id="modalEditTablePrice" class="form-control bg-black text-warning border-secondary fw-bold" style="border-radius: 2px !important;" />
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small text-muted">Trạng thái vận hành:</label>
-                            <select class="form-select bg-black text-light border-secondary" style="border-radius: 2px !important;">
-                                <option value="ok" selected>Hoàn hảo (Sẵn sàng)</option>
-                                <option value="maint">Đang bảo trì thay nỉ/cân đá</option>
-                            </select>
-                        </div>
+                    <div class="mb-0">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Loại bàn &amp; Mức giá</label>
+                        <select name="tableTypeId" class="form-select form-select-bolt">
+                            @foreach (var t in Model.TableTypes)
+                            {
+                                <option value="@t.Id">@t.Name (@t.BasePrice.ToString("N0") đ/giờ)</option>
+                            }
+                        </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label small text-muted">Nhật ký bảo trì gần nhất:</label>
-                        <input type="text" class="form-control bg-black text-light border-secondary" value="Cân chỉnh mặt đá, vệ sinh bi và thay nỉ mới" style="border-radius: 2px !important;" />
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-secondary border-opacity-25">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="border-radius: 2px !important;">Hủy</button>
-                <button type="button" class="btn btn-bolt-neon btn-sm px-3" data-bs-dismiss="modal" onclick="alert('Đã lưu thông tin bảo trì bàn thành công!');" style="border-radius: 2px !important;">
-                    <i class="bi bi-check-lg"></i> Lưu cập nhật
-                </button>
-            </div>
+                </div>
+                <div class="modal-footer border-secondary border-opacity-25">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-bolt-neon btn-sm"><i class="bi bi-check-lg"></i> Lưu bàn mới</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        function previewTableImg(input, previewImgId, hideIconId) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    var img = document.getElementById(previewImgId);
-                    if (img) {
-                        img.src = e.target.result;
-                        img.style.display = 'block';
-                    }
-                    if (hideIconId) {
-                        var icon = document.getElementById(hideIconId);
-                        if (icon) icon.style.display = 'none';
-                    }
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+        function openEditSlotModal(id, typeName, groupLabel, start, end, price) {
+            document.getElementById('editSlotId').value = id;
+            document.getElementById('editSlotTypeName').textContent = typeName;
+            document.getElementById('editSlotGroupLabel').textContent = groupLabel;
+            document.getElementById('editSlotStart').value = start;
+            document.getElementById('editSlotEnd').value = end;
+            document.getElementById('editSlotPrice').value = price;
+            new bootstrap.Modal(document.getElementById('modalEditSlot')).show();
         }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var searchInput = document.getElementById('tableSearchInput');
-            var areaFilter = document.getElementById('tableAreaFilter');
-            var tableRows = document.querySelectorAll('#tablesListTable tbody tr');
-
-            function filterTables() {
-                var query = (searchInput.value || '').trim().toLowerCase();
-                var selectedArea = (areaFilter.value || '').trim();
-
-                tableRows.forEach(function (row) {
-                    var rowArea = row.getAttribute('data-area') || '';
-                    var text = row.textContent.toLowerCase();
-
-                    var matchesQuery = !query || text.includes(query);
-                    var matchesArea = !selectedArea || rowArea === selectedArea;
-
-                    if (matchesQuery && matchesArea) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            }
-
-            if (searchInput) searchInput.addEventListener('input', filterTables);
-            if (areaFilter) areaFilter.addEventListener('change', filterTables);
-
-            document.querySelectorAll('.btn-edit-table').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var table = this.getAttribute('data-table');
-                    var brand = this.getAttribute('data-brand');
-                    var price = this.getAttribute('data-price');
-
-                    document.getElementById('modalEditTableName').textContent = table;
-                    document.getElementById('modalEditTableBrand').value = brand;
-                    document.getElementById('modalEditTablePrice').value = price;
-
-                    var modal = new bootstrap.Modal(document.getElementById('modalSuaBan'));
-                    modal.show();
-                });
-            });
-        });
     </script>
 }
