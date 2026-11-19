@@ -1,0 +1,319 @@
+@* ===================================================================================
+   LAB 5 (BÀI 1B) — QUẢN LÝ NHÂN VIÊN & PHÂN QUYỀN TÀI KHOẢN (MVC + EF CORE)
+   - Dữ liệu: Đọc/ghi trực tiếp bảng Users, Roles, UserRoles (SQL Server)
+   - Phân quyền: Chỉ Admin (AdminOnly)
+   =================================================================================== *@
+@model IEnumerable<QuanLyQuanBida.ViewModels.StaffViewModel>
+@{
+    ViewData["Title"] = "Nhân sự & Phân ca - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+    var roles = ViewBag.Roles as List<QuanLyQuanBida.Models.Role> ?? new List<QuanLyQuanBida.Models.Role>();
+    int? selectedRoleId = ViewBag.SelectedRoleId as int?;
+    string searchStr = ViewBag.SearchString as string ?? "";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+        <span class="mx-2 text-muted">/</span>
+        <a asp-controller="Reports" asp-action="Index">Quản trị & Báo cáo</a>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Nhân sự & Phân ca</span>
+    </div>
+
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-people-fill text-primary"></i>
+                QUẢN LÝ NHÂN VIÊN, PHÂN QUYỀN & CA TRỰC
+            </h2>
+            <div class="text-muted small">Quản lý hồ sơ nhân viên, phân quyền vai trò vận hành và theo dõi nhật ký hoạt động nội bộ</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Create" class="btn btn-bolt-neon btn-sm d-flex align-items-center gap-1 px-3" style="border-radius: 2px !important;">
+                <i class="bi bi-person-plus-fill"></i> + Thêm Nhân Viên Mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Thông báo kết quả -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show bg-success bg-opacity-10 border-success text-success d-flex align-items-center gap-2 py-2 mb-3" role="alert" style="border-radius: 2px !important;">
+            <i class="bi bi-check-circle-fill fs-5"></i>
+            <div>@TempData["SuccessMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show bg-danger bg-opacity-10 border-danger text-danger d-flex align-items-center gap-2 py-2 mb-3" role="alert" style="border-radius: 2px !important;">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            <div>@TempData["ErrorMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- 4 THẺ KPI THỰC TẾ TỪ SQL SERVER -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tổng nhân sự (DB)</p>
+                    <div class="kpi-value text-white">@(ViewBag.TotalStaff ?? 0) <small class="fs-6 text-muted fw-normal">Tài khoản</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
+                    <i class="bi bi-person-check-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Đang hoạt động</p>
+                    <div class="kpi-value text-success">@(ViewBag.ActiveStaff ?? 0) <small class="fs-6 text-muted fw-normal">Active</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                    <i class="bi bi-person-lock"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tài khoản bị khóa</p>
+                    <div class="kpi-value text-danger">@(ViewBag.LockedStaff ?? 0) <small class="fs-6 text-muted fw-normal">Locked</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Nhóm vai trò</p>
+                    <div class="kpi-value text-warning">@roles.Count <small class="fs-6 text-muted fw-normal">Vai trò</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <ul class="nav nav-pills nav-pills-bolt mb-3" id="staffTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-dsnhanvien-btn" data-bs-toggle="pill" data-bs-target="#tab-dsnhanvien" type="button" role="tab">
+                <i class="bi bi-person-lines-fill me-1"></i> Danh Sách Nhân Viên (@Model.Count())
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-audit-btn" data-bs-toggle="pill" data-bs-target="#tab-audit" type="button" role="tab">
+                <i class="bi bi-shield-lock me-1"></i> Nhật Ký Hệ Thống
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="staffTabsContent">
+        <!-- TAB 1: DANH SÁCH NHÂN VIÊN THẬT TỪ SQL SERVER -->
+        <div class="tab-pane fade show active" id="tab-dsnhanvien" role="tabpanel">
+            <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
+                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3">
+                    <form method="get" asp-action="Index" class="row g-2 align-items-center">
+                        <div class="col-12 col-md-4">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-black text-muted border-secondary" style="border-radius: 2px 0 0 2px;"><i class="bi bi-search"></i></span>
+                                <input type="text" name="searchString" value="@searchStr" class="form-control bg-black text-light border-secondary" placeholder="Tìm họ tên, username, email, SĐT..." style="border-radius: 0 2px 2px 0 !important;" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <select name="roleId" class="form-select form-select-sm bg-black text-light border-secondary" onchange="this.form.submit();" style="border-radius: 2px !important;">
+                                <option value="">-- Tất cả vai trò --</option>
+                                @foreach (var r in roles)
+                                {
+                                    if (selectedRoleId == r.Id)
+                                    {
+                                        <option value="@r.Id" selected>@r.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@r.Id">@r.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-auto d-flex gap-2">
+                            <button type="submit" class="btn btn-bolt-neon btn-sm px-3" style="border-radius: 2px !important;">
+                                <i class="bi bi-funnel-fill me-1"></i> Lọc
+                            </button>
+                            @if (selectedRoleId.HasValue || !string.IsNullOrWhiteSpace(searchStr))
+                            {
+                                <a asp-action="Index" class="btn btn-outline-secondary btn-sm" style="border-radius: 2px !important;">Xóa lọc</a>
+                            }
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.87rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.74rem; letter-spacing: 0.5px;">
+                            <tr>
+                                <th class="ps-3" style="width: 60px;">STT</th>
+                                <th>NHÂN VIÊN</th>
+                                <th>USERNAME</th>
+                                <th>VAI TRÒ</th>
+                                <th>EMAIL & SĐT</th>
+                                <th class="text-center">TRẠNG THÁI</th>
+                                <th class="text-end pe-3" style="width: 230px;">THAO TÁC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                int stt = 1;
+                                foreach (var nv in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-3 text-secondary font-monospace fw-bold">@(stt++)</td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                @if (!string.IsNullOrWhiteSpace(nv.Avatar))
+                                                {
+                                                    <img src="~/@nv.Avatar" alt="@nv.FullName" style="width: 36px; height: 36px; object-fit: cover; border-radius: 2px; border: 1px solid rgba(166,255,0,0.4);" />
+                                                }
+                                                else
+                                                {
+                                                    <div style="width: 36px; height: 36px; border-radius: 2px; background: @(nv.RoleName == "Admin" ? "var(--primary-neon)" : nv.RoleName == "Manager" ? "#60a5fa" : "#f59e0b"); color: #000; display: flex; align-items: center; justify-content: center; font-weight: 800;">
+                                                        @nv.FullName.Substring(0, 1).ToUpper()
+                                                    </div>
+                                                }
+                                                <div>
+                                                    <div class="fw-bold text-white">@nv.FullName</div>
+                                                    <div class="small text-muted">Tạo ngày: @nv.CreatedAt.ToString("dd/MM/yyyy")</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-black border border-info text-info font-monospace" style="border-radius: 2px;">@nv.Username</span></td>
+                                        <td>
+                                            @if (nv.RoleName == "Admin")
+                                            {
+                                                <span class="badge bg-danger text-light" style="border-radius: 2px;">👑 Admin</span>
+                                            }
+                                            else if (nv.RoleName == "Manager")
+                                            {
+                                                <span class="badge bg-warning text-dark fw-bold" style="border-radius: 2px;">⭐ Manager</span>
+                                            }
+                                            else if (nv.RoleName == "Cashier")
+                                            {
+                                                <span class="badge bg-info text-dark fw-bold" style="border-radius: 2px;">👤 Cashier</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary text-light" style="border-radius: 2px;">@nv.RoleName</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="text-light small"><i class="bi bi-envelope text-info me-1"></i>@nv.Email</div>
+                                            <div class="text-muted small"><i class="bi bi-telephone text-warning me-1"></i>@(string.IsNullOrWhiteSpace(nv.PhoneNumber) ? "Chưa cập nhật" : nv.PhoneNumber)</div>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (nv.IsActive)
+                                            {
+                                                <span class="badge bg-success text-dark fw-bold" style="border-radius: 2px;">HOẠT ĐỘNG</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger text-light fw-bold" style="border-radius: 2px;">ĐÃ KHÓA</span>
+                                            }
+                                        </td>
+                                        <td class="text-end pe-3">
+                                            <div class="action-btn-group">
+                                                <a asp-action="Details" asp-route-id="@nv.Id" class="btn btn-outline-info action-btn" title="Xem hồ sơ">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <form asp-action="ToggleActive" asp-route-id="@nv.Id" method="post" class="action-btn-form">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn @(nv.IsActive ? "btn-outline-secondary" : "btn-outline-success") action-btn" title="@(nv.IsActive ? "Khóa tài khoản" : "Mở khóa tài khoản")">
+                                                        <i class="bi @(nv.IsActive ? "bi-lock" : "bi-unlock")"></i>
+                                                    </button>
+                                                </form>
+                                                <a asp-action="Edit" asp-route-id="@nv.Id" class="btn btn-outline-warning action-btn" title="Chỉnh sửa hồ sơ">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@nv.Id" class="btn btn-outline-danger action-btn" title="Xóa nhân viên">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-5">Không tìm thấy nhân viên nào phù hợp.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: AUDIT TRAIL THẬT TỪ SQL SERVER -->
+        @{
+            var logs = ViewBag.ActivityLogs as List<QuanLyQuanBida.Models.ActivityLog> ?? new List<QuanLyQuanBida.Models.ActivityLog>();
+            var userDict = ViewBag.UserDict as Dictionary<int, string> ?? new Dictionary<int, string>();
+        }
+        <div class="tab-pane fade" id="tab-audit" role="tabpanel">
+            <div class="card bg-dark border-secondary border-opacity-50 overflow-hidden" style="border-radius: 2px !important;">
+                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white fw-bold mb-0"><i class="bi bi-shield-check text-info me-2"></i>NHẬT KÝ HOẠT ĐỘNG HỆ THỐNG (@logs.Count BẢN GHI)</h6>
+                        <div class="text-muted small">Ghi nhận các thao tác quản trị, nhập kho và thanh toán trong hệ thống</div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.85rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem;">
+                            <tr>
+                                <th class="ps-3">THỜI GIAN</th>
+                                <th>NHÂN SỰ THỰC HIỆN</th>
+                                <th>HÀNH ĐỘNG</th>
+                                <th>PHÂN HỆ</th>
+                                <th>MÔ TẢ CHI TIẾT</th>
+                                <th class="pe-3 text-end">ĐỊA CHỈ IP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (logs.Any())
+                            {
+                                foreach (var log in logs)
+                                {
+                                    string staffName = userDict.ContainsKey(log.UserId) ? userDict[log.UserId] : $"User #{log.UserId}";
+                                    <tr>
+                                        <td class="ps-3 text-muted font-monospace">@log.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td class="fw-bold text-white">@staffName</td>
+                                        <td><span class="badge bg-black border border-info text-info font-monospace" style="border-radius: 2px;">@log.Action</span></td>
+                                        <td class="text-warning small font-monospace">@log.TableName</td>
+                                        <td class="text-light">@log.Description</td>
+                                        <td class="pe-3 text-end text-muted font-monospace">@(log.IpAddress ?? "127.0.0.1")</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="6" class="text-center text-muted py-4">Chưa có nhật ký hoạt động nào.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

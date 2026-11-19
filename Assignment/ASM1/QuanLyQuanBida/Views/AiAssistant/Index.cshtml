@@ -1,0 +1,357 @@
+@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - QUẢN TRỊ: AI TRỢ LÝ BIDA
+   - Tên file: Views/AiAssistant/Index.cshtml
+   - Vai trò: Giao diện AI thông minh phân tích vận hành, dự báo giờ cao điểm,
+     cảnh báo bảo trì thiết bị và trợ lý điều hành câu lạc bộ
+   - Layout: Views/Shared/_AdminLayout.cshtml
+   - CSS: wwwroot/css/admin-pos.css (Chuẩn bo góc 2px radius toàn trang)
+   =================================================================================== *@
+@{
+    ViewData["Title"] = "AI Trợ lý Bida - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+        <span class="mx-2 text-muted">/</span>
+        <a asp-controller="Reports" asp-action="Index">Quản trị & Báo cáo</a>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">AI Trợ lý Bida</span>
+    </div>
+
+    <!-- Header Trang & Trạng thái AI Engine -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <div class="badge text-uppercase fw-bold px-2 py-1 mb-1" style="background: rgba(166, 255, 0, 0.15); color: var(--primary-neon); border-radius: 2px;">
+                <i class="bi bi-robot me-1"></i> BOLT AI INTELLIGENCE ENGINE v2.5
+            </div>
+            <h2 class="h3 fw-bold text-white mb-1 font-heading">
+                AI Trợ lý <span style="color: var(--primary-neon);">Điều Hành Bida</span>
+            </h2>
+            <div class="text-muted small">Phân tích hành vi cơ thủ, dự báo công suất bàn và tối ưu hóa doanh thu tự động</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-black border border-success text-success p-2 px-3 d-flex align-items-center gap-2" style="border-radius: 2px;">
+                <span class="indicator-dot"></span>
+                <span>AI Engine: <strong>Đang hoạt động (Online)</strong></span>
+            </span>
+            <button class="btn btn-bolt-neon btn-sm" onclick="alert('Đã cập nhật mô hình AI với dữ liệu giao dịch 28 hóa đơn hôm nay!');" style="border-radius: 2px !important;">
+                <i class="bi bi-arrow-repeat"></i> Huấn luyện lại AI
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 THẺ CẢNH BÁO & ĐỀ XUẤT THÔNG MINH CỦA AI -->
+    <div class="row g-3 mb-4">
+        <!-- 1. DỰ BÁO GIỜ CAO ĐIỂM -->
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card bg-dark border-secondary border-opacity-50 h-100 p-3" style="border-radius: 2px !important;">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-danger text-light" style="border-radius: 2px; font-size: 0.7rem;">DỰ BÁO CAO ĐIỂM</span>
+                    <i class="bi bi-fire text-danger fs-5"></i>
+                </div>
+                <h5 class="fw-bold text-white fs-6 mb-1">Khung giờ 18:00 - 22:30</h5>
+                <p class="text-muted small mb-2">Dự báo kín <strong>100% công suất bàn (20/20 bàn)</strong> tối nay do có 8 nhóm khách quen đã đặt hẹn.</p>
+                <div class="mt-auto pt-2 border-top border-secondary border-opacity-25 small text-warning">
+                    <i class="bi bi-lightbulb-fill me-1"></i> Bố trí thêm 2 nhân viên hỗ trợ order F&B và xếp bi nhanh.
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. COMBO F&B BÁN CHẠY -->
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card bg-dark border-secondary border-opacity-50 h-100 p-3" style="border-radius: 2px !important;">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge text-dark fw-bold" style="background: var(--primary-neon); border-radius: 2px; font-size: 0.7rem;">GỢI Ý COMBO</span>
+                    <i class="bi bi-lightning-charge-fill fs-5" style="color: var(--primary-neon);"></i>
+                </div>
+                <h5 class="fw-bold text-white fs-6 mb-1">Combo Cà Phê Muối + Bánh Mì</h5>
+                <p class="text-muted small mb-2">Tỷ lệ gọi kèm khi khách chơi trên 2 tiếng đạt <strong>68.4%</strong>. Tăng doanh thu thêm 65.000 đ/bàn.</p>
+                <div class="mt-auto pt-2 border-top border-secondary border-opacity-25 small" style="color: var(--primary-neon);">
+                    <i class="bi bi-graph-up-arrow me-1"></i> Thiết lập tự động pop-up trên màn hình POS khi mở bàn quá 90 phút.
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. CẢNH BÁO BẢO TRÌ NỈ & BÀN -->
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card bg-dark border-secondary border-opacity-50 h-100 p-3" style="border-radius: 2px !important;">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-warning text-dark fw-bold" style="border-radius: 2px; font-size: 0.7rem;">BẢO TRÌ DỰ ĐOÁN</span>
+                    <i class="bi bi-tools text-warning fs-5"></i>
+                </div>
+                <h5 class="fw-bold text-white fs-6 mb-1">Bàn 04 & Bàn 08 cần thay nỉ</h5>
+                <p class="text-muted small mb-2">Đã ghi nhận <strong>182 giờ thi đấu liên tục</strong>. Độ ma sát giảm 14%, bi lăn lệch nhẹ ở băng số 3.</p>
+                <div class="mt-auto pt-2 border-top border-secondary border-opacity-25 small text-info">
+                    <i class="bi bi-calendar-check me-1"></i> Xếp lịch thay nỉ Simonis 860 vào sáng thứ Năm (08:00 - 11:00).
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. CHĂM SÓC HỘI VIÊN VIP -->
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card bg-dark border-secondary border-opacity-50 h-100 p-3" style="border-radius: 2px !important;">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-info text-dark fw-bold" style="border-radius: 2px; font-size: 0.7rem;">GIỮ CHÂN HỘI VIÊN</span>
+                    <i class="bi bi-award-fill text-info fs-5"></i>
+                </div>
+                <h5 class="fw-bold text-white fs-6 mb-1">Cảnh báo 3 cơ thủ VIP vắng mặt</h5>
+                <p class="text-muted small mb-2">3 hội viên VIP Vàng (trong tổng số 156 hội viên) chưa quay lại quá <strong>14 ngày</strong>.</p>
+                <div class="mt-auto pt-2 border-top border-secondary border-opacity-25 small text-success">
+                    <i class="bi bi-chat-dots-fill me-1"></i> Gửi tin nhắn SMS tặng 1h chơi miễn phí khi check-in trong tuần này.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KHUNG CHAT TRỰC TIẾP VỚI AI VÀ BẢNG PHÂN TÍCH CHUYÊN SÂU -->
+    <div class="row g-3">
+        <!-- CỘT TRÁI (COL-7): TRỢ LÝ HỎI ĐÁP AI CONSOLE -->
+        <div class="col-12 col-xl-7">
+            <div class="card bg-dark border-secondary border-opacity-50 h-100 d-flex flex-column" style="border-radius: 2px !important;">
+                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="p-1 px-2 bg-black border border-success" style="border-radius: 2px;">
+                            <i class="bi bi-cpu-fill" style="color: var(--primary-neon);"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title font-heading fw-bold text-white mb-0 fs-6">Hộp thoại Trợ lý AI Bida</h5>
+                            <span class="text-muted small" style="font-size: 0.72rem;">Hỏi đáp dữ liệu vận hành, tra cứu doanh thu và xin tư vấn chiến lược</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="clearAiChat();" style="border-radius: 2px !important; font-size: 0.75rem;">
+                        <i class="bi bi-trash"></i> Xóa lịch sử
+                    </button>
+                </div>
+
+                <!-- CÁC CÂU HỎI NHANH MẪU (QUICK PROMPTS) -->
+                <div class="p-3 bg-black bg-opacity-30 border-bottom border-secondary border-opacity-25">
+                    <div class="text-secondary small mb-2" style="font-size: 0.75rem;">Gợi ý câu hỏi nhanh:</div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-dark btn-sm border-secondary text-light quick-ai-btn" onclick="askAiQuestion('Đánh giá doanh thu hôm nay và so sánh với hôm qua?');" style="border-radius: 2px; font-size: 0.75rem;">
+                            📊 Doanh thu hôm nay?
+                        </button>
+                        <button class="btn btn-dark btn-sm border-secondary text-light quick-ai-btn" onclick="askAiQuestion('Bàn nào đang hoạt động quá tải cần bảo dưỡng?');" style="border-radius: 2px; font-size: 0.75rem;">
+                            🎱 Bàn nào cần bảo trì?
+                        </button>
+                        <button class="btn btn-dark btn-sm border-secondary text-light quick-ai-btn" onclick="askAiQuestion('Hội viên nào chi tiêu nhiều nhất trong 156 khách hàng?');" style="border-radius: 2px; font-size: 0.75rem;">
+                            👑 Top khách hàng VIP?
+                        </button>
+                        <button class="btn btn-dark btn-sm border-secondary text-light quick-ai-btn" onclick="askAiQuestion('Đề xuất kế hoạch tổ chức giải đấu Bolt Championship tiếp theo?');" style="border-radius: 2px; font-size: 0.75rem;">
+                            🏆 Tư vấn giải đấu?
+                        </button>
+                    </div>
+                </div>
+
+                <!-- VÙNG NỘI DUNG TIN NHẮN CHAT -->
+                <div class="card-body p-3 flex-grow-1 overflow-auto" id="aiChatBox" style="max-height: 400px; min-height: 320px;">
+                    <!-- Tin nhắn bot mở đầu -->
+                    <div class="d-flex gap-2 mb-3">
+                        <div class="avatar-badge" style="width: 32px; height: 32px; border-radius: 2px; background: var(--primary-neon); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <div class="p-3 bg-black border border-secondary border-opacity-40 text-light small" style="border-radius: 2px; max-width: 85%;">
+                            <div class="fw-bold mb-1" style="color: var(--primary-neon);">BOLT AI ASSISTANT:</div>
+                            Xin chào Quản trị viên <strong>Đào Ngọc Giang</strong>! Tôi là trợ lý AI vận hành của BOLT BILLIARDS. Hôm nay hệ thống đang ghi nhận <strong>14/20 bàn đang chơi</strong>, tổng doanh thu đạt <strong>8.450.000 đ</strong> từ <strong>28 hóa đơn</strong> hoàn tất. Bạn cần tôi phân tích số liệu nào?
+                        </div>
+                    </div>
+
+                    <!-- Tin nhắn hỏi của user mẫu -->
+                    <div class="d-flex gap-2 justify-content-end mb-3">
+                        <div class="p-3 border border-secondary text-light small" style="background: rgba(166, 255, 0, 0.1); border-color: rgba(166, 255, 0, 0.3) !important; border-radius: 2px; max-width: 85%;">
+                            <div class="fw-bold text-white mb-1">Đào Ngọc Giang:</div>
+                            Phân tích tình hình doanh thu tiền bàn so với tiền dịch vụ hôm nay thế nào?
+                        </div>
+                        <div class="avatar-badge" style="width: 32px; height: 32px; border-radius: 2px; background: #60a5fa; color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">
+                            Đ
+                        </div>
+                    </div>
+
+                    <!-- Phản hồi thông minh của AI -->
+                    <div class="d-flex gap-2 mb-3">
+                        <div class="avatar-badge" style="width: 32px; height: 32px; border-radius: 2px; background: var(--primary-neon); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <div class="p-3 bg-black border border-secondary border-opacity-40 text-light small" style="border-radius: 2px; max-width: 85%;">
+                            <div class="fw-bold mb-1" style="color: var(--primary-neon);">BOLT AI ASSISTANT:</div>
+                            Dựa trên 28 hóa đơn hoàn tất hôm nay:
+                            <ul class="mb-2 ps-3 mt-1">
+                                <li><strong>Tiền bàn:</strong> 4.850.000 đ (chiếm <strong>57.4%</strong> tổng doanh thu).</li>
+                                <li><strong>Tiền dịch vụ F&B:</strong> 3.600.000 đ (chiếm <strong>42.6%</strong>).</li>
+                            </ul>
+                            Tỷ trọng F&B trên 40% là chỉ số cực kỳ lành mạnh đối với mô hình bida hiện đại. Món đóng góp doanh thu lớn nhất là <strong>Cà phê muối Đào Ngọc Giang (28.000 đ)</strong> và <strong>Bia Heineken</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- THANH NHẬP LIỆU CHAT -->
+                <div class="card-footer bg-black bg-opacity-40 border-secondary border-opacity-25 p-3">
+                    <form onsubmit="handleSendAiMessage(event);" class="d-flex gap-2">
+                        <input type="text" id="aiUserInput" class="form-control bg-dark text-light border-secondary" placeholder="Nhập câu hỏi của bạn cho Trợ lý AI Bida..." style="border-radius: 2px !important;" />
+                        <button type="submit" class="btn btn-bolt-neon px-3" style="border-radius: 2px !important;">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI (COL-5): CHỈ SỐ SỨC KHỎE HỆ THỐNG VÀ CHIẾN LƯỢC TỐI ƯU -->
+        <div class="col-12 col-xl-5">
+            <div class="card bg-dark border-secondary border-opacity-50 h-100" style="border-radius: 2px !important;">
+                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3">
+                    <h5 class="card-title font-heading fw-bold text-white mb-0 fs-6 d-flex align-items-center gap-2">
+                        <i class="bi bi-speedometer2 text-info"></i> CHỈ SỐ VẬN HÀNH THÔNG MINH
+                    </h5>
+                </div>
+                <div class="card-body p-3">
+                    <!-- 1. TỶ LỆ LẤP ĐẦY BÀN -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-secondary">Công suất sử dụng bàn hiện tại:</span>
+                            <span class="text-white fw-bold">14/20 bàn (70%)</span>
+                        </div>
+                        <div class="progress bg-black" style="height: 8px; border-radius: 2px;">
+                            <div class="progress-bar bg-warning" style="width: 70%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 2. HIỆU SUẤT KHU VỰC VIP -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-secondary">Tỷ lệ lấp đầy Phòng VIP (Min Table):</span>
+                            <span class="text-info fw-bold">4/4 bàn (100%)</span>
+                        </div>
+                        <div class="progress bg-black" style="height: 8px; border-radius: 2px;">
+                            <div class="progress-bar bg-info" style="width: 100%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 3. MỨC ĐỘ THỎA MÃN KHÁCH HÀNG -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-secondary">Chỉ số hài lòng chất lượng nỉ & bi:</span>
+                            <span class="fw-bold" style="color: var(--primary-neon);">98.2 / 100 Pts</span>
+                        </div>
+                        <div class="progress bg-black" style="height: 8px; border-radius: 2px;">
+                            <div class="progress-bar" style="width: 98.2%; background: var(--primary-neon);"></div>
+                        </div>
+                    </div>
+
+                    <!-- BẢNG ĐỀ XUẤT HÀNH ĐỘNG HÔM NAY -->
+                    <div class="mt-4">
+                        <div class="text-uppercase small fw-bold text-secondary mb-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                            HÀNH ĐỘNG KHUYẾN NGHỊ HÔM NAY:
+                        </div>
+                        <div class="p-2 mb-2 bg-black border border-secondary border-opacity-30 small d-flex align-items-start gap-2" style="border-radius: 2px;">
+                            <i class="bi bi-check-square-fill text-success mt-1"></i>
+                            <div>
+                                <strong class="text-light">Nhập bổ sung Redbull & Khô bò:</strong>
+                                <div class="text-muted" style="font-size: 0.72rem;">Tồn kho Redbull chỉ còn 4 lon trong khi dự kiến bán 20 lon tối nay.</div>
+                            </div>
+                        </div>
+                        <div class="p-2 mb-2 bg-black border border-secondary border-opacity-30 small d-flex align-items-start gap-2" style="border-radius: 2px;">
+                            <i class="bi bi-check-square-fill text-warning mt-1"></i>
+                            <div>
+                                <strong class="text-light">Chuẩn bị bàn thi đấu giải đấu:</strong>
+                                <div class="text-muted" style="font-size: 0.72rem;">Bàn 01 - 04 cần được lau bóng bi lúc 18:30 để chuẩn bị cho Vòng loại.</div>
+                            </div>
+                        </div>
+                        <div class="p-2 bg-black border border-secondary border-opacity-30 small d-flex align-items-start gap-2" style="border-radius: 2px;">
+                            <i class="bi bi-check-square-fill text-info mt-1"></i>
+                            <div>
+                                <strong class="text-light">Liên hệ 3 khách VIP đặt hẹn:</strong>
+                                <div class="text-muted" style="font-size: 0.72rem;">Anh Long (Bàn 20 VIP) đã hẹn giờ đến 18:30, sẵn sàng 2 cơ nặng 530g.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function askAiQuestion(question) {
+            document.getElementById('aiUserInput').value = question;
+            handleSendAiMessage();
+        }
+
+        function handleSendAiMessage(event) {
+            if (event) event.preventDefault();
+            var input = document.getElementById('aiUserInput');
+            var text = (input.value || '').trim();
+            if (!text) return;
+
+            var chatBox = document.getElementById('aiChatBox');
+
+            // Append User message
+            var userHtml = `
+                <div class="d-flex gap-2 justify-content-end mb-3">
+                    <div class="p-3 border border-secondary text-light small" style="background: rgba(166, 255, 0, 0.1); border-color: rgba(166, 255, 0, 0.3) !important; border-radius: 2px; max-width: 85%;">
+                        <div class="fw-bold text-white mb-1">Đào Ngọc Giang:</div>
+                        ${escapeHtml(text)}
+                    </div>
+                    <div class="avatar-badge" style="width: 32px; height: 32px; border-radius: 2px; background: #60a5fa; color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">
+                        Đ
+                    </div>
+                </div>`;
+            chatBox.insertAdjacentHTML('beforeend', userHtml);
+            input.value = '';
+
+            // Generate AI Answer
+            setTimeout(function() {
+                var answer = generateAiAnswer(text);
+                var botHtml = `
+                    <div class="d-flex gap-2 mb-3">
+                        <div class="avatar-badge" style="width: 32px; height: 32px; border-radius: 2px; background: var(--primary-neon); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <div class="p-3 bg-black border border-secondary border-opacity-40 text-light small" style="border-radius: 2px; max-width: 85%;">
+                            <div class="fw-bold mb-1" style="color: var(--primary-neon);">BOLT AI ASSISTANT:</div>
+                            ${answer}
+                        </div>
+                    </div>`;
+                chatBox.insertAdjacentHTML('beforeend', botHtml);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 600);
+        }
+
+        function generateAiAnswer(query) {
+            var q = query.toLowerCase();
+            if (q.includes('doanh thu') || q.includes('tiền')) {
+                return 'Hôm nay tổng doanh thu đạt <strong>8.450.000 đ</strong> (Tiền bàn: 4.850.000 đ, F&B: 3.600.000 đ). Doanh thu qua VietQR chiếm <strong>62.1% (5.250.000 đ)</strong>, tiền mặt chiếm <strong>37.9% (3.200.000 đ)</strong> từ 28 hóa đơn.';
+            } else if (q.includes('bảo trì') || q.includes('bàn') || q.includes('nỉ')) {
+                return 'Khuyến nghị bảo trì <strong>Bàn 04 (Aileex Crown)</strong> và <strong>Bàn 08</strong> vì đã thi đấu hơn 180 giờ liên tục. Nỉ Simonis đã có dấu hiệu hao mòn nhẹ. Bàn 19 và 20 VIP đang ở trạng thái hoàn hảo 100%.';
+            } else if (q.includes('hội viên') || q.includes('vip') || q.includes('khách')) {
+                return 'Hệ thống có tổng cộng <strong>156 hội viên</strong>. Đứng đầu về điểm tích lũy và chi tiêu là cơ thủ <strong>Đào Ngọc Giang (VIP Diamond - 4.850 Pts, 18.6 triệu VNĐ)</strong>, tiếp theo là Lê Nhật Đăng (VIP Gold - 2.340 Pts) và Chú Năm Carom (VIP Gold - 2.850 Pts).';
+            } else if (q.includes('giải đấu') || q.includes('championship') || q.includes('cup')) {
+                return 'Giải đấu <strong>BOLT OPEN BILLIARDS CHAMPIONSHIP 2026</strong> đang diễn ra với 32 cơ thủ. Vòng loại 1/32 có 16 cặp đấu tại Bàn 01-04. Cơ thủ Đào Ngọc Giang và Trương Đăng Khoa đang là hai ứng viên sáng giá nhất cho chức vô địch 15.000.000 đ kèm Cúp Vàng.';
+            } else {
+                return `Dữ liệu phân tích cho "${escapeHtml(query)}" đã được ghi nhận. Toàn bộ thông số vận hành đều được đồng bộ tức thời giữa sơ đồ POS, hóa đơn, tồn kho và danh sách hội viên.`;
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function clearAiChat() {
+            var chatBox = document.getElementById('aiChatBox');
+            chatBox.innerHTML = `
+                <div class="d-flex gap-2 mb-3">
+                    <div class="avatar-badge" style="width: 32px; height: 32px; border-radius: 2px; background: var(--primary-neon); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <div class="p-3 bg-black border border-secondary border-opacity-40 text-light small" style="border-radius: 2px; max-width: 85%;">
+                        <div class="fw-bold mb-1" style="color: var(--primary-neon);">BOLT AI ASSISTANT:</div>
+                        Hộp thoại đã được đặt lại. Tôi sẵn sàng hỗ trợ các câu hỏi phân tích vận hành mới!
+                    </div>
+                </div>`;
+        }
+    </script>
+}

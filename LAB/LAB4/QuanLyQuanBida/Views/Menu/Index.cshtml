@@ -8,6 +8,7 @@
 @{
     ViewData["Title"] = "Thực đơn & Dịch vụ - BOLT BILLIARDS";
     Layout = "_AdminLayout";
+    bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
 }
 
 <div class="container-fluid px-0">
@@ -972,9 +973,20 @@
             if (searchInput) searchInput.addEventListener('input', filterMenu);
             if (categoryFilter) categoryFilter.addEventListener('change', filterMenu);
 
+            var canManageMenu = @(isAdminOrManager ? "true" : "false");
+            if (!canManageMenu) {
+                document.querySelectorAll('.btn-edit-menu, .btn-delete-menu').forEach(function (btn) {
+                    btn.disabled = true;
+                    btn.className = 'btn btn-sm btn-outline-secondary opacity-50 p-1 px-2 me-1';
+                    btn.title = 'Thu ngân chỉ có quyền xem thực đơn (Chỉ Admin/Manager được sửa/xóa)';
+                    btn.innerHTML = '<i class="bi bi-lock-fill"></i>';
+                });
+            }
+
             // Bắt sự kiện click nút Sửa
             document.querySelectorAll('.btn-edit-menu').forEach(function (btn) {
                 btn.addEventListener('click', function () {
+                    if (!canManageMenu) return;
                     var code = this.getAttribute('data-code');
                     var name = this.getAttribute('data-name');
                     var unit = this.getAttribute('data-unit');
@@ -1000,6 +1012,7 @@
             // Bắt sự kiện click nút Xóa
             document.querySelectorAll('.btn-delete-menu').forEach(function (btn) {
                 btn.addEventListener('click', function () {
+                    if (!canManageMenu) return;
                     var code = this.getAttribute('data-code');
                     var name = this.getAttribute('data-name');
 
