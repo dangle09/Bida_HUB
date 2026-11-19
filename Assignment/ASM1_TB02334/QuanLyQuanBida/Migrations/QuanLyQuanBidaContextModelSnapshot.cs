@@ -248,6 +248,11 @@ namespace QuanLyQuanBida.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("Code");
 
+                    b.Property<string>("Image")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Image");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
