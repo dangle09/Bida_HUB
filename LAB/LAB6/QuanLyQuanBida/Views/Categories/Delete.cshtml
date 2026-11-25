@@ -1,0 +1,94 @@
+@model QuanLyQuanBida.Models.Category
+@{
+    ViewData["Title"] = $"Xác nhận xóa danh mục: {Model.Name}";
+    Layout = "_AdminLayout";
+    int itemCount = ViewBag.ItemCount ?? 0;
+}
+
+<div class="container-fluid px-0">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div class="pos-breadcrumb d-flex align-items-center mb-0">
+            <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+            <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+            <span class="mx-2 text-muted">/</span>
+            <a asp-controller="Categories" asp-action="Index">Danh mục hàng hóa</a>
+            <span class="mx-2 text-muted">/</span>
+            <span class="text-danger fw-semibold">Xóa danh mục (#@Model.Id)</span>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm action-btn-labeled">
+            <i class="bi bi-arrow-left"></i><span>Quay lại</span>
+        </a>
+    </div>
+
+    <div class="compact-form-shell">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-9">
+                <div class="card form-workspace-card mode-danger">
+                    <div class="card-header py-2 px-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-exclamation-octagon-fill text-danger fs-5"></i>
+                            <div>
+                                <h6 class="mb-0 fw-bold text-white font-heading">XÁC NHẬN XÓA VĨNH VIỄN DANH MỤC</h6>
+                                <div class="text-danger fw-normal" style="font-size: 0.75rem;">Thao tác này sẽ xóa vĩnh viễn danh mục khỏi hệ thống và không thể hoàn tác</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-danger text-light font-monospace">ID #@Model.Id</span>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row g-3 align-items-center mb-3">
+                            <div class="col-auto">
+                                <div class="detail-avatar-frame" style="width: 96px; height: 96px; border-color: rgba(239,68,68,0.5);">
+                                @if (!string.IsNullOrEmpty(Model.Image))
+                                {
+                                    <img src="~/@Model.Image" alt="@Model.Name" class="w-100 h-100 object-fit-cover" />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-folder-x text-danger fs-1"></i>
+                                }
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-1"><span class="badge bg-black border border-info text-info font-monospace">@Model.Code</span></div>
+                            <h4 class="fw-bold text-white font-heading mb-2">@Model.Name</h4>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="detail-info-tile py-2">
+                                        <div class="detail-info-label">Mã định danh</div>
+                                        <div class="detail-info-value font-monospace">#@Model.Id</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="detail-info-tile py-2">
+                                        <div class="detail-info-label">Món liên kết</div>
+                                        <div class="detail-info-value @(itemCount > 0 ? "text-warning" : "text-success")">@itemCount sản phẩm</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (itemCount > 0)
+                    {
+                        <div class="alert alert-warning bg-warning bg-opacity-10 border-warning text-warning small mb-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Cảnh báo ảnh hưởng dữ liệu:</strong> Danh mục này đang chứa <strong>@itemCount sản phẩm/đồ uống</strong>. Khi xác nhận xóa, toàn bộ sản phẩm cùng dữ liệu tồn kho và chi tiết liên kết sẽ bị xóa đồng bộ.
+                        </div>
+                    }
+
+                    <form asp-action="Delete" method="post" class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-arrow-left me-1"></i> Không, quay lại
+                        </a>
+                        <button type="submit" class="btn btn-danger fw-bold px-4">
+                            <i class="bi bi-trash-fill me-1"></i> Xác Nhận Xóa Vĩnh Viễn
+                        </button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

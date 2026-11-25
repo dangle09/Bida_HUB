@@ -1,0 +1,303 @@
+@* ===================================================================================
+   LAB 5 (BÀI 1A + BÀI 3) — QUẢN LÝ THỰC ĐƠN ĐỒ UỐNG, MÓN ĂN & DỊCH VỤ F&B (MVC + EF CORE)
+   - Dữ liệu: Đọc/ghi trực tiếp từ bảng ServiceItems (SQL Server)
+   - Lọc theo loại (CategoryId) & Tìm kiếm theo tên (searchString) phía Server
+   =================================================================================== *@
+@model IEnumerable<QuanLyQuanBida.Models.ServiceItem>
+@{
+    ViewData["Title"] = "Thực đơn & Dịch vụ - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+    bool isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
+    var categories = ViewBag.Categories as List<QuanLyQuanBida.Models.Category> ?? new List<QuanLyQuanBida.Models.Category>();
+    var categoryDict = ViewBag.CategoryDict as Dictionary<int, QuanLyQuanBida.Models.Category> ?? new Dictionary<int, QuanLyQuanBida.Models.Category>();
+    var stockDict = ViewBag.StockDict as Dictionary<int, int> ?? new Dictionary<int, int>();
+    int? selectedCatId = ViewBag.SelectedCategoryId as int?;
+    string searchStr = ViewBag.SearchString as string ?? "";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        @if (!User.IsInRole("Waiter"))
+        {
+            <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+            <span class="mx-2 text-muted">/</span>
+        }
+        <a asp-controller="Pos" asp-action="Index">Vận hành &amp; Bán hàng</a>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Thực đơn &amp; Dịch vụ</span>
+    </div>
+
+    <!-- Header Trang & Tác vụ nhanh -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-cup-straw text-info"></i>
+                THỰC ĐƠN ĐỒ UỐNG, MÓN ĂN & PHỤ KIỆN
+            </h2>
+            <div class="text-muted small">Quản lý danh sách đồ uống, món ăn và dụng cụ bida phục vụ khách hàng tại bàn và quầy thu ngân</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            @if (isAdminOrManager)
+            {
+                <a asp-action="Create" class="btn btn-bolt-neon btn-sm d-flex align-items-center gap-1 px-3" style="border-radius: 2px !important;">
+                    <i class="bi bi-plus-circle-fill"></i> + Thêm Món Mới
+                </a>
+            }
+            else
+            {
+                <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-50 p-2" style="border-radius: 2px;">
+                    <i class="bi bi-lock-fill me-1"></i> Quyền Thu ngân: Chỉ xem & tìm kiếm thực đơn
+                </span>
+            }
+        </div>
+    </div>
+
+    <!-- Thông báo kết quả thao tác -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show bg-success bg-opacity-10 border-success text-success d-flex align-items-center gap-2 py-2 mb-3" role="alert" style="border-radius: 2px !important;">
+            <i class="bi bi-check-circle-fill fs-5"></i>
+            <div>@TempData["SuccessMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show bg-danger bg-opacity-10 border-danger text-danger d-flex align-items-center gap-2 py-2 mb-3" role="alert" style="border-radius: 2px !important;">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            <div>@TempData["ErrorMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- 4 THẺ KPI THỐNG KÊ TỪ SQL SERVER -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
+                    <i class="bi bi-card-list"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tổng thực đơn (DB)</p>
+                    <div class="kpi-value text-white">@(ViewBag.TotalAllItems ?? 0) <small class="fs-6 text-muted fw-normal">Món (@(ViewBag.TotalActiveItems ?? 0) đang bán)</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
+                    <i class="bi bi-cup-hot-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Đồ uống & Bia</p>
+                    <div class="kpi-value" style="color: #60a5fa;">@(ViewBag.DrinkCount ?? 0) <small class="fs-6 text-muted fw-normal">Món</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
+                    <i class="bi bi-egg-fried"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Ẩm thực F&B ăn vặt</p>
+                    <div class="kpi-value" style="color: #eab308;">@(ViewBag.FoodCount ?? 0) <small class="fs-6 text-muted fw-normal">Món</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #c084fc; background: rgba(192, 132, 252, 0.1);">
+                    <i class="bi bi-tools"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Dụng cụ & Phụ kiện</p>
+                    <div class="kpi-value" style="color: #c084fc;">@(ViewBag.AccessoryCount ?? 0) <small class="fs-6 text-muted fw-normal">Vật phẩm</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BÀI 3: THANH LỌC THEO LOẠI & TÌM KIẾM THEO TÊN PHÍA SERVER (GET /Menu?categoryId=...&searchString=...) -->
+    <div class="card bg-dark border-secondary border-opacity-50" style="border-radius: 2px !important;">
+        <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3">
+            <form method="get" asp-action="Index" class="row g-2 align-items-center">
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-black text-muted border-secondary" style="border-radius: 2px 0 0 2px;"><i class="bi bi-search"></i></span>
+                        <input type="text" name="searchString" value="@searchStr" class="form-control bg-black text-light border-secondary" placeholder="Nhập tên đồ uống, món ăn hoặc mã món..." style="border-radius: 0 2px 2px 0 !important;" />
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 col-lg-3">
+                    <select name="categoryId" class="form-select form-select-sm bg-black text-light border-secondary" onchange="this.form.submit();" style="border-radius: 2px !important;">
+                        <option value="">-- Tất cả danh mục (@(ViewBag.TotalAllItems ?? 0) món) --</option>
+                        @foreach (var cat in categories)
+                        {
+                            if (selectedCatId == cat.Id)
+                            {
+                                <option value="@cat.Id" selected>@cat.Name (@cat.Code)</option>
+                            }
+                            else
+                            {
+                                <option value="@cat.Id">@cat.Name (@cat.Code)</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-auto d-flex gap-2">
+                    <button type="submit" class="btn btn-bolt-neon btn-sm px-3" style="border-radius: 2px !important;">
+                        <i class="bi bi-funnel-fill me-1"></i> Lọc & Tìm
+                    </button>
+                    @if (selectedCatId.HasValue || !string.IsNullOrWhiteSpace(searchStr))
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-sm" style="border-radius: 2px !important;">
+                            <i class="bi bi-x-lg"></i> Xóa lọc
+                        </a>
+                    }
+                </div>
+                <div class="col-12 col-lg text-lg-end text-muted small">
+                    Kết quả truy vấn: <strong class="text-white">@Model.Count()</strong> / @(ViewBag.TotalAllItems ?? 0) sản phẩm
+                </div>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0" id="menuTable" style="font-size: 0.88rem;">
+                <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    <tr>
+                        <th class="ps-3" style="width: 60px;">STT</th>
+                        <th style="width: 80px;">ẢNH</th>
+                        <th style="width: 135px;">MÃ MÓN</th>
+                        <th>TÊN MÓN ĂN / ĐỒ UỐNG</th>
+                        <th>NHÓM DANH MỤC</th>
+                        <th>ĐVT</th>
+                        <th class="text-end">GIÁ BÁN</th>
+                        <th class="text-center">TỒN KHO</th>
+                        <th class="text-center">TRẠNG THÁI</th>
+                        <th class="text-end pe-3" style="width: 230px;">THAO TÁC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        int curPage = ViewBag.CurrentPage ?? 1;
+                        int pSize = ViewBag.PageSize ?? 30;
+                        int stt = (curPage - 1) * pSize + 1;
+                        foreach (var item in Model)
+                        {
+                            var cat = categoryDict.ContainsKey(item.CategoryId) ? categoryDict[item.CategoryId] : null;
+                            var reorderDict = ViewBag.ReorderDict as Dictionary<int, int> ?? new Dictionary<int, int>();
+                            int stock = stockDict.ContainsKey(item.Id) ? stockDict[item.Id] : 0;
+                            int reorder = reorderDict.ContainsKey(item.Id) ? reorderDict[item.Id] : 10;
+                            bool isLowStock = stock <= reorder;
+                            <tr>
+                                <td class="ps-3 text-secondary font-monospace fw-bold">@(stt++)</td>
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(item.Image))
+                                    {
+                                        <div class="thumb-category-wrap">
+                                            <img src="~/@item.Image" class="thumb-category-img" alt="@item.Name" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div style="width: 44px; height: 44px; background: #161c2b; border: 1px solid #232c42; border-radius: 2px; display: inline-flex; align-items: center; justify-content: center; color: #94a3b8;">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-black border border-info text-info font-monospace" style="border-radius: 2px;">@item.Code</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-white">@item.Name</div>
+                                    <div class="small text-muted">Phục vụ tại bàn &amp; mang về</div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark text-light border border-secondary" style="border-radius: 2px;">@(cat?.Name ?? "Chưa phân loại")</span>
+                                </td>
+                                <td>@item.Unit</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-neon);">@item.UnitPrice.ToString("N0") đ</td>
+                                <td class="text-center">
+                                    <div class="fw-bold @(stock == 0 ? "text-danger" : isLowStock ? "text-warning" : "text-success")">@stock @item.Unit</div>
+                                    @if (isLowStock)
+                                    {
+                                        <div class="small text-danger" style="font-size: 0.7rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i>Dưới mức @reorder</div>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-success text-dark fw-bold" style="border-radius: 2px;">ĐANG BÁN</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger text-light fw-bold" style="border-radius: 2px;">TẠM NGƯNG</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-3">
+                                    <div class="action-btn-group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info action-btn" title="Xem chi tiết">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        @if (isAdminOrManager)
+                                        {
+                                            <form asp-action="ToggleStatus" asp-route-id="@item.Id" method="post" class="action-btn-form">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn @(item.IsActive ? "btn-outline-secondary" : "btn-outline-success") action-btn" title="@(item.IsActive ? "Tạm ngưng bán" : "Mở bán lại")">
+                                                    <i class="bi @(item.IsActive ? "bi-pause-circle" : "bi-play-circle")"></i>
+                                                </button>
+                                            </form>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning action-btn" title="Chỉnh sửa món">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger action-btn" title="Xóa món">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-outline-secondary opacity-50 action-btn" disabled title="Thu ngân chỉ có quyền xem">
+                                                <i class="bi bi-lock-fill"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-5">
+                                <i class="bi bi-search fs-3 d-block mb-2 text-secondary"></i>
+                                Không tìm thấy món ăn hoặc đồ uống nào phù hợp với điều kiện lọc hiện tại.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @{
+            int mCurPage = ViewBag.CurrentPage ?? 1;
+            int mTotPages = ViewBag.TotalPages ?? 1;
+            int mTotFilt = ViewBag.TotalFiltered ?? Model.Count();
+        }
+        @if (mTotPages > 1)
+        {
+            <div class="bolt-pagination-bar">
+                <div class="small text-muted">Trang <strong class="text-white">@mCurPage / @mTotPages</strong> • Tổng <strong class="text-white">@mTotFilt</strong> món (30 dòng/trang)</div>
+                <ul class="bolt-pagination">
+                    <li><a class="bolt-page-link @(mCurPage <= 1 ? "disabled" : "")" asp-action="Index" asp-route-page="@(mCurPage - 1)" asp-route-categoryId="@selectedCatId" asp-route-searchString="@searchStr"><i class="bi bi-chevron-left"></i></a></li>
+                    @for (int p = 1; p <= mTotPages; p++)
+                    {
+                        <li><a class="bolt-page-link @(p == mCurPage ? "active" : "")" asp-action="Index" asp-route-page="@p" asp-route-categoryId="@selectedCatId" asp-route-searchString="@searchStr">@p</a></li>
+                    }
+                    <li><a class="bolt-page-link @(mCurPage >= mTotPages ? "disabled" : "")" asp-action="Index" asp-route-page="@(mCurPage + 1)" asp-route-categoryId="@selectedCatId" asp-route-searchString="@searchStr"><i class="bi bi-chevron-right"></i></a></li>
+                </ul>
+            </div>
+        }
+    </div>
+</div>

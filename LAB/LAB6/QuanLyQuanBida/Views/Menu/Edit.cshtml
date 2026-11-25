@@ -1,0 +1,173 @@
+@model QuanLyQuanBida.Models.ServiceItem
+@{
+    ViewData["Title"] = $"Chỉnh sửa món: {Model.Name}";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-0 compact-form-shell">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div class="pos-breadcrumb d-flex align-items-center mb-0">
+            <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+            <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+            <span class="mx-2 text-muted">/</span>
+            <a asp-controller="Menu" asp-action="Index">Thực đơn &amp; Dịch vụ</a>
+            <span class="mx-2 text-muted">/</span>
+            <span class="text-white fw-semibold">Chỉnh sửa (#@Model.Id)</span>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info btn-sm action-btn-labeled">
+                <i class="bi bi-eye"></i><span>Xem chi tiết</span>
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm action-btn-labeled">
+                <i class="bi bi-arrow-left"></i><span>Quay lại</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 align-items-start">
+        <div class="col-12 col-lg-8">
+            <div class="card form-workspace-card mode-edit">
+                <div class="card-header bg-black bg-opacity-40 py-2 px-3 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-pencil-square text-warning fs-5"></i>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-white font-heading">CHỈNH SỬA THÔNG TIN SẢN PHẨM</h6>
+                            <div class="small text-muted fw-normal" style="font-size: 0.76rem;">Cập nhật tên gọi, đơn giá bán, hình ảnh và trạng thái kinh doanh</div>
+                        </div>
+                    </div>
+                    <span class="badge bg-black border border-warning text-warning font-monospace">@Model.Code</span>
+                </div>
+                <div class="card-body p-3">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" name="ExistingImage" value="@Model.Image" />
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" style="@(ViewData.ModelState.IsValid ? "display:none;" : "")"></div>
+
+                        <div class="form-section-title">
+                            <i class="bi bi-cup-straw text-warning"></i> 1. Thông tin sản phẩm
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-4">
+                                <label asp-for="Code" class="form-label small fw-bold text-uppercase text-muted mb-1">Mã món <span class="text-danger">*</span></label>
+                                <input asp-for="Code" id="mCode" class="form-control form-control-bolt font-monospace text-uppercase" required />
+                                <span asp-validation-for="Code" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-8">
+                                <label asp-for="Name" class="form-label small fw-bold text-uppercase text-muted mb-1">Tên món / Đồ uống <span class="text-danger">*</span></label>
+                                <input asp-for="Name" id="mName" class="form-control form-control-bolt" required />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="CategoryId" class="form-label small fw-bold text-uppercase text-muted mb-1">Nhóm danh mục <span class="text-danger">*</span></label>
+                                <select asp-for="CategoryId" id="mCat" asp-items="ViewBag.CategoryList" class="form-select form-select-bolt"></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Unit" class="form-label small fw-bold text-uppercase text-muted mb-1">Đơn vị tính <span class="text-danger">*</span></label>
+                                <input asp-for="Unit" id="mUnit" class="form-control form-control-bolt" required />
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">
+                            <i class="bi bi-cash-coin text-info"></i> 2. Giá bán &amp; Trạng thái kinh doanh
+                        </div>
+
+                        <div class="row g-2 mb-3 align-items-end">
+                            <div class="col-md-6">
+                                <label asp-for="UnitPrice" class="form-label small fw-bold text-uppercase text-muted mb-1">Đơn giá bán (VNĐ) <span class="text-danger">*</span></label>
+                                <input asp-for="UnitPrice" id="mPrice" type="number" step="1000" min="0" class="form-control form-control-bolt fw-bold" required />
+                                <span asp-validation-for="UnitPrice" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-2 px-3 bg-black border border-secondary border-opacity-50 d-flex align-items-center justify-content-between" style="height: 37px; border-radius: 2px;">
+                                    <label class="form-check-label small fw-bold text-light mb-0" asp-for="IsActive">Đang mở bán trên POS</label>
+                                    <input class="form-check-input m-0" asp-for="IsActive" id="mActive" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">
+                            <i class="bi bi-image text-success"></i> 3. Cập nhật ảnh minh họa
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-uppercase text-muted mb-1">Chọn ảnh mới (để trống nếu giữ nguyên)</label>
+                                <input type="file" name="ImageFile" id="mImageFile" class="form-control form-control-bolt" accept="image/*" />
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="Image" class="form-label small fw-bold text-uppercase text-muted mb-1">Đường dẫn ảnh hiện tại</label>
+                                <input asp-for="Image" id="mImagePath" class="form-control form-control-bolt font-monospace small" />
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3"><i class="bi bi-x-circle me-1"></i> Hủy thay đổi</a>
+                            <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm px-4"><i class="bi bi-check-lg me-1"></i> Lưu Thay Đổi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="card detail-hero-card">
+                <div class="card-body p-3">
+                    <div class="form-section-title"><i class="bi bi-eye text-warning"></i> Xem trước sau khi sửa</div>
+                    <div class="mb-2 border border-secondary border-opacity-50 bg-black overflow-hidden" style="height: 175px; border-radius: 2px;">
+                        @if (!string.IsNullOrWhiteSpace(Model.Image))
+                        {
+                            <img id="mPrevImg" src="~/@Model.Image" alt="@Model.Name" class="w-100 h-100 object-fit-cover" />
+                        }
+                        else
+                        {
+                            <img id="mPrevImg" src="~/images/bolt-billiards-logo.png" alt="Preview" class="w-100 h-100 object-fit-cover" />
+                        }
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span id="mPrevCode" class="badge bg-black border border-info text-info font-monospace">@Model.Code</span>
+                        <span id="mPrevStatus" class="badge @(Model.IsActive ? "bg-success text-dark" : "bg-danger text-light") fw-bold">@(Model.IsActive ? "ĐANG BÁN" : "TẠM NGƯNG")</span>
+                    </div>
+                    <h5 id="mPrevName" class="fw-bold text-white font-heading mb-1">@Model.Name</h5>
+                    <div id="mPrevCat" class="small text-warning mb-3">Danh mục sản phẩm</div>
+                    <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-black bg-opacity-50 border border-secondary border-opacity-25">
+                        <span id="mPrevPrice" class="fs-4 fw-bold font-heading lh-1" style="color: var(--primary-neon);">@Model.UnitPrice.ToString("N0") đ</span>
+                        <span id="mPrevUnit" class="small text-muted lh-1">/ @Model.Unit</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        const sync = () => {
+            document.getElementById('mPrevCode').textContent = (document.getElementById('mCode').value || '').trim().toUpperCase();
+            document.getElementById('mPrevName').textContent = document.getElementById('mName').value.trim();
+            const catSel = document.getElementById('mCat');
+            document.getElementById('mPrevCat').textContent = catSel.options[catSel.selectedIndex]?.text || '';
+            const price = Number(document.getElementById('mPrice').value || 0);
+            document.getElementById('mPrevPrice').textContent = price.toLocaleString('en-US') + ' đ';
+            document.getElementById('mPrevUnit').textContent = '/ ' + (document.getElementById('mUnit').value || '');
+            const stBadge = document.getElementById('mPrevStatus');
+            const active = document.getElementById('mActive').checked;
+            stBadge.className = active ? 'badge bg-success text-dark fw-bold' : 'badge bg-danger text-light fw-bold';
+            stBadge.textContent = active ? 'ĐANG BÁN' : 'TẠM NGƯNG';
+        };
+        ['mCode','mName','mCat','mUnit','mPrice','mActive'].forEach(id => {
+            document.getElementById(id).addEventListener('input', sync);
+            document.getElementById(id).addEventListener('change', sync);
+        });
+        document.getElementById('mImageFile').addEventListener('change', e => {
+            const f = e.target.files[0];
+            if (f) { const r = new FileReader(); r.onload = ev => document.getElementById('mPrevImg').src = ev.target.result; r.readAsDataURL(f); }
+        });
+        document.getElementById('mImagePath').addEventListener('input', e => {
+            if (e.target.value.trim()) document.getElementById('mPrevImg').src = '/' + e.target.value.trim().replace(/^\/+/, '');
+        });
+        sync();
+    </script>
+}

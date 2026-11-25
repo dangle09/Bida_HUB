@@ -1,0 +1,96 @@
+@model QuanLyQuanBida.Models.ServiceItem
+@{
+    ViewData["Title"] = $"Xác nhận xóa món: {Model.Name}";
+    Layout = "_AdminLayout";
+    int invoiceCount = ViewBag.InvoiceCount ?? 0;
+}
+
+<div class="container-fluid px-0">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div class="pos-breadcrumb d-flex align-items-center mb-0">
+            <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+            <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+            <span class="mx-2 text-muted">/</span>
+            <a asp-controller="Menu" asp-action="Index">Thực đơn & Dịch vụ</a>
+            <span class="mx-2 text-muted">/</span>
+            <span class="text-danger fw-semibold">Xóa món (#@Model.Id)</span>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm action-btn-labeled">
+            <i class="bi bi-arrow-left"></i><span>Quay lại</span>
+        </a>
+    </div>
+
+    <div class="compact-form-shell">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-9">
+                <div class="card form-workspace-card mode-danger">
+                    <div class="card-header py-2 px-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-exclamation-octagon-fill text-danger fs-5"></i>
+                            <div>
+                                <h6 class="mb-0 fw-bold text-white font-heading">XÁC NHẬN XÓA MÓN KHỎI THỰC ĐƠN</h6>
+                                <div class="text-danger fw-normal" style="font-size: 0.75rem;">Dữ liệu sản phẩm và tồn kho liên kết sẽ bị xóa vĩnh viễn khỏi hệ thống</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-danger text-light font-monospace">@Model.Code</span>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row g-3 align-items-center mb-3">
+                            <div class="col-auto">
+                                <div class="detail-avatar-frame" style="width: 98px; height: 98px; border-color: rgba(239,68,68,0.5);">
+                                @if (!string.IsNullOrWhiteSpace(Model.Image))
+                                {
+                                    <img src="~/@Model.Image" alt="@Model.Name" class="w-100 h-100 object-fit-cover" />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-cup-straw text-danger fs-1"></i>
+                                }
+                            </div>
+                        </div>
+                        <div class="col">
+                            <span class="badge bg-black border border-warning text-warning mb-1">@ViewBag.CategoryName</span>
+                            <h4 class="fw-bold text-white font-heading mb-2">@Model.Name</h4>
+                            <div class="row g-2">
+                                <div class="col-4">
+                                    <div class="detail-info-tile py-2">
+                                        <div class="detail-info-label">Đơn giá</div>
+                                        <div class="detail-info-value" style="color: var(--primary-neon);">@Model.UnitPrice.ToString("N0") đ</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="detail-info-tile py-2">
+                                        <div class="detail-info-label">Đơn vị</div>
+                                        <div class="detail-info-value">@Model.Unit</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="detail-info-tile py-2">
+                                        <div class="detail-info-label">Hóa đơn liên kết</div>
+                                        <div class="detail-info-value @(invoiceCount > 0 ? "text-warning" : "text-success")">@invoiceCount dòng</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (invoiceCount > 0)
+                    {
+                        <div class="alert alert-warning bg-warning bg-opacity-10 border-warning text-warning small mb-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Lưu ý:</strong> Món này đã xuất hiện trong <strong>@invoiceCount chi tiết hóa đơn</strong>. Nếu chỉ muốn ngừng phục vụ mà giữ lịch sử, hãy dùng nút <strong>Tạm ngưng bán</strong> thay vì xóa vĩnh viễn.
+                        </div>
+                    }
+
+                    <form asp-action="Delete" method="post" class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4"><i class="bi bi-arrow-left me-1"></i> Không, quay lại</a>
+                        <button type="submit" class="btn btn-danger fw-bold px-4"><i class="bi bi-trash-fill me-1"></i> Xác Nhận Xóa Vĩnh Viễn</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

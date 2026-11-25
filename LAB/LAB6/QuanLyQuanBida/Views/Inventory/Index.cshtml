@@ -1,0 +1,412 @@
+@model QuanLyQuanBida.ViewModels.InventoryDashboardViewModel
+@{
+    ViewData["Title"] = "Kho & Nhập hàng - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+    var allItems = ViewBag.AllItems as List<QuanLyQuanBida.ViewModels.InventoryItemRow> ?? Model.Items;
+    string searchStr = ViewBag.SearchString as string ?? "";
+    string selectedStatus = ViewBag.SelectedStatus as string ?? "";
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+        <span class="mx-2 text-muted">/</span>
+        <a asp-controller="Categories" asp-action="Index">Quản lý hàng hóa</a>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Kho & Nhập hàng</span>
+    </div>
+
+    <!-- Header Trang & Tác vụ nhanh -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-box-seam" style="color: #60a5fa;"></i>
+                QUẢN LÝ KHO & LỊCH SỬ NHẬP HÀNG
+            </h2>
+            <div class="text-muted small">Kiểm soát số lượng tồn kho, cảnh báo mặt hàng sắp hết và quản lý chứng từ nhập kho từ nhà cung cấp</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark btn-sm border-secondary text-light action-btn-labeled" data-bs-toggle="modal" data-bs-target="#modalKiemKeKho">
+                <i class="bi bi-clipboard-check text-info"></i><span>Kiểm Kê Kho</span>
+            </button>
+            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalNhapHang">
+                <i class="bi bi-plus-circle-fill"></i> Tạo Phiếu Nhập Hàng
+            </button>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show bg-success bg-opacity-10 border-success text-success d-flex align-items-center gap-2 py-2 mb-3">
+            <i class="bi bi-check-circle-fill fs-5"></i>
+            <div>@TempData["SuccessMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show bg-danger bg-opacity-10 border-danger text-danger d-flex align-items-center gap-2 py-2 mb-3">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            <div>@TempData["ErrorMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- 4 THẺ THỐNG KÊ KPI KHO (TÍNH TRỰC TIẾP TỪ SQL SERVER) -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
+                    <i class="bi bi-boxes"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tổng mặt hàng kho</p>
+                    <div class="kpi-value text-white">@allItems.Count <small class="fs-6 text-muted fw-normal">Mặt hàng</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Giá trị tồn kho</p>
+                    <div class="kpi-value text-white">@Model.TotalInventoryValue.ToString("N0") <small class="fs-6 text-muted fw-normal">đ</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Cảnh báo sắp hết</p>
+                    <div class="kpi-value text-danger">@Model.LowStockCount <small class="fs-6 text-danger fw-normal">Cần nhập</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);">
+                    <i class="bi bi-truck"></i>
+                </div>
+                <div>
+                    <p class="kpi-label">Tổng giá trị đã nhập</p>
+                    <div class="kpi-value text-white">@Model.TotalImportedAmount.ToString("N0") <small class="fs-6 text-muted fw-normal">đ</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABS ĐIỀU HƯỚNG -->
+    <ul class="nav nav-pills nav-pills-bolt mb-3" id="inventoryTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-tonkho" type="button" role="tab">
+                <i class="bi bi-archive me-1"></i> Tồn Kho Thực Tế (@Model.Items.Count/@allItems.Count Mặt hàng)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-phieunhap" type="button" role="tab">
+                <i class="bi bi-file-earmark-text me-1"></i> Lịch Sử Phiếu Nhập (@Model.Receipts.Count Phiếu)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-ncc" type="button" role="tab">
+                <i class="bi bi-building me-1"></i> Nhà Cung Cấp (@Model.Suppliers.Count Đối tác)
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- TAB 1: TỒN KHO THỰC TẾ ĐỒNG BỘ 100% VỚI /Menu -->
+        <div class="tab-pane fade show active" id="tab-tonkho" role="tabpanel">
+            <div class="card bg-dark border-secondary border-opacity-50 overflow-hidden">
+                <div class="card-header bg-black bg-opacity-40 border-secondary border-opacity-25 py-3">
+                    <form method="get" asp-action="Index" class="row g-2 align-items-center">
+                        <div class="col-12 col-md-4">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-black text-muted border-secondary"><i class="bi bi-search"></i></span>
+                                <input type="text" name="searchString" value="@searchStr" class="form-control bg-black text-light border-secondary" placeholder="Tìm tên hàng, mã SKU, danh mục..." />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <select name="status" class="form-select form-select-sm bg-black text-light border-secondary" onchange="this.form.submit();">
+                                <option value="">-- Tất cả tình trạng (@allItems.Count) --</option>
+                                <option value="danger" selected="@(selectedStatus == "danger" ? "selected" : null)">Hết hàng</option>
+                                <option value="warning" selected="@(selectedStatus == "warning" ? "selected" : null)">Sắp hết hàng (Cần nhập)</option>
+                                <option value="success" selected="@(selectedStatus == "success" ? "selected" : null)">Đủ hàng</option>
+                            </select>
+                        </div>
+                        <div class="col-auto d-flex gap-2">
+                            <button type="submit" class="btn btn-bolt-neon btn-sm px-3"><i class="bi bi-funnel-fill me-1"></i>Lọc</button>
+                            @if (!string.IsNullOrWhiteSpace(searchStr) || !string.IsNullOrWhiteSpace(selectedStatus))
+                            {
+                                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Xóa lọc</a>
+                            }
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.86rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                            <tr>
+                                <th class="ps-3" style="width: 55px;">STT</th>
+                                <th>MÃ SKU</th>
+                                <th>ẢNH</th>
+                                <th>TÊN SẢN PHẨM TRONG KHO</th>
+                                <th>ĐVT</th>
+                                <th class="text-center">TỒN KHO</th>
+                                <th class="text-center">MỨC AN TOÀN</th>
+                                <th class="text-end">GIÁ NHẬP BQ</th>
+                                <th class="text-end">GIÁ BÁN</th>
+                                <th class="text-center">TÌNH TRẠNG</th>
+                                <th class="text-end pe-3" style="width: 120px;">THAO TÁC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int khoStt = 1; }
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td class="ps-3 text-secondary font-monospace fw-bold">@(khoStt++)</td>
+                                    <td><span class="badge bg-black border border-info text-info font-monospace">@item.Code</span></td>
+                                    <td>
+                                        <div class="thumb-category-wrap" style="width: 40px; height: 40px;">
+                                            @if (!string.IsNullOrWhiteSpace(item.Image))
+                                            {
+                                                <img src="~/@item.Image" class="thumb-category-img" alt="@item.Name" />
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-box text-muted"></i>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-white">@item.Name</div>
+                                        <div class="small text-muted">@item.CategoryName</div>
+                                    </td>
+                                    <td>@item.Unit</td>
+                                    <td class="text-center fw-bold fs-6 @(item.StatusKey == "danger" ? "text-danger" : item.StatusKey == "warning" ? "text-warning" : "text-white")">
+                                        @item.StockQuantity
+                                    </td>
+                                    <td class="text-center text-secondary">@item.ReorderLevel</td>
+                                    <td class="text-end">@item.AvgImportPrice.ToString("N0") đ</td>
+                                    <td class="text-end fw-bold" style="color: var(--primary-neon);">@item.UnitPrice.ToString("N0") đ</td>
+                                    <td class="text-center">
+                                        <span class="badge @(item.StatusKey == "danger" ? "bg-danger text-light" : item.StatusKey == "warning" ? "bg-warning text-dark fw-bold" : "bg-success text-dark fw-bold")">
+                                            @item.StatusText
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <div class="action-btn-group">
+                                            <a asp-controller="Menu" asp-action="Details" asp-route-id="@item.ServiceItemId" class="btn btn-outline-info action-btn" title="Xem chi tiết món">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <button type="button" class="btn @(item.StatusKey != "success" ? "btn-warning text-dark" : "btn-outline-success") action-btn"
+                                                    onclick="openQuickImport(@item.ServiceItemId, @((int)item.AvgImportPrice))"
+                                                    title="Nhập thêm hàng">
+                                                <i class="bi bi-cart-plus"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: LỊCH SỬ PHIẾU NHẬP HÀNG TỪ SQL SERVER -->
+        <div class="tab-pane fade" id="tab-phieunhap" role="tabpanel">
+            <div class="card bg-dark border-secondary border-opacity-50 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.86rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem;">
+                            <tr>
+                                <th class="ps-3">MÃ PHIẾU</th>
+                                <th>NHÀ CUNG CẤP</th>
+                                <th>NGÀY NHẬP</th>
+                                <th>NGƯỜI LẬP</th>
+                                <th>CHI TIẾT HÀNG HÓA</th>
+                                <th class="text-end">TỔNG TIỀN</th>
+                                <th class="text-center pe-3">TRẠNG THÁI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in Model.Receipts)
+                            {
+                                <tr>
+                                    <td class="ps-3 font-monospace fw-bold text-info">@r.Code</td>
+                                    <td class="fw-semibold text-white">@r.SupplierName</td>
+                                    <td class="text-muted">@r.ImportDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@r.StaffName</td>
+                                    <td class="small text-light">@r.ItemsSummary <span class="text-muted">(@r.LineCount dòng)</span></td>
+                                    <td class="text-end fw-bold" style="color: var(--primary-neon);">@r.TotalImportAmount.ToString("N0") đ</td>
+                                    <td class="text-center pe-3"><span class="badge bg-success text-dark fw-bold">ĐÃ NHẬP KHO</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: DANH BẠ NHÀ CUNG CẤP TỪ SQL SERVER -->
+        <div class="tab-pane fade" id="tab-ncc" role="tabpanel">
+            <div class="row g-3">
+                @foreach (var sup in Model.Suppliers)
+                {
+                    <div class="col-12 col-md-6">
+                        <div class="card bg-dark border-secondary border-opacity-50 h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-bold text-white mb-0"><i class="bi bi-building text-info me-2"></i>@sup.Name</h6>
+                                    <span class="badge bg-black border border-secondary text-muted font-monospace">#@sup.Id</span>
+                                </div>
+                                <div class="small text-muted mb-1"><i class="bi bi-telephone text-warning me-2"></i>@sup.PhoneNumber</div>
+                                <div class="small text-muted"><i class="bi bi-geo-alt text-success me-2"></i>@sup.Address</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TẠO PHIẾU NHẬP HÀNG CHUYÊN NGHIỆP (TỰ ĐỘNG TÍNH THÀNH TIỀN) -->
+<div class="modal fade" id="modalNhapHang" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-light">
+            <div class="modal-header">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-truck text-info fs-5"></i>
+                    <div>
+                        <h5 class="modal-title font-heading fw-bold mb-0">LẬP PHIẾU NHẬP KHO MỚI</h5>
+                        <div class="small text-muted">Cộng trực tiếp số lượng nhập vào tồn kho thực tế và lưu chứng từ</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="ImportStock" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="form-section-title"><i class="bi bi-building text-info"></i> Nguồn nhập &amp; Hàng hóa</div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Nhà cung cấp <span class="text-danger">*</span></label>
+                        <select name="supplierId" class="form-select form-select-bolt" required>
+                            @foreach (var sup in Model.Suppliers)
+                            {
+                                <option value="@sup.Id">@sup.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Mặt hàng cần nhập <span class="text-danger">*</span></label>
+                        <select id="importItemSelect" name="serviceItemId" class="form-select form-select-bolt" required>
+                            @foreach (var it in allItems)
+                            {
+                                <option value="@it.ServiceItemId">[@it.Code] @it.Name (Tồn: @it.StockQuantity @it.Unit)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-section-title mt-3"><i class="bi bi-calculator text-warning"></i> Số lượng &amp; Giá trị phiếu nhập</div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Số lượng nhập <span class="text-danger">*</span></label>
+                            <input type="number" id="importQtyInput" name="quantity" class="form-control form-control-bolt fw-bold" value="24" min="1" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Đơn giá nhập (VNĐ) <span class="text-danger">*</span></label>
+                            <input type="number" id="importPriceInput" name="importPrice" class="form-control form-control-bolt fw-bold" value="15000" min="0" step="500" required />
+                        </div>
+                    </div>
+                    <div class="modal-summary-box d-flex justify-content-between align-items-center">
+                        <span class="small text-uppercase fw-bold text-muted">Tổng giá trị phiếu nhập</span>
+                        <span id="importTotalPreview" class="fs-5 fw-bold font-heading" style="color: var(--primary-neon);">360,000 đ</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-bolt-neon btn-sm px-4"><i class="bi bi-check-circle-fill"></i> Xác nhận nhập kho</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL KIỂM KÊ ĐIỀU CHỈNH TỒN KHO CHUYÊN NGHIỆP -->
+<div class="modal fade" id="modalKiemKeKho" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-accent-warning text-light">
+            <div class="modal-header">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-clipboard-check text-warning fs-5"></i>
+                    <div>
+                        <h5 class="modal-title font-heading fw-bold mb-0">KIỂM KÊ ĐIỀU CHỈNH TỒN KHO</h5>
+                        <div class="small text-muted">Đối chiếu số lượng thực tế và điều chỉnh mức cảnh báo an toàn</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="UpdateAudit" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Chọn mặt hàng kiểm kê</label>
+                        <select name="serviceItemId" class="form-select form-select-bolt" required>
+                            @foreach (var it in allItems)
+                            {
+                                <option value="@it.ServiceItemId">[@it.Code] @it.Name (Hiện tại: @it.StockQuantity @it.Unit)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Số lượng thực đếm</label>
+                            <input type="number" name="actualQuantity" class="form-control form-control-bolt fw-bold" value="30" min="0" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Định mức cảnh báo</label>
+                            <input type="number" name="reorderLevel" class="form-control form-control-bolt" value="15" min="1" required />
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Ghi chú kiểm kê</label>
+                        <input type="text" name="notes" class="form-control form-control-bolt" placeholder="VD: Kiểm kê cuối ca tối..." />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm px-4"><i class="bi bi-save me-1"></i> Lưu kiểm kê</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updateImportTotal() {
+            const qty = Number(document.getElementById('importQtyInput')?.value || 0);
+            const price = Number(document.getElementById('importPriceInput')?.value || 0);
+            const el = document.getElementById('importTotalPreview');
+            if (el) el.textContent = (qty * price).toLocaleString('en-US') + ' đ';
+        }
+        document.getElementById('importQtyInput')?.addEventListener('input', updateImportTotal);
+        document.getElementById('importPriceInput')?.addEventListener('input', updateImportTotal);
+        function openQuickImport(itemId, price) {
+            document.getElementById('importItemSelect').value = itemId;
+            document.getElementById('importPriceInput').value = price > 0 ? price : 15000;
+            updateImportTotal();
+            new bootstrap.Modal(document.getElementById('modalNhapHang')).show();
+        }
+    </script>
+}

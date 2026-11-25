@@ -1,0 +1,11 @@
+﻿@* ===================================================================================
+   WEB QUẢN LÝ (BIDA POS & ADMIN DASHBOARD) - LAYOUT TƯƠNG THÍCH MẶC ĐỊNH
+   - Tên file: _Layout.cshtml (Kế thừa trực tiếp từ _AdminLayout.cshtml)
+   - Lưu ý: Khung giao diện Quản lý POS chính thức nằm tại: Views/Shared/_AdminLayout.cshtml
+   =================================================================================== *@
+@{
+    Layout = "_AdminLayout";
+}
+@RenderBody()
+@await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("Styles", required: false)

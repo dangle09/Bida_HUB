@@ -1,0 +1,492 @@
+@model QuanLyQuanBida.ViewModels.CustomersPageViewModel
+@{
+    ViewData["Title"] = "Khách hàng & VIP - BOLT BILLIARDS";
+    Layout = "_AdminLayout";
+    string searchStr = ViewBag.SearchString as string ?? "";
+    int? selectedTierId = ViewBag.SelectedTierId as int?;
+    string lockerSearch = ViewBag.LockerSearch as string ?? "";
+    string lockerStatus = ViewBag.LockerStatus as string ?? "";
+    int totalCustomers = ViewBag.TotalCustomers ?? Model.MemberTotalCount;
+    int totalAllLockers = ViewBag.TotalAllLockers ?? Model.LockerTotalCount;
+    bool isCueTab = Model.ActiveTab == "cogui";
+
+    int memStart = Model.MemberTotalCount == 0 ? 0 : (Model.MemberPage - 1) * Model.PageSize + 1;
+    int memEnd = Math.Min(Model.MemberPage * Model.PageSize, Model.MemberTotalCount);
+    int lockStart = Model.LockerTotalCount == 0 ? 0 : (Model.LockerPage - 1) * Model.PageSize + 1;
+    int lockEnd = Math.Min(Model.LockerPage * Model.PageSize, Model.LockerTotalCount);
+}
+
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <div class="pos-breadcrumb d-flex align-items-center mb-3">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+        <a asp-controller="Dashboard" asp-action="Index">Trang chủ</a>
+        <span class="mx-2 text-muted">/</span>
+        <a asp-controller="Customers" asp-action="Index">Hội viên &amp; Giải đấu</a>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-white fw-semibold">Khách hàng &amp; VIP</span>
+    </div>
+
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="h4 fw-bold text-white mb-1 d-flex align-items-center gap-2 font-heading">
+                <i class="bi bi-award-fill text-warning"></i>
+                HỘI VIÊN THÂN THIẾT, TÍCH ĐIỂM &amp; GỬI CƠ
+            </h2>
+            <div class="text-muted small">Quản lý hạng thẻ thành viên, tích lũy điểm thưởng ưu đãi và dịch vụ bảo quản tủ đồ, gửi cơ bida</div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark btn-sm border-secondary text-light action-btn-labeled" data-bs-toggle="modal" data-bs-target="#modalGuiCo">
+                <i class="bi bi-safe2 text-info"></i><span>Nhận Gửi Cơ / Thuê Tủ</span>
+            </button>
+            <button class="btn btn-bolt-neon btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemHoiVien">
+                <i class="bi bi-person-plus-fill"></i> Đăng Ký Hội Viên Mới
+            </button>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show bg-success bg-opacity-10 border-success text-success d-flex align-items-center gap-2 py-2 mb-3">
+            <i class="bi bi-check-circle-fill fs-5"></i>
+            <div>@TempData["SuccessMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show bg-danger bg-opacity-10 border-danger text-danger d-flex align-items-center gap-2 py-2 mb-3">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            <div>@TempData["ErrorMessage"]</div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- 4 KPI HỘI VIÊN -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: var(--primary-neon); background: rgba(166, 255, 0, 0.1);"><i class="bi bi-people-fill"></i></div>
+                <div>
+                    <p class="kpi-label">Tổng hội viên CLB</p>
+                    <div class="kpi-value text-white">@totalCustomers <small class="fs-6 text-muted fw-normal">Cơ thủ</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1);"><i class="bi bi-gem"></i></div>
+                <div>
+                    <p class="kpi-label">VIP Kim Cương (-15%)</p>
+                    <div class="kpi-value" style="color: #38bdf8;">@Model.DiamondCount <small class="fs-6 text-info fw-normal">Cơ thủ</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1);"><i class="bi bi-shield-fill-check"></i></div>
+                <div>
+                    <p class="kpi-label">VIP Vàng (-10%)</p>
+                    <div class="kpi-value" style="color: #eab308;">@Model.GoldCount <small class="fs-6 text-warning fw-normal">Cơ thủ</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-stat-card d-flex align-items-center gap-3">
+                <div class="kpi-icon" style="color: #a855f7; background: rgba(168, 85, 247, 0.1);"><i class="bi bi-safe2"></i></div>
+                <div>
+                    <p class="kpi-label">Hệ thống tủ đồ cá nhân</p>
+                    <div class="kpi-value text-white">@Model.LockerRentedCount / @totalAllLockers <small class="fs-6 text-muted fw-normal">Đang thuê</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-pills nav-pills-bolt mb-3" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link @(!isCueTab ? "active" : "")" data-bs-toggle="pill" data-bs-target="#tab-hoivien" type="button">
+                <i class="bi bi-card-heading me-1"></i> Danh Sách Hội Viên (@Model.MemberTotalCount)
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link @(isCueTab ? "active" : "")" data-bs-toggle="pill" data-bs-target="#tab-cogui" type="button">
+                <i class="bi bi-safe me-1"></i> Cơ Gửi &amp; Tủ Đồ (@Model.Cues.Count Cây cơ • @totalAllLockers Tủ)
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- TAB 1: DANH SÁCH HỘI VIÊN PHÂN TRANG 30 DÒNG / TRANG -->
+        <div class="tab-pane fade @(!isCueTab ? "show active" : "")" id="tab-hoivien">
+            <div class="card bg-dark border-secondary border-opacity-50 overflow-hidden">
+                <div class="card-header bg-black bg-opacity-40 py-3">
+                    <form method="get" asp-action="Index" class="row g-2 align-items-center">
+                        <input type="hidden" name="tab" value="hoivien" />
+                        <div class="col-12 col-md-4">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-black text-muted border-secondary"><i class="bi bi-search"></i></span>
+                                <input type="text" name="searchString" value="@searchStr" class="form-control bg-black text-light border-secondary" placeholder="Tìm tên cơ thủ, SĐT, mã thẻ..." />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <select name="tierId" class="form-select form-select-sm bg-black text-light border-secondary" onchange="this.form.submit();">
+                                <option value="">-- Tất cả hạng thẻ (@totalCustomers) --</option>
+                                @foreach (var t in Model.Tiers)
+                                {
+                                    <option value="@t.Id" selected="@(selectedTierId == t.Id ? "selected" : null)">@t.Name (-@t.DiscountRate%)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-auto d-flex gap-2">
+                            <button type="submit" class="btn btn-bolt-neon btn-sm px-3"><i class="bi bi-funnel-fill me-1"></i>Lọc</button>
+                            @if (!string.IsNullOrWhiteSpace(searchStr) || selectedTierId.HasValue)
+                            {
+                                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Xóa lọc</a>
+                            }
+                        </div>
+                        <div class="col text-md-end text-muted small">
+                            Trang <strong class="text-white">@Model.MemberPage / @Model.MemberTotalPages</strong> • Hiển thị <strong class="text-white">@memStart–@memEnd</strong> / @Model.MemberTotalCount hội viên
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="font-size: 0.86rem;">
+                        <thead class="bg-black text-uppercase text-secondary" style="font-size: 0.72rem;">
+                            <tr>
+                                <th class="ps-3" style="width: 55px;">STT</th>
+                                <th>MÃ THẺ</th>
+                                <th>HỌ VÀ TÊN CƠ THỦ</th>
+                                <th>SỐ ĐIỆN THOẠI</th>
+                                <th>HẠNG THẺ</th>
+                                <th class="text-center">ĐIỂM TÍCH LŨY</th>
+                                <th class="text-end">SỐ DƯ TK</th>
+                                <th class="text-end">CHI TIÊU (HĐ)</th>
+                                <th class="pe-3 text-end">NGÀY GIA NHẬP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int khStt = (Model.MemberPage - 1) * Model.PageSize + 1; }
+                            @foreach (var c in Model.Customers)
+                            {
+                                bool isDia = c.TierName.Contains("Kim Cương");
+                                bool isGold = c.TierName.Contains("Vàng");
+                                <tr>
+                                    <td class="ps-3 text-secondary font-monospace fw-bold">@(khStt++)</td>
+                                    <td class="font-monospace fw-bold @(isDia ? "text-info" : isGold ? "text-warning" : "text-light")">@c.Code</td>
+                                    <td>
+                                        <div class="fw-bold text-white">@c.FullName</div>
+                                        <div class="small text-muted">@c.InvoiceCount hóa đơn đã thanh toán</div>
+                                    </td>
+                                    <td class="font-monospace">@c.PhoneNumber</td>
+                                    <td>
+                                        <span class="badge @(isDia ? "bg-info text-dark fw-bold" : isGold ? "bg-warning text-dark fw-bold" : "bg-secondary text-light")">
+                                            @c.TierName (-@c.DiscountRate%)
+                                        </span>
+                                    </td>
+                                    <td class="text-center fw-bold text-warning">@c.AccumulatedPoints.ToString("N0") pts</td>
+                                    <td class="text-end text-light">@c.AccountBalance.ToString("N0") đ</td>
+                                    <td class="text-end fw-bold" style="color: var(--primary-neon);">@c.TotalSpent.ToString("N0") đ</td>
+                                    <td class="pe-3 text-end text-muted">@c.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                @if (Model.MemberTotalPages > 1)
+                {
+                    <div class="bolt-pagination-bar">
+                        <div class="small text-muted">Hiển thị <strong class="text-white">@memStart–@memEnd</strong> trên tổng số <strong class="text-white">@Model.MemberTotalCount</strong> hội viên (30 dòng/trang)</div>
+                        <ul class="bolt-pagination">
+                            <li>
+                                <a class="bolt-page-link @(Model.MemberPage <= 1 ? "disabled" : "")"
+                                   asp-action="Index" asp-route-page="@(Model.MemberPage - 1)" asp-route-searchString="@searchStr" asp-route-tierId="@selectedTierId" asp-route-tab="hoivien">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                            @for (int p = 1; p <= Model.MemberTotalPages; p++)
+                            {
+                                <li>
+                                    <a class="bolt-page-link @(p == Model.MemberPage ? "active" : "")"
+                                       asp-action="Index" asp-route-page="@p" asp-route-searchString="@searchStr" asp-route-tierId="@selectedTierId" asp-route-tab="hoivien">@p</a>
+                                </li>
+                            }
+                            <li>
+                                <a class="bolt-page-link @(Model.MemberPage >= Model.MemberTotalPages ? "disabled" : "")"
+                                   asp-action="Index" asp-route-page="@(Model.MemberPage + 1)" asp-route-searchString="@searchStr" asp-route-tierId="@selectedTierId" asp-route-tab="hoivien">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- TAB 2: CƠ GỬI BẢO QUẢN & 200 TỦ ĐỒ CÁ NHÂN (PHÂN TRANG 30 TỦ / TRANG) -->
+        <div class="tab-pane fade @(isCueTab ? "show active" : "")" id="tab-cogui">
+            <div class="row g-3">
+                <div class="col-12 col-xl-5">
+                    <div class="card bg-dark border-secondary border-opacity-50 overflow-hidden h-100">
+                        <div class="card-header bg-black bg-opacity-40 py-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-bold small text-uppercase text-white font-heading">
+                                <i class="bi bi-safe2 text-info me-2"></i>CƠ KHÁCH GỬI BẢO QUẢN (@Model.Cues.Count)
+                            </span>
+                            <button type="button" class="btn btn-bolt-neon btn-sm py-1 px-2" style="font-size: 0.74rem;" data-bs-toggle="modal" data-bs-target="#modalGuiCo">
+                                <i class="bi bi-plus-circle"></i> Thêm gửi cơ
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover align-middle mb-0 small">
+                                <thead class="bg-black text-secondary text-uppercase" style="font-size: 0.7rem;">
+                                    <tr>
+                                        <th class="ps-3" style="width: 45px;">STT</th>
+                                        <th>MÃ CƠ</th>
+                                        <th>CHỦ SỞ HỮU &amp; NGỌN</th>
+                                        <th class="text-center">TRẠNG THÁI</th>
+                                        <th class="text-end pe-3">XỬ LÝ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ int cueStt = 1; }
+                                    @foreach (var cue in Model.Cues)
+                                    {
+                                        string owner = Model.CustomerNameDict.ContainsKey(cue.CustomerId) ? Model.CustomerNameDict[cue.CustomerId] : $"KH #{cue.CustomerId}";
+                                        bool inStock = cue.Status == "Đang lưu kho";
+                                        <tr>
+                                            <td class="ps-3 text-secondary font-monospace fw-bold">@(cueStt++)</td>
+                                            <td class="font-monospace text-info fw-bold">@cue.Code</td>
+                                            <td>
+                                                <div class="fw-bold text-white">@owner</div>
+                                                <div class="text-muted" style="font-size:0.74rem;">@cue.CueBrand • @cue.ShaftType</div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge @(inStock ? "bg-success text-dark" : "bg-secondary text-light") fw-bold">@cue.Status</span>
+                                            </td>
+                                            <td class="text-end pe-3">
+                                                <form asp-action="ReturnCue" asp-route-id="@cue.Id" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn @(inStock ? "btn-outline-warning" : "btn-outline-success") btn-sm py-0 px-2" style="font-size: 0.74rem;">
+                                                        @(inStock ? "Trả cơ" : "Nhận lại")
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-xl-7">
+                    <div class="card bg-dark border-secondary border-opacity-50 overflow-hidden h-100">
+                        <div class="card-header bg-black bg-opacity-40 py-3">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                <span class="fw-bold small text-uppercase text-white font-heading">
+                                    <i class="bi bi-grid-3x2-gap text-warning me-2"></i>HỆ THỐNG TỦ ĐỒ CÁ NHÂN (@Model.LockerTotalCount / @totalAllLockers TỦ)
+                                </span>
+                                <span class="small text-muted">Trang <strong class="text-white">@Model.LockerPage / @Model.LockerTotalPages</strong> (@lockStart–@lockEnd)</span>
+                            </div>
+                            <form method="get" asp-action="Index" class="row g-2 align-items-center">
+                                <input type="hidden" name="tab" value="cogui" />
+                                <div class="col-6 col-md-5">
+                                    <input type="text" name="lockerSearch" value="@lockerSearch" class="form-control form-control-sm bg-black text-light border-secondary" placeholder="Tìm số tủ, khu vực..." />
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <select name="lockerStatus" class="form-select form-select-sm bg-black text-light border-secondary" onchange="this.form.submit();">
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="Trống" selected="@(lockerStatus == "Trống" ? "selected" : null)">Tủ trống</option>
+                                        <option value="Đang thuê" selected="@(lockerStatus == "Đang thuê" ? "selected" : null)">Đang thuê</option>
+                                    </select>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-bolt-neon btn-sm px-3">Lọc</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover align-middle mb-0 small">
+                                <thead class="bg-black text-secondary text-uppercase" style="font-size: 0.7rem;">
+                                    <tr>
+                                        <th class="ps-3" style="width: 50px;">STT</th>
+                                        <th>SỐ TỦ</th>
+                                        <th>KHU VỰC</th>
+                                        <th class="text-end">PHÍ / THÁNG</th>
+                                        <th class="text-center">TRẠNG THÁI</th>
+                                        <th class="text-end pe-3">THAO TÁC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ int lkStt = (Model.LockerPage - 1) * Model.PageSize + 1; }
+                                    @foreach (var lk in Model.Lockers)
+                                    {
+                                        bool isFree = lk.Status == "Trống";
+                                        <tr>
+                                            <td class="ps-3 text-secondary font-monospace fw-bold">@(lkStt++)</td>
+                                            <td class="font-monospace text-warning fw-bold">@lk.LockerNumber</td>
+                                            <td>@lk.Area</td>
+                                            <td class="text-end">@lk.MonthlyRent.ToString("N0") đ</td>
+                                            <td class="text-center">
+                                                <span class="badge @(isFree ? "bg-success text-dark" : "bg-info text-dark") fw-bold">@lk.Status</span>
+                                            </td>
+                                            <td class="text-end pe-3">
+                                                <form asp-action="ToggleLocker" asp-route-id="@lk.Id" asp-route-lockerPage="@Model.LockerPage" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn @(isFree ? "btn-outline-info" : "btn-outline-secondary") btn-sm py-0 px-2" style="font-size: 0.74rem;">
+                                                        @(isFree ? "Cho thuê" : "Trả tủ")
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if (Model.LockerTotalPages > 1)
+                        {
+                            <div class="bolt-pagination-bar">
+                                <div class="small text-muted">Hiển thị <strong class="text-white">@lockStart–@lockEnd</strong> / @Model.LockerTotalCount tủ (30 tủ/trang)</div>
+                                <ul class="bolt-pagination">
+                                    <li>
+                                        <a class="bolt-page-link @(Model.LockerPage <= 1 ? "disabled" : "")"
+                                           asp-action="Index" asp-route-tab="cogui" asp-route-lockerPage="@(Model.LockerPage - 1)" asp-route-lockerSearch="@lockerSearch" asp-route-lockerStatus="@lockerStatus">
+                                            <i class="bi bi-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                    @for (int p = 1; p <= Model.LockerTotalPages; p++)
+                                    {
+                                        <li>
+                                            <a class="bolt-page-link @(p == Model.LockerPage ? "active" : "")"
+                                               asp-action="Index" asp-route-tab="cogui" asp-route-lockerPage="@p" asp-route-lockerSearch="@lockerSearch" asp-route-lockerStatus="@lockerStatus">@p</a>
+                                        </li>
+                                    }
+                                    <li>
+                                        <a class="bolt-page-link @(Model.LockerPage >= Model.LockerTotalPages ? "disabled" : "")"
+                                           asp-action="Index" asp-route-tab="cogui" asp-route-lockerPage="@(Model.LockerPage + 1)" asp-route-lockerSearch="@lockerSearch" asp-route-lockerStatus="@lockerStatus">
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ĐĂNG KÝ HỘI VIÊN MỚI (CHUYÊN NGHIỆP) -->
+<div class="modal fade" id="modalThemHoiVien" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-light">
+            <div class="modal-header">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-person-plus-fill text-warning fs-5"></i>
+                    <div>
+                        <h5 class="modal-title font-heading fw-bold mb-0">ĐĂNG KÝ HỘI VIÊN MỚI</h5>
+                        <div class="small text-muted">Cấp mã thẻ tự động và cộng 20 điểm thưởng chào mừng</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="form-section-title"><i class="bi bi-person-vcard text-info"></i> Thông tin cơ thủ</div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Họ và tên cơ thủ <span class="text-danger">*</span></label>
+                        <input type="text" name="fullName" class="form-control form-control-bolt" placeholder="VD: Nguyễn Minh Khôi" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Số điện thoại <span class="text-danger">*</span></label>
+                        <input type="text" name="phoneNumber" class="form-control form-control-bolt font-monospace" placeholder="VD: 0909123456" required />
+                    </div>
+                    <div class="form-section-title mt-3"><i class="bi bi-award text-warning"></i> Hạng thẻ &amp; Số dư</div>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Hạng thành viên</label>
+                            <select name="membershipTierId" class="form-select form-select-bolt">
+                                @foreach (var t in Model.Tiers)
+                                {
+                                    <option value="@t.Id">@t.Name (-@t.DiscountRate%)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Nạp số dư ban đầu (VNĐ)</label>
+                            <input type="number" name="accountBalance" class="form-control form-control-bolt fw-bold" value="200000" min="0" step="50000" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-bolt-neon btn-sm px-4"><i class="bi bi-check-lg"></i> Lưu hội viên</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL NHẬN GỬI CƠ BIDA & THUÊ TỦ ĐỒ CÁ NHÂN -->
+<div class="modal fade" id="modalGuiCo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-accent-warning text-light">
+            <div class="modal-header">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-safe2-fill text-info fs-5"></i>
+                    <div>
+                        <h5 class="modal-title font-heading fw-bold mb-0">TIẾP NHẬN GỬI CƠ &amp; THUÊ TỦ CÁ NHÂN</h5>
+                        <div class="small text-muted">Ghi nhận bảo quản cơ riêng của hội viên và gán tủ lưu trữ (nếu thuê tủ)</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="ReceiveCue" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="form-section-title"><i class="bi bi-person text-info"></i> Hội viên gửi cơ</div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Chọn cơ thủ / hội viên <span class="text-danger">*</span></label>
+                        <select name="customerId" class="form-select form-select-bolt" required>
+                            @foreach (var c in Model.AllCustomerDropdown)
+                            {
+                                <option value="@c.Id">[@c.Code] @c.FullName — @c.PhoneNumber</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-section-title mt-3"><i class="bi bi-tools text-warning"></i> Thông tin cơ bida</div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Thương hiệu / Dòng cơ <span class="text-danger">*</span></label>
+                            <input type="text" name="cueBrand" class="form-control form-control-bolt" placeholder="VD: Predator P3, Mezz..." required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Loại ngọn</label>
+                            <input type="text" name="shaftType" class="form-control form-control-bolt" placeholder="VD: Revo 12.4 Carbon" />
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Gán tủ cá nhân trống (tùy chọn)</label>
+                        <select name="lockerId" class="form-select form-select-bolt">
+                            <option value="">-- Chỉ gửi cơ tại quầy (không thuê tủ riêng) --</option>
+                            @foreach (var lk in Model.AvailableLockers)
+                            {
+                                <option value="@lk.Id">@lk.LockerNumber — @lk.Area (@lk.MonthlyRent.ToString("N0") đ/tháng)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-bolt-neon btn-sm px-4"><i class="bi bi-check-circle-fill"></i> Xác nhận tiếp nhận</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
