@@ -107,21 +107,31 @@ namespace QuanLyQuanBida.Controllers
                 };
             }).ToList();
 
-            // Top mặt hàng bán chạy từ InvoiceDetails của các hóa đơn đã thanh toán
-            var topItems = allDetails
-                .Where(d => paidIds.Contains(d.InvoiceId))
-                .GroupBy(d => d.ServiceItemId)
-                .Select(g => new TopItemSalesRow
-                {
-                    Code = items.ContainsKey(g.Key) ? items[g.Key].Code : $"SP#{g.Key}",
-                    Name = items.ContainsKey(g.Key) ? items[g.Key].Name : $"Món #{g.Key}",
-                    Unit = items.ContainsKey(g.Key) ? items[g.Key].Unit : "Phần",
-                    TotalQty = g.Sum(x => x.Quantity),
-                    TotalRevenue = g.Sum(x => x.TotalAmount)
-                })
-                .OrderByDescending(x => x.TotalRevenue)
-                .Take(6)
-                .ToList();
+            // Lọc chỉ lấy sản phẩm thuộc danh mục thức uống (DRINK, BEER)
+var categories = await _context.Categories.AsNoTracking()
+    .ToDictionaryAsync(c => c.Id, c => c.Code);
+
+var drinkItemIds = items.Values
+    .Where(i => categories.TryGetValue(i.CategoryId, out var code)
+                && (code == "DRINK" || code == "BEER"))
+    .Select(i => i.Id)
+    .ToHashSet();
+
+// Top 5 thức uống bán chạy nhất (theo số lượng bán)
+var topItems = allDetails
+    .Where(d => paidIds.Contains(d.InvoiceId) && drinkItemIds.Contains(d.ServiceItemId))
+    .GroupBy(d => d.ServiceItemId)
+    .Select(g => new TopItemSalesRow
+    {
+        Code = items.ContainsKey(g.Key) ? items[g.Key].Code : $"SP#{g.Key}",
+        Name = items.ContainsKey(g.Key) ? items[g.Key].Name : $"Món #{g.Key}",
+        Unit = items.ContainsKey(g.Key) ? items[g.Key].Unit : "Phần",
+        TotalQty = g.Sum(x => x.Quantity),
+        TotalRevenue = g.Sum(x => x.TotalAmount)
+    })
+    .OrderByDescending(x => x.TotalQty)
+    .Take(5)
+    .ToList();
 
             // Phiếu chi thực tế từ PaymentVouchers
             var expTypes = await _context.ExpenseTypes.AsNoTracking().OrderBy(e => e.Id).ToListAsync();
@@ -180,6 +190,22 @@ namespace QuanLyQuanBida.Controllers
                 HourlyToday = hourlyToday,
                 HourlyYesterday = hourlyYesterday
             };
+            // Doanh thu từng ngày trong khoảng thời gian đã lọc (startDate - endDate)
+var revenueByDay = paidInvoices
+    .GroupBy(i => i.StartTime.Date)
+    .OrderBy(g => g.Key)
+    .Select(g => new
+    {
+        Label = g.Key.ToString("dd/MM/yyyy"),
+        Total = g.Sum(x => x.TotalPayment)
+    })
+    .ToList();
+
+ViewBag.RevenueLabels = revenueByDay.Select(x => x.Label).ToList();
+ViewBag.RevenueValues = revenueByDay.Select(x => x.Total).ToList();
+
+ViewBag.TopDrinkLabels = topItems.Select(x => x.Name).ToList();
+ViewBag.TopDrinkValues = topItems.Select(x => x.TotalQty).ToList();
 
             return View(vm);
         }

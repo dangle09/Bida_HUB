@@ -138,7 +138,33 @@
             </div>
         </div>
     </div>
-
+     <!-- BIỂU ĐỒ CHART.JS (LAB 6) -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-xl-7">
+        <div class="card bg-dark border-secondary border-opacity-50 h-100">
+            <div class="card-header bg-black bg-opacity-40 py-3">
+                <h5 class="card-title font-heading fw-bold text-white mb-0 fs-6">
+                    Biểu đồ Doanh thu theo khoảng thời gian
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-5">
+        <div class="card bg-dark border-secondary border-opacity-50 h-100">
+            <div class="card-header bg-black bg-opacity-40 py-3">
+                <h5 class="card-title font-heading fw-bold text-white mb-0 fs-6">
+                    Top 5 Thức uống bán chạy
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="topDrinksChart" height="165"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- HÀNG 2: BIỂU ĐỒ SVG ĐỘNG THEO GIỜ & CƠ CẤU THANH TOÁN -->
     <div class="row g-3 mb-4">
         <div class="col-12 col-xl-8">
@@ -331,3 +357,64 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 1. Biểu đồ doanh thu theo khoảng thời gian
+        const revLabels = @Json.Serialize(ViewBag.RevenueLabels);
+        const revValues = @Json.Serialize(ViewBag.RevenueValues);
+
+        const revCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revCtx, {
+            type: 'bar', // Có thể đổi thành 'line'
+            data: {
+                labels: revLabels,
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: revValues,
+                    backgroundColor: 'rgba(166, 255, 0, 0.5)',
+                    borderColor: 'rgba(166, 255, 0, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: { legend: { labels: { color: '#e2e8f0' } } },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' } },
+                    y: { beginAtZero: true, ticks: { color: '#94a3b8' } }
+                }
+            }
+        });
+
+        // 2. Biểu đồ Top 5 thức uống bán chạy
+        const drinkLabels = @Json.Serialize(ViewBag.TopDrinkLabels);
+        const drinkValues = @Json.Serialize(ViewBag.TopDrinkValues);
+
+        const drinkCtx = document.getElementById('topDrinksChart').getContext('2d');
+        new Chart(drinkCtx, {
+            type: 'bar', // Có thể đổi thành 'doughnut' hoặc 'pie'
+            data: {
+                labels: drinkLabels,
+                datasets: [{
+                    label: 'Số lượng đã bán',
+                    data: drinkValues,
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 99, 132, 0.6)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: { legend: { labels: { color: '#e2e8f0' } } },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' } },
+                    y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' } }
+                }
+            }
+        });
+    </script>
+}
